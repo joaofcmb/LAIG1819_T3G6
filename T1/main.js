@@ -12,7 +12,7 @@ function getUrlVars() {
 }	 
 
 //Include additional files here
-serialInclude(['../lib/CGF.js',
+serialInclude(['../lib/CGF.js', 'parser.js',
 
 main=function()
 {
@@ -29,16 +29,15 @@ main=function()
     //app.setScene(myScene);
     //app.setInterface(myInterface);
 
-    myInterface.setActiveCamera(myScene.camera);
+    //myInterface.setActiveCamera(myScene.camera);
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
-	
-	var filename=getUrlVars()['file'] || "demo.xml";
+	var filename=getUrlVars()['file'] || "testfile.xml";
 
 	// create and load graph, and associate it to scene. 
 	// Check console for loading errors
-	var myGraph = new MySceneGraph(filename, myScene);
+	var parser = new Parser(filename);
 	
 	// start
     app.run();

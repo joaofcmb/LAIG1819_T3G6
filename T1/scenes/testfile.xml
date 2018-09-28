@@ -1,0 +1,22 @@
+<yas>
+
+    <scene root="rootName" axis_length="2"/>
+
+    <ambient>
+        <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+        <background r="0.0" g="0.0" b="0.0" a="1.0" />
+    </ambient>
+
+</yas>
+
+<!--
+near = 0.1
+far = 1000
+
+cam angle = 60
+cam pos = 15, 15, 15
+
+target pos = 0, 0, 0
+
+ambiente global = 0 0 0
+50% difusa, 30% especular e 20% ambiente -->

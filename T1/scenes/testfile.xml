@@ -1,6 +1,17 @@
 <yas>
 
-    <scene root="rootName" axis_length="2"/>
+    <scene root="" axis_length="2"/>
+
+    <views default="viewsName">
+    
+        <perspective id="perspectiveID" near="0.1" far="1000.0" angle="60.0">
+            <from x="15.0" y="15.0" z="15.0" />
+            <to x="0.0" y="0.0" z="0.0" />
+        </perspective>
+
+        <ortho id="orthoID" near="0.1" far="1000.0" left="0.0" right="0.0" top="0.0" bottom="1.0" />
+
+    </views>
 
     <ambient>
         <ambient r="0.0" g="0.0" b="0.0" a="1.0" />

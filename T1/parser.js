@@ -118,6 +118,18 @@ class Parser {
                 return error;
         }
 
+        // <LIGHTS>
+        if ((index = nodeNames.indexOf("lights")) == -1)
+            return "tag <lights> missing";
+        else {
+            if (index != LIGHTS_INDEX)
+                this.onXMLMinorError("tag <lights> out of order");
+
+            //Parse lights block
+            if ((error = this.parseLights(nodes[index])) != null)
+                return error;
+        }
+
     }
 
     /*
@@ -128,14 +140,16 @@ class Parser {
         var axisLength = this.reader.getFloat(sceneNode, "axis_length");
 
         if (root == null)
-            return "root element in <scene> must be defined in order to parse XML file";
+            return "root element in <scene> must be defined in order to parse XML file"
+        else if (root == "")
+            return "root element in <scene> must have a proper name."
 
         if (axisLength == null || isNaN(axisLength)) {
             axisLength = 0;
             this.onXMLMinorError("axis_length element missing on <scene>; using 0 as default value");
         }
 
-        this.log(root + " - " + axisLength);
+        //this.log(root + " - " + axisLength);
     }
 
     /*
@@ -143,6 +157,11 @@ class Parser {
     */
     parseViews(viewsNode) {
         var viewsDefault = this.reader.getString(viewsNode, "default");
+        if (viewsDefault == null)
+            return "default element in <views> must be defined in order to parse XML file"
+        else if (viewsDefault == "")
+            return "default element in <views> must have a proper name."
+
         var children = viewsNode.children;
 
         if (children.length < 1)
@@ -154,8 +173,6 @@ class Parser {
 
         var perspectiveViews = [];
         var orthoViews = [];
-
-        //TODO verificar se realmente existem todas as opções escritas no XML
 
         for (var i = 0; i < children.length; i++) {
 
@@ -203,53 +220,19 @@ class Parser {
         if ((error = this.validateViewsInfo(perspectiveViews, orthoViews)) != null)
             return error;
 
-        for (var i = 0; i < perspectiveViews.length; i++) {
-            this.log(perspectiveViews[i]);
-        }
+        /*
+    for (var i = 0; i < perspectiveViews.length; i++) {
+        this.log(perspectiveViews[i]);
+    }
 
-        for (var i = 0; i < orthoViews.length; i++) {
-            this.log(orthoViews[i]);
-        }
-
+    for (var i = 0; i < orthoViews.length; i++) {
+        this.log(orthoViews[i]);
+    }
+*/
     }
 
     /*
-       Parses the <ambient> block.
-   */
-    parseAmbient(ambientNode) {
-        var children = ambientNode.children;
-
-        if (children.length != 2)
-            return "<ambient> block is not properly defined";
-
-        var nodeNames = [];
-        for (var i = 0; i < children.length; i++)
-            nodeNames.push(children[i].nodeName);
-
-        //TODO verificar se realmente existem todas as opções escritas no XML
-
-        var ambient = [
-            this.reader.getFloat(children[0], "r"),
-            this.reader.getFloat(children[0], "g"),
-            this.reader.getFloat(children[0], "b"),
-            this.reader.getFloat(children[0], "a"),
-        ];
-
-        var background = [
-            this.reader.getFloat(children[1], "r"),
-            this.reader.getFloat(children[1], "g"),
-            this.reader.getFloat(children[1], "b"),
-            this.reader.getFloat(children[1], "a"),
-        ];
-
-        this.validateAmbientInfo(ambient, background);
-
-        for (var i = 0; i < ambient.length; i++)
-            this.log(ambient[i] + " - " + background[i]);
-    }
-
-    /*
-        Validates views XML information
+        Validates <views> XML information
     */
     validateViewsInfo(perspectiveViews, orthoViews) {
         var perspectiveDefaultValues = [
@@ -265,7 +248,7 @@ class Parser {
 
         for (var i = 0; i < perspectiveViews.length; i++) {
             for (var j = 0; j < perspectiveViews[i].length; j++) {
-                if ((j == 0) && (perspectiveViews[i][j] == "")) {
+                if ((j == 0) && ((perspectiveViews[i][j] == "") || perspectiveViews[i][j] == null)) {
                     return "Perspective view with id not properly defined"
                 }
                 else {
@@ -279,7 +262,7 @@ class Parser {
 
         for (var i = 0; i < orthoViews.length; i++) {
             for (var j = 0; j < orthoViews.length; j++) {
-                if ((j == 0) && (orthoViews[i][j] == ""))
+                if ((j == 0) && ((orthoViews[i][j] == "") || orthoViews[i][j] == null))
                     return "Ortho view with id not properly defined"
                 else {
                     if (orthoViews[i][j] == null || isNaN(orthoViews[i][j]) && j != 0) {
@@ -308,21 +291,73 @@ class Parser {
         }
     }
 
-    validateAmbientInfo(ambient, background) {
-        for (var i = 0; i < ambient.length; i++) {
+    /*
+       Parses the <ambient> block.
+   */
+    parseAmbient(ambientNode) {
+        var children = ambientNode.children;
 
-            if (ambient[i] == null || isNaN(ambient[i])) {
-                var value = i == (ambient.length - 1) ? 1 : 0;
-                ambient[i] = value;
-                this.onXMLMinorError("ambient element missing on <ambient>; using " + value + " as default value");
-            }
+        if (children.length != 2)
+            return "<ambient> block is not properly defined";
 
-            if (background[i] == null || isNaN(background[i])) {
-                var value = i == (background.length - 1) ? 1 : 0;
-                background[i] = value;
-                this.onXMLMinorError("background element missing on <ambient>; using " + value + " as default value");
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+        var ambient = [];
+        var background = [];
+
+        this.validateAmbientInfo(children, ambient, background);
+
+        //for (var i = 0; i < ambient.length; i++)
+        //  this.log(ambient[i] + " - " + background[i]);
+    }
+
+    /*
+        Validates <ambient> XML information
+    */
+    validateAmbientInfo(children, ambient, background) {
+        var ar, ag, ab, aa, br, bg, bb, ba;
+
+        var values = [0, 0, 0, 1,
+            0, 0, 0, 1];
+        var childrenPos = [0, 0, 0, 0,
+            1, 1, 1, 1];
+        var elements = ["red", "green", "blue", "alpha",
+            "red", "green", "blue", "alpha"];
+        var shortElements = ["r", "g", "b", "a",
+            "r", "g", "b", "a"];
+        var type = ["ambient", "ambient", "ambient", "ambient",
+            "background", "background", "background", "background"];
+        var properValues = [ar, ag, ab, aa,
+            br, bg, bb, ba];
+
+        for (var i = 0; i < elements.length; i++) {
+            properValues[i] = this.reader.getFloat(children[childrenPos[i]], shortElements[i])
+            if (properValues[i] == null || isNaN(properValues[i])) {
+                properValues[i] = values[i];
+                this.onXMLMinorError(elements[i] + " (" + type[i] + ") element missing on <ambient>; using " + values[i] + " as default value");
             }
         }
+
+        ambient.push(properValues[0]); ambient.push(properValues[1]); ambient.push(properValues[2]); ambient.push(properValues[3]);
+        background.push(properValues[4]); background.push(properValues[5]); background.push(properValues[6]); background.push(properValues[7]);
+    }
+
+    /*
+        Parses the <ligths> block.
+    */
+    parseLights(lightsNode) {
+        var children = lightsNode.children;
+
+        if (children.length < 1)
+            return "There must be at least one block of <omni> or <spot> lights";
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++)
+            nodeNames.push(children[i].nodeName);
+
+
     }
 
     /*

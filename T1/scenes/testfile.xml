@@ -37,7 +37,15 @@
 
     </lights>
 
+    <textures>
+
+        <texsture id="textureID" file="fileNotFound" />
+
+    </textures>
+
 </yas>
+
+<!-- We need to set default values for each block and alter them on code -->
 
 <!--
 near = 0.1

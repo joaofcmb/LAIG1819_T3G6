@@ -80,6 +80,28 @@ class Parser {
 
         // Processes each node, verifying errors.
 
+        /*
+
+        NOTE: This commented code simplifies all remaining code on this function*
+
+        var elements = ["scene", "views", "ambient", "lights", "textures"];
+        var elementsIndex = [0, 1, 2, 3, 4];
+        var parseFunctions = [this.parseScene, this.parseViews, this.parseAmbient, this.parseLights, this.parseTextures];
+
+        for (var i = 0; i < elements.length; i++) {
+            if ((index = nodeNames.indexOf(elements[i])) == -1)
+                return "tag <" + elements[i] + "> missing";
+            else {
+                if (index != elementsIndex[i])
+                    this.onXMLMinorError("tag <" + elements[i] + "> out of order");
+                
+                //Parse block
+                if ((error = parseFunctions[i](nodes[index])) != null)
+                    return error;
+            }
+        }
+        */
+
         // <SCENE>
         if ((index = nodeNames.indexOf("scene")) == -1)
             return "tag <scene> missing";
@@ -128,6 +150,17 @@ class Parser {
                 return error;
         }
 
+        // <TEXTURES>
+        if ((index = nodeNames.indexOf("textures")) == -1)
+            return "tag <textures> missing";
+        else {
+            if (index != TEXTURES_INDEX)
+                this.onXMLMinorError("tag <textures> out of order");
+
+            //Parse textures block
+            if ((error = this.parseTextures(nodes[index])) != null)
+                return error;
+        }
     }
 
     /*
@@ -465,7 +498,6 @@ class Parser {
        Validates <lights> XML information
    */
     validateLightsInfo(omniLights, spotLights) {
-
         var omniDefaultValues = [
             "unknown", false,
             1.0, 1.0, 1.0, 1.0,
@@ -537,6 +569,63 @@ class Parser {
     }
 
     /*
+        Parses the <textures> block.
+    */
+    parseTextures(texturesNode) {
+        var children = texturesNode.children;
+
+        if (children.length < 1)
+            return "There must be at least one block of textures";
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++) {
+            if(children[i].nodeName != "texture") {
+                this.onXMLMinorError("<" + children[i].nodeName + "> block on <textures> node was not properly written. Do you mean <texture> ?");
+                nodeNames.push("texture");
+            }
+            else
+                nodeNames.push(children[i].nodeName);
+        }
+
+        var textures = [];
+        for (var i = 0; i < children.length; i++) {
+            var texture = [
+                this.reader.getString(children[i], "id"),
+                this.reader.getString(children[i], "file")
+            ];
+            textures.push(texture);
+        }
+
+        var error;
+        if ((error = this.validateTexturesInfo(textures)) != null)
+            return error;
+
+
+        /*for (var i = 0; i < textures.length; i++) {
+            this.log(textures[i]);
+        }*/
+    }
+
+    /*
+      Validates <lights> XML information
+    */
+    validateTexturesInfo(textures) {
+        for (var i = 0; i < textures.length; i++) {
+            if (textures[i][0] == "" || textures[i][0] == null)
+                return "texture block on <textures> is not properly defined."
+            else if (textures[i][1] == "" || textures[i][1] == null)
+                return "texture block on <textures> with [id = " + textures[i][0] + "] is not properly defined."
+        }
+
+        for(var i = 0; i < textures.length; i++) {
+            for(var j = 0; j < textures.length; j++) {
+                if(i != j && textures[i][0] == textures[j][0])
+                    return "There are two textures using the same id [" + textures[i][0] + "]."
+            }
+        }
+    }
+
+    /*
    * Callback to be executed on any read error, showing an error on the console.
    * @param {string} message
    */
@@ -552,7 +641,6 @@ class Parser {
     onXMLMinorError(message) {
         console.warn("Warning: " + message);
     }
-
 
     /**
      * Callback to be executed on any message.

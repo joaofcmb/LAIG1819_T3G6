@@ -20,22 +20,20 @@
 
     <lights>
 
-        <!-- tt: 0(false) V 1(true) -->
-
-        <omni id="omniID" enabled="1">
+        <omni id="omniID" enabled="true">
             <location x="1.0" y="1.0" z="1.0" w="1.0" />
             <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </omni>
 
-        <spot id="ss" enabled="tt" angle="ff" exponent="ff">
-            <location x="ff" y="ff" z="ff" w=”ff” />
-            <target x="ff" y="ff" z="ff" />
-            <ambient r="ff" g="ff" b="ff" a="ff" />
-            <diffuse r="ff" g="ff" b="ff" a="ff" />
-            <specular r="ff" g="ff" b="ff" a="ff" />
-        </spot>
+        <!-- <spot id="spotID" enabled="true" angle="60" exponent="1.0">
+            <location x="1.0" y="1.0" z="1.0" w="1.0" />
+            <target x="1.0" y="1.0" z="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+        </spot> -->
 
     </lights>
 
@@ -51,4 +49,6 @@ cam pos = 15, 15, 15
 target pos = 0, 0, 0
 
 ambiente global = 0 0 0
-50% difusa, 30% especular e 20% ambiente -->
+50% difusa, 30% especular e 20% ambiente 
+
+tt: 0(false) V 1(true) -->

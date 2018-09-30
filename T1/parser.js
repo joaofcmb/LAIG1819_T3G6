@@ -10,8 +10,6 @@ var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
 var PRIMITIVES_INDEX = 7;
 var COMPONENTS_INDEX = 8;
-var ERROR = -1;
-var SUCESS = 0;
 
 class Parser {
 
@@ -188,6 +186,10 @@ class Parser {
 
                 if (perspectiveChildren.length != 2)
                     return "Perspective view with [id = " + perspective[0] + "] must have only two children."
+                else if (perspectiveChildren[0].nodeName != "from")
+                    return "<" + perspectiveChildren[0].nodeName + "> invalid children of perspective view with [id = " + perspective[0] + "]."
+                else if (perspectiveChildren[1].nodeName != "to")
+                    return "<" + perspectiveChildren[1].nodeName + "> invalid children of perspective view with [id = " + perspective[0] + "]."
                 else {
                     perspective.push(this.reader.getString(perspectiveChildren[0], "x"));
                     perspective.push(this.reader.getString(perspectiveChildren[0], "y"));
@@ -304,13 +306,18 @@ class Parser {
         for (var i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
 
+        if (nodeNames[0] != "ambient")
+            return "<" + nodeNames[0] + "> in ambient is not valid."
+        else if (nodeNames[1] != "background")
+            return "<" + nodeNames[1] + "> in ambient is not valid."
+
         var ambient = [];
         var background = [];
 
         this.validateAmbientInfo(children, ambient, background);
 
         //for (var i = 0; i < ambient.length; i++)
-        //  this.log(ambient[i] + " - " + background[i]);
+        //this.log(ambient[i] + " - " + background[i]);
     }
 
     /*
@@ -357,6 +364,175 @@ class Parser {
         for (var i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
 
+        var omniLights = [];
+        var spotLights = [];
+
+        for (var i = 0; i < children.length; i++) {
+
+            if (nodeNames[i] == "omni") {
+                var tmpOmniLights = [];
+
+                tmpOmniLights.push(this.reader.getString(children[i], "id"));
+                tmpOmniLights.push(this.reader.getBoolean(children[i], "enabled"));
+
+                var omniChildren = children[i].children;
+
+                if (omniChildren.length != 4)
+                    return "Omni light with [id = " + this.reader.getString(children[i], "id") + "] have not all needed elements."
+
+                if (omniChildren[0].nodeName != "location")
+                    return "<" + omniChildren[0].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (omniChildren[1].nodeName != "ambient")
+                    return "<" + omniChildren[1].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (omniChildren[2].nodeName != "diffuse")
+                    return "<" + omniChildren[2].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (omniChildren[3].nodeName != "specular")
+                    return "<" + omniChildren[3].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+
+                tmpOmniLights.push(this.reader.getFloat(omniChildren[0], "x"));
+                tmpOmniLights.push(this.reader.getFloat(omniChildren[0], "y"));
+                tmpOmniLights.push(this.reader.getFloat(omniChildren[0], "z"));
+                tmpOmniLights.push(this.reader.getFloat(omniChildren[0], "w"));
+
+                for (var j = 1; j < omniChildren.length; j++) {
+                    tmpOmniLights.push(this.reader.getFloat(omniChildren[j], "r"));
+                    tmpOmniLights.push(this.reader.getFloat(omniChildren[j], "g"));
+                    tmpOmniLights.push(this.reader.getFloat(omniChildren[j], "b"));
+                    tmpOmniLights.push(this.reader.getFloat(omniChildren[j], "a"));
+                }
+
+                omniLights.push(tmpOmniLights);
+            }
+            else if (nodeNames[i] == "spot") {
+                var tmpSpotLights = [];
+
+                tmpSpotLights.push(this.reader.getString(children[i], "id"));
+                tmpSpotLights.push(this.reader.getBoolean(children[i], "enabled"));
+                tmpSpotLights.push(this.reader.getFloat(children[i], "angle"));
+                tmpSpotLights.push(this.reader.getFloat(children[i], "exponent"));
+
+                var spotChildren = children[i].children;
+
+                if (spotChildren.length != 5)
+                    return "Spot light with [id = " + this.reader.getString(children[i], "id") + "] have not all needed elements."
+
+                if (spotChildren[0].nodeName != "location")
+                    return "<" + spotChildren[0].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (spotChildren[1].nodeName != "target")
+                    return "<" + omniChildren[1].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (spotChildren[2].nodeName != "ambient")
+                    return "<" + omniChildren[2].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (spotChildren[3].nodeName != "diffuse")
+                    return "<" + omniChildren[3].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+                else if (spotChildren[4].nodeName != "specular")
+                    return "<" + omniChildren[4].nodeName + "> in light with [id = " + this.reader.getString(children[i], "id") + "] is not valid."
+
+                for (var j = 0; j < spotChildren.length - 3; j++) {
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "x"));
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "y"));
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "z"));
+
+                    if (j == 0)
+                        tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "w"));
+                }
+
+                for (var j = 2; j < spotChildren.length; j++) {
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "r"));
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "g"));
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "b"));
+                    tmpSpotLights.push(this.reader.getFloat(spotChildren[j], "a"));
+                }
+
+                spotLights.push(tmpSpotLights);
+            }
+            else
+                return "<" + nodeNames[i] + "> is not a valid type of light. Valid types: <omni> or <perspective>."
+        }
+
+        var error;
+        if ((error = this.validateLightsInfo(omniLights, spotLights)) != null)
+            return error;
+
+        //for (var i = 0; i < omniLights.length; i++)
+        //this.log(omniLights[i]);
+
+        //for (var i = 0; i < spotLights.length; i++)
+        //this.log(spotLights[i]);
+
+    }
+
+    /*
+       Validates <lights> XML information
+   */
+    validateLightsInfo(omniLights, spotLights) {
+
+        var omniDefaultValues = [
+            "unknown", false,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0
+        ];
+
+        var spotDefaultValues = [
+            "unknown", false, 60, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0
+        ];
+
+        for (var i = 0; i < omniLights.length; i++) {
+            for (var j = 0; j < omniLights[i].length; j++) {
+
+                if (j == 0 && (omniLights[i][j] == "" || omniLights[i][j] == null))
+                    return "Omni light with id not properly defined"
+                else if (j == 1 && (!(omniLights[i][j] == 1 || omniLights[i][j] == 0 || omniLights[i][j] != null))) {
+                    omniLights[i][j] = omniDefaultValues[j];
+                    this.onXMLMinorError("Omni light with [id = " + omniLights[i][0] + "] has an invalid <enabled> value. Default value has been used.");
+                }
+                else if (omniLights[i][j] == null || isNaN(omniLights[i][j]) && j != 0 && j != 1) {
+                    omniLights[i][j] = omniDefaultValues[j];
+                    this.onXMLMinorError("Omni light with [id = " + omniLights[i][0] + i + " - " + j + "] is not properly defined. Default values has been used.");
+                }
+
+            }
+        }
+
+        for (var i = 0; i < spotLights.length; i++) {
+            for (var j = 0; j < spotLights[i].length; j++) {
+
+                if (j == 0 && (spotLights[i][j] == "" || spotLights[i][j] == null))
+                    return "Spot light with id not properly defined"
+                else if (j == 1 && (!(spotLights[i][j] == 1 || spotLights[i][j] == 0 || spotLights[i][j] != null))) {
+                    spotLights[i][j] = spotDefaultValues[j];
+                    this.onXMLMinorError("Spot light with [id = " + spotLights[i][0] + "] has an invalid <enabled> value. Default value has been used.");
+                }
+                else if (spotLights[i][j] == null || isNaN(spotLights[i][j]) && j != 0 && j != 1) {
+                    spotLights[i][j] = spotDefaultValues[j];
+                    this.onXMLMinorError("Spot light with [id = " + spotLights[i][0] + "] is not properly defined. Default values has been used.");
+                }
+
+            }
+        }
+
+        var totalLights = [];
+
+        for (var i = 0; i < omniLights.length; i++) {
+            totalLights.push(omniLights[i]);
+        }
+
+        for (var i = 0; i < spotLights.length; i++) {
+            totalLights.push(spotLights[i]);
+        }
+
+        for (var i = 0; i < totalLights.length; i++) {
+            for (var j = 0; j < totalLights.length; j++) {
+                if (j != i && totalLights[i][0] == totalLights[j][0])
+                    return "Two lights are using same ID [" + totalLights[i][0] + "]"
+            }
+        }
 
     }
 

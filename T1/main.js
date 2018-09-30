@@ -12,21 +12,20 @@ function getUrlVars() {
 }	 
 
 //Include additional files here
-serialInclude(['../lib/CGF.js', 'parser.js',
+serialInclude(['../lib/CGF.js', 'parser.js', 'scene.js', 
 
 main=function()
 {
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
+    var scene = new Scene();
 
     // TODO Add the Scene and Interface
 
     // var myInterface = new MyInterface();
-    // var myScene = new XMLscene(myInterface);
 
     app.init();
-
-    //app.setScene(myScene);
+    app.setScene(scene);
     //app.setInterface(myInterface);
 
     //myInterface.setActiveCamera(myScene.camera);

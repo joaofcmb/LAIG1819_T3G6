@@ -39,9 +39,20 @@
 
     <textures>
 
-        <texsture id="textureID" file="fileNotFound" />
+        <texture id="textureID" file="fileNotFound" />
 
     </textures>
+
+    <materials>
+       
+        <material id="materialID" shininess="1.0">
+            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+        </material>
+
+    </materials>
 
 </yas>
 

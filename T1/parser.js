@@ -80,13 +80,8 @@ class Parser {
 
         // Processes each node, verifying errors.
 
-        /*
-
-        NOTE: This commented code simplifies all remaining code on this function*
-
-        var elements = ["scene", "views", "ambient", "lights", "textures"];
-        var elementsIndex = [0, 1, 2, 3, 4];
-        var parseFunctions = [this.parseScene, this.parseViews, this.parseAmbient, this.parseLights, this.parseTextures];
+        var elements = ["scene", "views", "ambient", "lights", "textures", "materials"];
+        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX];
 
         for (var i = 0; i < elements.length; i++) {
             if ((index = nodeNames.indexOf(elements[i])) == -1)
@@ -94,73 +89,23 @@ class Parser {
             else {
                 if (index != elementsIndex[i])
                     this.onXMLMinorError("tag <" + elements[i] + "> out of order");
-                
+
                 //Parse block
-                if ((error = parseFunctions[i](nodes[index])) != null)
+                if (i == SCENE_INDEX && ((error = this.parseScene(nodes[index])) != null))
+                    return error;
+                else if (i == VIEWS_INDEX && ((error = this.parseViews(nodes[index])) != null))
+                    return error;
+                else if (i == AMBIENT_INDEX && ((error = this.parseAmbient(nodes[index])) != null))
+                    return error;
+                else if (i == LIGHTS_INDEX && ((error = this.parseLights(nodes[index])) != null))
+                    return error;
+                else if (i == TEXTURES_INDEX && ((error = this.parseTextures(nodes[index])) != null))
+                    return error;
+                else if (i == MATERIALS_INDEX && ((error = this.parseMaterials(nodes[index])) != null))
                     return error;
             }
         }
-        */
 
-        // <SCENE>
-        if ((index = nodeNames.indexOf("scene")) == -1)
-            return "tag <scene> missing";
-        else {
-            if (index != SCENE_INDEX)
-                this.onXMLMinorError("tag <scene> out of order");
-
-            //Parse scene block
-            if ((error = this.parseScene(nodes[index])) != null)
-                return error;
-        }
-
-        // <VIEWS>
-        if ((index = nodeNames.indexOf("views")) == -1)
-            return "tag <views> missing";
-        else {
-            if (index != VIEWS_INDEX)
-                this.onXMLMinorError("tag <views> out of order");
-
-            //Parse view block
-            if ((error = this.parseViews(nodes[index])) != null)
-                return error;
-        }
-
-        // <AMBIENT>
-        if ((index = nodeNames.indexOf("ambient")) == -1)
-            return "tag <ambient> missing";
-        else {
-            if (index != AMBIENT_INDEX)
-                this.onXMLMinorError("tag <ambient> out of order");
-
-            //Parse ambient block
-            if ((error = this.parseAmbient(nodes[index])) != null)
-                return error;
-        }
-
-        // <LIGHTS>
-        if ((index = nodeNames.indexOf("lights")) == -1)
-            return "tag <lights> missing";
-        else {
-            if (index != LIGHTS_INDEX)
-                this.onXMLMinorError("tag <lights> out of order");
-
-            //Parse lights block
-            if ((error = this.parseLights(nodes[index])) != null)
-                return error;
-        }
-
-        // <TEXTURES>
-        if ((index = nodeNames.indexOf("textures")) == -1)
-            return "tag <textures> missing";
-        else {
-            if (index != TEXTURES_INDEX)
-                this.onXMLMinorError("tag <textures> out of order");
-
-            //Parse textures block
-            if ((error = this.parseTextures(nodes[index])) != null)
-                return error;
-        }
     }
 
     /*
@@ -579,7 +524,7 @@ class Parser {
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if(children[i].nodeName != "texture") {
+            if (children[i].nodeName != "texture") {
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <textures> node was not properly written. Do you mean <texture> ?");
                 nodeNames.push("texture");
             }
@@ -617,10 +562,100 @@ class Parser {
                 return "texture block on <textures> with [id = " + textures[i][0] + "] is not properly defined."
         }
 
-        for(var i = 0; i < textures.length; i++) {
-            for(var j = 0; j < textures.length; j++) {
-                if(i != j && textures[i][0] == textures[j][0])
+        for (var i = 0; i < textures.length; i++) {
+            for (var j = 0; j < textures.length; j++) {
+                if (i != j && textures[i][0] == textures[j][0])
                     return "There are two textures using the same id [" + textures[i][0] + "]."
+            }
+        }
+    }
+
+    /*
+        Parses the <materials> block.
+    */
+    parseMaterials(materialsNode) {
+        var children = materialsNode.children;
+
+        if (children.length < 1)
+            return "There must be at least one block of materials";
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "material") {
+                this.onXMLMinorError("<" + children[i].nodeName + "> block on <materials> node was not properly written. Do you mean <material> ?");
+                nodeNames.push("material");
+            }
+            else
+                nodeNames.push(children[i].nodeName);
+        }
+
+        var materials = [];
+        for (var i = 0; i < children.length; i++) {
+            var materialChildren = children[i].children;
+
+            if (materialChildren.length != 4)
+                return "material with [id = " + this.reader.getString(children[i], "id") + "] on <materials> have not all needed elements."
+            else if (materialChildren[0].nodeName != "emission")
+                return "<" + materialChildren[0].nodeName + "> is not a proper element of <materials>."
+            else if (materialChildren[1].nodeName != "ambient")
+                return "<" + materialChildren[1].nodeName + "> is not a proper element of <materials>."
+            else if (materialChildren[2].nodeName != "diffuse")
+                return "<" + materialChildren[2].nodeName + "> is not a proper element of <materials>."
+            else if (materialChildren[3].nodeName != "specular")
+                return "<" + materialChildren[3].nodeName + "> is not a proper element of <materials>."
+
+            var material = [
+                this.reader.getString(children[i], "id"),
+                this.reader.getFloat(children[i], "shininess"),
+            ];
+
+            for (var j = 0; j < materialChildren.length; j++) {
+                material.push(this.reader.getFloat(materialChildren[j], "r"));
+                material.push(this.reader.getFloat(materialChildren[j], "g"));
+                material.push(this.reader.getFloat(materialChildren[j], "b"));
+                material.push(this.reader.getFloat(materialChildren[j], "a"));
+            }
+
+            materials.push(material);
+        }
+
+        var error;
+        if ((error = this.validateMaterialsInfo(materials)) != null)
+            return error;
+
+        /*for (var i = 0; i < materials.length; i++) {
+            this.log(materials[i]);
+        }*/
+    }
+
+    /*
+      Validates <lights> XML information
+    */
+    validateMaterialsInfo(materials) {
+        var materialsDefaultValues = [
+            "unknown", 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0
+        ];
+
+        for (var i = 0; i < materials.length; i++) {
+            for (var j = 0; j < materials[i].length; j++) {
+
+                if (j == 0 && (materials[i][j] == "" || materials[i][j] == null))
+                    return "material block on <materials> is not properly defined."
+                else if (j != 0 && (materials[i][j] == null || isNaN(materials[i][j])))  {
+                    materials[i][j] = materialsDefaultValues[j];
+                    this.onXMLMinorError("material with [id = " + materials[i][0] + "] has an invalid value. Default value has been used.");
+                }
+            }
+        }
+
+        for (var i = 0; i < materials.length; i++) {
+            for (var j = 0; j < materials.length; j++) {
+                if (i != j && materials[i][0] == materials[j][0])
+                    return "There are two materials using the same id [" + materials[i][0] + "]."
             }
         }
     }

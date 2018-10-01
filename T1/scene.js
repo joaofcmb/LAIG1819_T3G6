@@ -38,41 +38,53 @@ class Scene extends CGFscene {
     initCameras() {
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
     }
+
     /**
      * Initializes the scene lights with the values read from the XML file.
+     *
      */
     initLights() {
-        var i = 0;
-        // Lights index.
+        var i = 0;  // Lights index.
 
-        // Reads the lights from the scene graph.
-
-        /*
-        for (var key in this.graph.lights) {
+        // Reads the lights from the data
+        for (var key in this.data.omniLights) {
             if (i >= 8)
                 break;              // Only eight lights allowed by WebGL.
 
-            if (this.graph.lights.hasOwnProperty(key)) {
-                var light = this.graph.lights[key];
-
-                //lights are predefined in cgfscene
-                this.lights[i].setPosition(light[1][0], light[1][1], light[1][2], light[1][3]);
-                this.lights[i].setAmbient(light[2][0], light[2][1], light[2][2], light[2][3]);
-                this.lights[i].setDiffuse(light[3][0], light[3][1], light[3][2], light[3][3]);
-                this.lights[i].setSpecular(light[4][0], light[4][1], light[4][2], light[4][3]);
-
-                this.lights[i].setVisible(true);
-                if (light[0])
-                    this.lights[i].enable();
-                else
-                    this.lights[i].disable();
-
-                this.lights[i].update();
-
-                i++;
-            }
+            if (this.data.omniLights.hasOwnProperty(key))
+                this.setupLight(i++, this.data.omniLights.lights[key], false);
         }
-        */
+
+        for (var key in this.data.spotLights) {
+            if (i >= 8)
+                break;              // Only eight lights allowed by WebGL.
+
+            if (this.data.spotLights.hasOwnProperty(key))
+                this.setupLight(i++, this.data.spotLights.lights[key], true);
+        }
+    }
+
+    setupLight(i, light, isSpot) {
+        //lights are predefined in cgfscene
+        this.lights[i].setPosition(light.location.x, light.location.y, light.location.z, light.location.w);
+        this.lights[i].setAmbient(light.ambient.r, light.ambient.g, light.ambient.b, light.ambient.a);
+        this.lights[i].setDiffuse(light.diffuse.r, light.diffuse.g, light.diffuse.b, light.diffuse.a);
+        this.lights[i].setSpecular(light.specular.r, light.specular.g, light.specular.b, light.specular.a);
+
+        if (isSpot) {
+            var direction = light.target.map((x, i) => x - light.direction[i]); // TODO - ensure this does what it's supposed to do
+            this.lights[i].setDirection(direction.x, direction.y, direction.z);
+
+            this.lights[i].setSpotExponent(light.exponent);
+            this.lights[i].setSpotCutOff(light.angle);
+        }
+
+        this.lights[i].setVisible(true);
+
+        if (light.enabled)  this.lights[i].enable();
+        else                this.lights[i].disable();
+
+        this.lights[i].update();
     }
 
 

@@ -44,7 +44,7 @@
     </textures>
 
     <materials>
-       
+
         <material id="materialID" shininess="1.0">
             <emission r="1.0" g="1.0" b="1.0" a="1.0" />
             <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
@@ -53,6 +53,23 @@
         </material>
 
     </materials>
+
+    <transformations>
+        
+        <transformation id="tranformationID">
+            <translate x="0.0" y="0.0" z="0.0" />
+            <rotate axis="x" angle="0" />
+            <scale x="1.0" y="1.0" z="1.0" />
+        </transformation>
+
+        <transformation id="tranformationID_2">
+            <rotate axis="x" angle="0" />
+            <translate x="0.0" y="0.0" z="0.0" />
+            <scale x="1.0" y="1.0" z="1.0" />
+            <scale x="1.0" y="1.0" z="1.0" />
+        </transformation>
+
+    </transformations>
 
 </yas>
 

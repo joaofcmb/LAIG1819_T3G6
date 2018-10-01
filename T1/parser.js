@@ -80,8 +80,8 @@ class Parser {
 
         // Processes each node, verifying errors.
 
-        var elements = ["scene", "views", "ambient", "lights", "textures", "materials"];
-        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX];
+        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations"];
+        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX];
 
         for (var i = 0; i < elements.length; i++) {
             if ((index = nodeNames.indexOf(elements[i])) == -1)
@@ -102,6 +102,8 @@ class Parser {
                 else if (i == TEXTURES_INDEX && ((error = this.parseTextures(nodes[index])) != null))
                     return error;
                 else if (i == MATERIALS_INDEX && ((error = this.parseMaterials(nodes[index])) != null))
+                    return error;
+                else if (i == TRANSFORMATIONS_INDEX && ((error = this.parseTransformations(nodes[index])) != null))
                     return error;
             }
         }
@@ -552,7 +554,7 @@ class Parser {
     }
 
     /*
-      Validates <lights> XML information
+      Validates <textures> XML information
     */
     validateTexturesInfo(textures) {
         for (var i = 0; i < textures.length; i++) {
@@ -629,7 +631,7 @@ class Parser {
     }
 
     /*
-      Validates <lights> XML information
+      Validates <materials> XML information
     */
     validateMaterialsInfo(materials) {
         var materialsDefaultValues = [
@@ -645,7 +647,7 @@ class Parser {
 
                 if (j == 0 && (materials[i][j] == "" || materials[i][j] == null))
                     return "material block on <materials> is not properly defined."
-                else if (j != 0 && (materials[i][j] == null || isNaN(materials[i][j])))  {
+                else if (j != 0 && (materials[i][j] == null || isNaN(materials[i][j]))) {
                     materials[i][j] = materialsDefaultValues[j];
                     this.onXMLMinorError("material with [id = " + materials[i][0] + "] has an invalid value. Default value has been used.");
                 }
@@ -656,6 +658,108 @@ class Parser {
             for (var j = 0; j < materials.length; j++) {
                 if (i != j && materials[i][0] == materials[j][0])
                     return "There are two materials using the same id [" + materials[i][0] + "]."
+            }
+        }
+    }
+
+    /*
+        Parses the <transformations> block.
+    */
+    parseTransformations(transformations) {
+        var children = transformations.children;
+
+        if (children.length < 1)
+            return "There must be at least one block of transformations";
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "transformation") {
+                this.onXMLMinorError("<" + children[i].nodeName + "> block on <transformations> node was not properly written. Do you mean <transformation> ?");
+                nodeNames.push("transformation");
+            }
+            else
+                nodeNames.push(children[i].nodeName);
+        }
+
+        var transformations = [];
+        for (var i = 0; i < children.length; i++) {
+            var transformation = [
+                this.reader.getString(children[i], "id")
+            ];
+
+            var transformationChildren = children[i].children;
+
+            if (transformationChildren.length < 1)
+                return "Transformation with [id =" + transformation[0] + "] must have at least one transformation."
+
+            for (var j = 0; j < transformationChildren.length; j++) {
+                var tmpTransformation = [];
+
+                if (transformationChildren[j].nodeName == "translate" || transformationChildren[j].nodeName == "scale") {
+                    tmpTransformation.push(transformationChildren[j].nodeName);
+                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "x"));
+                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "y"));
+                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "z"));
+                }
+                else if (transformationChildren[j].nodeName == "rotate") {
+                    tmpTransformation.push(transformationChildren[j].nodeName);
+                    tmpTransformation.push(this.reader.getString(transformationChildren[j], "axis"));
+                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "angle"));
+                }
+                else
+                    return "Transformation <" + transformationChildren[j].nodeName + "> not valid. Valid transformations <translate>, <rotate>, <scale>."
+
+                transformation.push(tmpTransformation);
+            }
+
+            transformations.push(transformation);
+        }
+
+        var error;
+        if ((error = this.validateTransformationsInfo(transformations)) != null)
+            return error;
+
+        /*for (var i = 0; i < transformations.length; i++) {
+            this.log(transformations[i]);
+        }*/
+    }
+
+    /*
+      Validates <transformations> XML information
+    */
+    validateTransformationsInfo(transformations) {
+        var translateDefaultValues = [0.0, 0.0, 0.0];
+        var rotateDefaultValues = ['x', 0.0];
+        var scaleDefaultValues = [1.0, 1.0, 1.0];
+
+        for (var i = 0; i < transformations.length; i++) {
+            if (transformations[i][0] == null || transformations[i][0] == "")
+                return "transformation block on <transformations> is not properly defined."
+
+            for (var j = 1; j < transformations[i].length; j++) {
+                for (var k = 1; k < transformations[i][j].length; k++) {
+                    if (transformations[i][j][0] == "rotate" && k == 1 && (transformations[i][j][k] == null || transformations[i][j][k] == "")) {
+                        transformations[i][j][k] = rotateDefaultValues[k];
+                        this.onXMLMinorError("transformation with [id = " + transformations[i][0] + "] has an invalid value on " + transformations[i][j][0] + ". Default value has been used.");
+                    }
+                    else if ((transformations[i][j][k] == null || isNaN(transformations[i][j][k])) && !(transformations[i][j][0] == "rotate" && k == 1)) {
+                        if (transformations[i][j][0] == "translate")
+                            transformations[i][j][k] = translateDefaultValues[k];
+                        else if (transformations[i][j][0] == "rotate")
+                            transformations[i][j][k] = rotateDefaultValues[k];
+                        else if (transformations[i][j][0] == "scale")
+                            transformations[i][j][k] = scaleDefaultValues[k];
+
+                        this.onXMLMinorError("transformation with [id = " + transformations[i][0] + "] has an invalid value on " + transformations[i][j][0] + ". Default value has been used.");
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < transformations.length; i++) {
+            for (var j = 0; j < transformations.length; j++) {
+                if (i != j && transformations[i][0] == transformations[j][0])
+                    return "There are two transformations using the same id [" + transformations[i][0] + "]."
             }
         }
     }

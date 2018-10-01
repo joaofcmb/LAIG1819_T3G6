@@ -4,8 +4,9 @@ var DEGREE_TO_RAD = Math.PI / 180;
  * XMLscene class, representing the scene that is to be rendered.
  */
 class Scene extends CGFscene {
-    constructor() {
+    constructor(data) {
         super();
+        this.data = data;
 
         this.lightValues = {};
     }
@@ -78,15 +79,17 @@ class Scene extends CGFscene {
     /* Handler called when the graph is finally loaded. 
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
-    onGraphLoaded() {
-        this.camera.near = this.graph.near;
-        this.camera.far = this.graph.far;
+    onDataLoaded() {
+        //this.camera.near = this.graph.near;
+        //this.camera.far = this.graph.far;
 
         //TODO: Change reference length according to parsed graph
-        //this.axis = new CGFaxis(this, this.graph.referenceLength);
+        this.axis = new CGFaxis(this, this.data.axisLength);
 
         // TODO: Change ambient and background details according to parsed graph
+        this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
 
+        this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
         this.initLights();
 
         // TODO Adds lights group.

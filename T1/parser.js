@@ -13,12 +13,12 @@ var COMPONENTS_INDEX = 8;
 
 class Parser {
 
-    constructor(filename) {
+    constructor(filename, data, scene) {
 
         this.loadedOk = null;
 
         // Establish bidirectional references between scene and graph.
-        //this.scene = scene;
+        this.scene = scene;
         //scene.graph = this;
 
         //this.nodes = [];
@@ -59,8 +59,8 @@ class Parser {
 
         this.loadedOk = true;
 
-        // As the graph loaded ok, signal the scene so that any additional initialization depending on the graph can take place
-        //this.scene.onGraphLoaded();
+        // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
+        this.scene.onDataLoaded();
     }
 
     parseXMLFile(rootElement) {

@@ -30,6 +30,10 @@ class Scene extends CGFscene {
         this.gl.depthFunc(this.gl.LEQUAL);
 
         this.axis = new CGFaxis(this);
+
+        // Adds primitives (most likely temporary)
+        this.cylinder = new MyCylinder(this, 8, 8);
+        this.sphere = new MySphere(this, 1, 8, 8);
     }
 
     /**
@@ -52,7 +56,7 @@ class Scene extends CGFscene {
                 break;              // Only eight lights allowed by WebGL.
 
             if (this.data.omniLights.hasOwnProperty(key))
-                this.setupLight(i++, this.data.omniLights.lights[key], false);
+                this.setupLight(i++, this.data.omniLights[key], false);
         }
 
         for (var key in this.data.spotLights) {
@@ -60,7 +64,7 @@ class Scene extends CGFscene {
                 break;              // Only eight lights allowed by WebGL.
 
             if (this.data.spotLights.hasOwnProperty(key))
-                this.setupLight(i++, this.data.spotLights.lights[key], true);
+                this.setupLight(i++, this.data.spotLights[key], true);
         }
     }
 
@@ -131,34 +135,39 @@ class Scene extends CGFscene {
 
         this.pushMatrix();
 
-        // Draw axis
-        this.axis.display();
+            // Draw axis
+            this.axis.display();
 
-        if (this.sceneInited) {
-            // TODO Handle Lights
-            /*
-            var i = 0;
-            for (var key in this.lightValues) {
-                if (this.lightValues.hasOwnProperty(key)) {
-                    if (this.lightValues[key]) {
-                        this.lights[i].setVisible(true);
-                        this.lights[i].enable();
+            if (this.sceneInited) {
+                // TODO Handle Lights
+                this.lights[0].update();
+
+                /*
+                var i = 0;
+                for (var key in this.lightValues) {
+                    if (this.lightValues.hasOwnProperty(key)) {
+                        if (this.lightValues[key]) {
+                            this.lights[i].setVisible(true);
+                            this.lights[i].enable();
+                        }
+                        else {
+                            this.lights[i].setVisible(false);
+                            this.lights[i].disable();
+                        }
+                        this.lights[i].update();
+                        i++;
                     }
-                    else {
-                        this.lights[i].setVisible(false);
-                        this.lights[i].disable();
-                    }
-                    this.lights[i].update();
-                    i++;
                 }
-            }
-            */
+                */
 
-            // TODO Displays the scene (MySceneGraph function)
-        }
+                // TODO Displays the scene (MySceneGraph function)
+            }
         
         this.popMatrix();
 
         // ---- END Background, camera and axis setup
+
+        // Temporary Primitive draw
+        this.sphere.display();
     }
 }

@@ -12,8 +12,8 @@ class Data {
         this.orthoDefault =
         {
             id: "no-def", 
-            near: 0.1, far: 100.0,
-            
+            near: 0.1, far: 1000.0,
+
             left: 1.0, right: 1.0, top: 1.0, bottom: 1.0 // 0 fov??? how to scale camera depending on values
         };
 
@@ -39,11 +39,11 @@ class Data {
         this.omniDefault = 
         {    
             id: "no-def", enabled: "true", 
-            location: {x: 0.0, y: 0.0, z: 100.0, w: 1.0}, 
+            location: {x: 0.0, y: 0.0, z: 10.0, w: 0.0}, 
 
-            ambient: {r: 1.0, g: 1.0, b: 1.0, a: 1.0},
-            diffuse: {r: 1.0, g: 1.0, b: 1.0, a: 1.0},
-            specular: {r: 1.0, g: 1.0, b: 1.0, a: 1.0},
+            ambient: {r: 0.2, g: 0.2, b: 0.2, a: 1.0},
+            diffuse: {r: 0.5, g: 0.5, b: 0.5, a: 1.0},
+            specular: {r: 0.3, g: 0.3, b: 0.3, a: 1.0},
         };
         
         this.spotDefault = 
@@ -56,6 +56,8 @@ class Data {
             diffuse: {r: 1.0, g: 1.0, b: 1.0, a: 1.0},
             specular: {r: 1.0, g: 1.0, b: 1.0, a: 1.0},
         };
+
+        this.omniLights.push(this.omniDefault);// temp stuff
 
         // TEXTURES  - TODO
 

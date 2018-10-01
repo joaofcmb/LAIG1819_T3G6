@@ -12,7 +12,7 @@ function getUrlVars() {
 }	 
 
 //Include additional files here
-serialInclude(['../lib/CGF.js', 'parser.js', 'scene.js', 'data.js',
+serialInclude(['../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', './primitives/MyCylinder.js', './primitives/MySphere.js', './primitives/MyCircle.js',
 
 main=function()
 {
@@ -20,12 +20,12 @@ main=function()
     var app = new CGFapplication(document.body);
     var data = new Data();
     var scene = new Scene(data);
-    // var myInterface = new MyInterface();
+    var interface = new CGFinterface();
 
     app.init();
     app.setScene(scene);
-    //app.setInterface(myInterface);
-    //myInterface.setActiveCamera(myScene.camera);
+    app.setInterface(interface);
+    interface.setActiveCamera(scene.camera);
 
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 

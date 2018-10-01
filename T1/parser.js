@@ -19,6 +19,7 @@ class Parser {
 
         // Establish bidirectional references between scene and graph.
         this.scene = scene;
+        this.data = data;
         //scene.graph = this;
 
         //this.nodes = [];
@@ -114,20 +115,20 @@ class Parser {
         Parses the <scene> block.
     */
     parseScene(sceneNode) {
-        var root = this.reader.getString(sceneNode, "root");
-        var axisLength = this.reader.getFloat(sceneNode, "axis_length");
+        this.data.root = this.reader.getString(sceneNode, "root");
+        this.data.axisLength = this.reader.getFloat(sceneNode, "axis_length");
 
-        if (root == null)
+        if (this.data.root == null)
             return "root element in <scene> must be defined in order to parse XML file"
-        else if (root == "")
+        else if (this.data.root == "")
             return "root element in <scene> must have a proper name."
 
-        if (axisLength == null || isNaN(axisLength)) {
-            axisLength = 0;
+        if (this.data.axisLength == null || isNaN(this.data.axisLength)) {
+            this.data.axisLength = 0;
             this.onXMLMinorError("axis_length element missing on <scene>; using 0 as default value");
         }
 
-        //this.log(root + " - " + axisLength);
+        //this.log(this.data.root + " - " + this.data.axisLength);
     }
 
     /*
@@ -291,13 +292,7 @@ class Parser {
         else if (nodeNames[1] != "background")
             return "<" + nodeNames[1] + "> in ambient is not valid."
 
-        var ambient = [];
-        var background = [];
-
-        this.validateAmbientInfo(children, ambient, background);
-
-        //for (var i = 0; i < ambient.length; i++)
-        //this.log(ambient[i] + " - " + background[i]);
+        this.validateAmbientInfo(children);
     }
 
     /*
@@ -327,8 +322,8 @@ class Parser {
             }
         }
 
-        ambient.push(properValues[0]); ambient.push(properValues[1]); ambient.push(properValues[2]); ambient.push(properValues[3]);
-        background.push(properValues[4]); background.push(properValues[5]); background.push(properValues[6]); background.push(properValues[7]);
+        this.data.ambient.r = properValues[0]; this.data.ambient.g = properValues[1]; this.data.ambient.b = properValues[2]; this.data.ambient.a = properValues[3];
+        this.data.background.r = properValues[4]; this.data.background.g = properValues[5]; this.data.background.b = properValues[6]; this.data.background.a = properValues[7];
     }
 
     /*

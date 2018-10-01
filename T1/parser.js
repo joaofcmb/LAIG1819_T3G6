@@ -13,6 +13,9 @@ var COMPONENTS_INDEX = 8;
 
 class Parser {
 
+    /**
+     * @constructor
+     */
     constructor(filename, data, scene) {
 
         this.loadedOk = null;
@@ -81,8 +84,8 @@ class Parser {
 
         // Processes each node, verifying errors.
 
-        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations"];
-        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX];
+        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations", "primitives"];
+        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX];
 
         for (var i = 0; i < elements.length; i++) {
             if ((index = nodeNames.indexOf(elements[i])) == -1)
@@ -105,6 +108,8 @@ class Parser {
                 else if (i == MATERIALS_INDEX && ((error = this.parseMaterials(nodes[index])) != null))
                     return error;
                 else if (i == TRANSFORMATIONS_INDEX && ((error = this.parseTransformations(nodes[index])) != null))
+                    return error;
+                else if (i == PRIMITIVES_INDEX && ((error = this.parsePrimitives(nodes[index])) != null))
                     return error;
             }
         }
@@ -760,9 +765,117 @@ class Parser {
     }
 
     /*
-   * Callback to be executed on any read error, showing an error on the console.
-   * @param {string} message
-   */
+       Parses the <primitives> block.
+    */
+    parsePrimitives(primitives) {
+        var children = primitives.children;
+
+        if (children.length < 1)
+            return "There must be at least one block of primitives";
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "primitive") {
+                this.onXMLMinorError("<" + children[i].nodeName + "> block on <primitives> node was not properly written. Do you mean <primitive> ?");
+                nodeNames.push("primitive");
+            }
+            else
+                nodeNames.push(children[i].nodeName);
+        }
+
+        var primitives = [];
+
+        for (var i = 0; i < children.length; i++) {
+            var primitveChildren = children[i].children;
+
+            if (primitveChildren.length != 1)
+                return "There must exist only one tag per primitive. Available tags: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
+
+            var primitive = new Object();
+            primitive.type = primitveChildren[0].nodeName;
+            primitive.id = this.reader.getString(children[i], "id");
+
+            if (primitveChildren[0].nodeName == "rectangle") {
+                primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1");
+                primitive.x2 = this.reader.getFloat(primitveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitveChildren[0], "y2");
+            }
+            else if (primitveChildren[0].nodeName == "triangle") {
+                primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1"); primitive.z1 = this.reader.getFloat(primitveChildren[0], "z1");
+                primitive.x2 = this.reader.getFloat(primitveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitveChildren[0], "y2"); primitive.z2 = this.reader.getFloat(primitveChildren[0], "z2");
+                primitive.x3 = this.reader.getFloat(primitveChildren[0], "x3"); primitive.y3 = this.reader.getFloat(primitveChildren[0], "y3"); primitive.z3 = this.reader.getFloat(primitveChildren[0], "z3");
+            }
+            else if (primitveChildren[0].nodeName == "cylinder") {
+                primitive.base = this.reader.getFloat(primitveChildren[0], "base"); primitive.top = this.reader.getFloat(primitveChildren[0], "top");
+                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitveChildren[0], "stacks");
+            }
+            else if (primitveChildren[0].nodeName == "shpere") {
+                primitive.radius = this.reader.getFloat(primitveChildren[0], "radius");
+                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitveChildren[0], "stacks");
+            }
+            else if (primitveChildren[0].nodeName == "torus") {
+                primitive.inner = this.reader.getFloat(primitveChildren[0], "inner"); primitive.outer = this.reader.getFloat(primitveChildren[0], "outer");
+                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.loops = this.reader.getInteger(primitveChildren[0], "loops");
+            }
+            else
+                return "Primitive <" + primitveChildren[0].nodeName + "> not valid. Valid transformations <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
+
+            primitives.push(primitive);
+        }
+
+        var error;
+        if ((error = this.validatePrimitivesInfo(primitives)) != null)
+            return error;
+    }
+
+    /*
+      Validates <primitives> XML information
+    */
+    validatePrimitivesInfo(primitives) {
+        var rectangleDefaultValues = { x1: 1.0, y1: 1.0, x2: 1.0, y2: 1.0 };
+        var triangleDefaultValues = {
+            x1: 1.0, y1: 1.0, z1: 1.0,
+            x2: 1.0, y2: 1.0, z2: 1.0,
+            x3: 1.0, y3: 1.0, z3: 1.0
+        };
+        var cylinderDefaultValues = { base: 1.0, top: 1.0, height: 1.0, slices: 1, stacks: 1 };
+        var sphereDefaultValues = { radius: 1.0, slices: 1, stacks: 1 };
+        var torusDefaultValues = { inner: 1.0, outer: 1.0, slices: 1, loops: 1 };
+
+        for (var i = 0; i < primitives.length; i++) {
+            for (var key in primitives[i]) {
+                if (primitives[i].hasOwnProperty(key)) {
+                    if (key == "id" && (primitives[i][key] == null || primitives[i][key] == ""))
+                        return "primitive block on <primitives> is not properly defined."
+                    else if (key != "type" && key != "id" && (primitives[i][key] == null || isNaN(primitives[i][key]))) {
+                        if (primitives[i].type == "rectangle")
+                            primitives[i][key] == rectangleDefaultValues.key;
+                        else if (primitives[i].type == "triangle")
+                            primitives[i][key] == triangleDefaultValues.key;
+                        else if (primitives[i].type == "cylinder")
+                            primitives[i][key] == cylinderDefaultValues.key;
+                        else if (primitives[i].type == "sphere")
+                            primitives[i][key] == sphereDefaultValues.key;
+                        else if (primitives[i].type == "torus")
+                            primitives[i][key] == torusDefaultValues.key;
+
+                        this.onXMLMinorError("primitive with [id = " + primitives[i].id + "] has an invalid value on " + key + ". Default value has been used.");
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < primitives.length; i++) {
+            for (var j = 0; j < primitives.length; j++) {
+                if (i != j && primitives[i].id == primitives[j].id)
+                    return "There are two primitives using the same id [" + primitives[i].id + "]."
+            }
+        }
+    }
+
+    /*
+    * Callback to be executed on any read error, showing an error on the console.
+    * @param {string} message
+    */
     onXMLError(message) {
         console.error("XML Loading Error: " + message);
         this.loadedOk = false;

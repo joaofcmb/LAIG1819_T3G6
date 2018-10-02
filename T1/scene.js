@@ -36,6 +36,7 @@ class Scene extends CGFscene {
         this.triangle = new MyTriangle(this, -0.5, 0, 0, 0.5, 0, 0, 0, 1, 1);
         this.cylinder = new MyCylinder(this, 0.5, 1.5, 1.5, 8, 8);
         this.sphere = new MySphere(this, 1, 8, 8);
+        this.torus = new MyTorus(this, .5, 1.5, 6, 8)
     }
 
     /**
@@ -170,6 +171,6 @@ class Scene extends CGFscene {
         // ---- END Background, camera and axis setup
 
         // Temporary Primitive draw
-        this.rectangle.display();
+        this.torus.display();
     }
 }

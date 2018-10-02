@@ -72,11 +72,12 @@ class Scene extends CGFscene {
 
     setupLight(i, light, isSpot) {
         //lights are predefined in cgfscene
-        this.lights[i].setPosition(light.location.x, light.location.y, light.location.z, light.location.w);
-        this.lights[i].setAmbient(light.ambient.r, light.ambient.g, light.ambient.b, light.ambient.a);
-        this.lights[i].setDiffuse(light.diffuse.r, light.diffuse.g, light.diffuse.b, light.diffuse.a);
-        this.lights[i].setSpecular(light.specular.r, light.specular.g, light.specular.b, light.specular.a);
+        this.lights[i].setPosition(light.locationX, light.locationY, light.locationZ, light.locationW);
+        this.lights[i].setAmbient(light.ambientR, light.ambientG, light.ambientB, light.ambientA);
+        this.lights[i].setDiffuse(light.diffuseR, light.diffuseG, light.diffuseB, light.diffuseA);
+        this.lights[i].setSpecular(light.specularR, light.specularG, light.specularB, light.specularA);
 
+        /*
         if (isSpot) {
             var direction = light.target.map((x, i) => x - light.direction[i]); // TODO - ensure this does what it's supposed to do
             this.lights[i].setDirection(direction.x, direction.y, direction.z);
@@ -84,7 +85,8 @@ class Scene extends CGFscene {
             this.lights[i].setSpotExponent(light.exponent);
             this.lights[i].setSpotCutOff(light.angle);
         }
-
+        */
+       
         this.lights[i].setVisible(true);
 
         if (light.enabled)  this.lights[i].enable();

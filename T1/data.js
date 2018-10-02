@@ -5,7 +5,7 @@ class Data {
         this.axisLength = 1;        // TODO - Apply to scene
 
         // VIEWS - TODO figure out how the cameras are supposed to be added
-        this.orthoCams = [];
+        this.orthoCams = new Object();
         this.perspectiveCams = new Object();
 
         // TODO - figure out unknown default values

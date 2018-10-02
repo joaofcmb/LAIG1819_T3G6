@@ -132,8 +132,6 @@ class Parser {
             this.data.axisLength = 0;
             this.onXMLMinorError("axis_length element missing on <scene>; using 0 as default value");
         }
-
-        //this.log(this.data.root + " - " + this.data.axisLength);
     }
 
     /*
@@ -155,126 +153,93 @@ class Parser {
         for (var i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
 
-        var perspectiveViews = [];
-        var orthoViews = [];
-
         for (var i = 0; i < children.length; i++) {
+            var cam = new Object();
+
+            var camID = this.reader.getString(children[i], "id");
+            cam.near = this.reader.getFloat(children[i], "near");
+            cam.far = this.reader.getFloat(children[i], "far");
 
             if (nodeNames[i] == "perspective") {
-                var perspective = [
-                    this.reader.getString(children[i], "id"),
-                    this.reader.getFloat(children[i], "near"),
-                    this.reader.getFloat(children[i], "far"),
-                    this.reader.getFloat(children[i], "angle"),
-                ];
+                cam.angle = this.reader.getFloat(children[i], "angle");
 
                 var perspectiveChildren = children[i].children;
 
                 if (perspectiveChildren.length != 2)
                     return "Perspective view with [id = " + perspective[0] + "] must have only two children."
                 else if (perspectiveChildren[0].nodeName != "from")
-                    return "<" + perspectiveChildren[0].nodeName + "> invalid children of perspective view with [id = " + perspective[0] + "]."
+                    return "<" + perspectiveChildren[0].nodeName + "> invalid children of perspective view with [id = " + camID + "]."
                 else if (perspectiveChildren[1].nodeName != "to")
-                    return "<" + perspectiveChildren[1].nodeName + "> invalid children of perspective view with [id = " + perspective[0] + "]."
+                    return "<" + perspectiveChildren[1].nodeName + "> invalid children of perspective view with [id = " + camID + "]."
                 else {
-                    perspective.push(this.reader.getString(perspectiveChildren[0], "x"));
-                    perspective.push(this.reader.getString(perspectiveChildren[0], "y"));
-                    perspective.push(this.reader.getString(perspectiveChildren[0], "z"));
-                    perspective.push(this.reader.getString(perspectiveChildren[1], "x"));
-                    perspective.push(this.reader.getString(perspectiveChildren[1], "y"));
-                    perspective.push(this.reader.getString(perspectiveChildren[1], "z"));
+                    cam.fromX = this.reader.getFloat(perspectiveChildren[0], "x"); cam.fromY = this.reader.getFloat(perspectiveChildren[0], "y"); cam.fromZ = this.reader.getFloat(perspectiveChildren[0], "z");
+                    cam.toX = this.reader.getFloat(perspectiveChildren[1], "x"); cam.toY = this.reader.getFloat(perspectiveChildren[1], "y"); cam.toZ = this.reader.getFloat(perspectiveChildren[1], "z");
                 }
-                perspectiveViews.push(perspective);
+
+                this.data.perspectiveCams[camID] = cam;
             }
             else if (nodeNames[i] == "ortho") {
+                cam.left = this.reader.getFloat(children[i], "left");
+                cam.right = this.reader.getFloat(children[i], "right");
+                cam.top = this.reader.getFloat(children[i], "top");
+                cam.bottom = this.reader.getFloat(children[i], "bottom");
 
-                var ortho = [
-                    this.reader.getString(children[i], "id"),
-                    this.reader.getFloat(children[i], "near"),
-                    this.reader.getFloat(children[i], "far"),
-                    this.reader.getFloat(children[i], "left"),
-                    this.reader.getFloat(children[i], "right"),
-                    this.reader.getFloat(children[i], "top"),
-                    this.reader.getFloat(children[i], "bottom"),
-                ];
-                orthoViews.push(ortho);
+                this.data.orthoCams[camID] = cam;
             }
             else
                 return "<" + nodeNames[i] + "> is not a valid type of view. Valid types: <perspective> or <ortho>."
-
         }
 
         var error;
-        if ((error = this.validateViewsInfo(perspectiveViews, orthoViews)) != null)
+        if ((error = this.validateViewsInfo()) != null)
             return error;
-
-        /*
-    for (var i = 0; i < perspectiveViews.length; i++) {
-        this.log(perspectiveViews[i]);
-    }
-
-    for (var i = 0; i < orthoViews.length; i++) {
-        this.log(orthoViews[i]);
-    }
-*/
     }
 
     /*
         Validates <views> XML information
     */
-    validateViewsInfo(perspectiveViews, orthoViews) {
-        var perspectiveDefaultValues = [
-            "unknown", 0.1, 1000.0, 60.0,
-            15.0, 15.0, 15.0,
-            0.0, 0.0, 0.0
-        ];
+    validateViewsInfo() {
+        var totalCams = [];
 
-        var orthoDefaultValues = [
-            "unknown", 0.1, 1000.0, 0.0,
-            0.0, 0.0, 0.0
-        ];
+        for (var firstKey in this.data.perspectiveCams) {
+            if (this.data.perspectiveCams.hasOwnProperty(firstKey)) {
+                if (firstKey == "" || firstKey == null)
+                    return "Perspective view with id not properly defined.";
+                else
+                    totalCams.push(firstKey);
 
-        for (var i = 0; i < perspectiveViews.length; i++) {
-            for (var j = 0; j < perspectiveViews[i].length; j++) {
-                if ((j == 0) && ((perspectiveViews[i][j] == "") || perspectiveViews[i][j] == null)) {
-                    return "Perspective view with id not properly defined"
-                }
-                else {
-                    if (perspectiveViews[i][j] == null || isNaN(perspectiveViews[i][j]) && j != 0) {
-                        perspectiveViews[i][j] = perspectiveDefaultValues[j];
-                        this.onXMLMinorError("Perspective view with [id = " + perspectiveViews[i][0] + "] is not properly defined. Default values has been used.");
+                for (var secondKey in this.data.perspectiveCams[firstKey]) {
+                    if (this.data.perspectiveCams[firstKey].hasOwnProperty(secondKey)) {
+                        if (this.data.perspectiveCams[firstKey][secondKey] == null || isNaN(this.data.perspectiveCams[firstKey][secondKey])) {
+                            this.data.perspectiveCams[firstKey][secondKey] = this.data.perspectiveDefault[secondKey];
+                            this.onXMLMinorError("Perspective view with [id = " + firstKey + "] is not properly defined. Default values has been used.");
+                        }
                     }
                 }
             }
         }
 
-        for (var i = 0; i < orthoViews.length; i++) {
-            for (var j = 0; j < orthoViews.length; j++) {
-                if ((j == 0) && ((orthoViews[i][j] == "") || orthoViews[i][j] == null))
-                    return "Ortho view with id not properly defined"
-                else {
-                    if (orthoViews[i][j] == null || isNaN(orthoViews[i][j]) && j != 0) {
-                        orthoViews[i][j] = orthoDefaultValues[j];
-                        this.onXMLMinorError("Ortho view with [id = " + orthoViews[i][0] + "] is not properly defined. Default values has been used.");
+        for (var firstKey in this.data.orthoCams) {
+            if (this.data.orthoCams.hasOwnProperty(firstKey)) {
+                if (firstKey == "" || firstKey == null)
+                    return "Perspective view with id not properly defined.";
+                else
+                    totalCams.push(firstKey);
+                for (var secondKey in this.data.orthoCams[firstKey]) {
+                    if (this.data.orthoCams[firstKey].hasOwnProperty(secondKey)) {
+                        if (this.data.orthoCams[firstKey][secondKey] == null || isNaN(this.data.orthoCams[firstKey][secondKey])) {
+                            this.data.orthoCams[firstKey][secondKey] = this.data.orthoDefault[secondKey];
+                            this.onXMLMinorError("Perspective view with [id = " + firstKey + "] is not properly defined. Default values has been used.");
+                        }
                     }
                 }
             }
         }
 
-        var totalViews = [];
-
-        for (var i = 0; i < perspectiveViews.length; i++) {
-            totalViews.push(perspectiveViews[i]);
-        }
-
-        for (var i = 0; i < orthoViews.length; i++) {
-            totalViews.push(orthoViews[i]);
-        }
-
-        for (var i = 0; i < totalViews.length; i++) {
-            for (var j = 0; j < totalViews.length; j++) {
-                if (j != i && totalViews[i][0] == totalViews[j][0])
-                    return "Two views are using same ID [" + totalViews[i][0] + "]"
+        for (var i = 0; i < totalCams.length; i++) {
+            for (var j = 0; j < totalCams.length; j++) {
+                if (j != i && totalCams[i] == totalCams[j])
+                    return "Two views are using same ID [" + totalCams[i] + "]"
             }
         }
     }

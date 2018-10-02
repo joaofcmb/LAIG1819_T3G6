@@ -1,5 +1,5 @@
 /**
- * MyQuad
+ * MyCylinder
  * @constructor
  */
 class MyCylinder extends CGFobject

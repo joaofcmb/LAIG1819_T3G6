@@ -6,12 +6,11 @@ class Data {
 
         // VIEWS - TODO figure out how the cameras are supposed to be added
         this.orthoCams = [];
-        this.perspectiveCams = [];
+        this.perspectiveCams = new Object();
 
         // TODO - figure out unknown default values
         this.orthoDefault =
         {
-            id: "no-def", 
             near: 0.1, far: 1000.0,
 
             left: 1.0, right: 1.0, top: 1.0, bottom: 1.0 // 0 fov??? how to scale camera depending on values
@@ -19,11 +18,9 @@ class Data {
 
         this.perspectiveDefault =
         {
-            id: "no-def", 
             near: 0.1, far: 100.0, angle: "?", // default fov is 0.4 (out of 180 degrees ???)
-            
-            from: {x: 15, y: 15, z: 15},
-            to:   {x: 0, y: 0, z: 0}
+            fromX: 15, fromY: 15, fromZ: 15,
+            toX: 0, toY: 0, toZ: 0
         };
 
 

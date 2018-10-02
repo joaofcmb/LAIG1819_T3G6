@@ -14,8 +14,8 @@
     </views>
 
     <ambient>
-        <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-        <background r="0.0" g="0.0" b="0.0" a="1.0" />
+        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+        <background r="0.7" g="0.9" b="0.96" a="1.0" />
     </ambient>
 
     <lights>
@@ -25,6 +25,13 @@
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
             <specular r="0.3" g="0.3" b="0.3" a="1.0" />
+        </omni>
+
+        <omni id="omniID_1" enabled="true">
+            <location x="5.0" y="5.0" z="5.0" w="1.0" />
+            <ambient r="0" g="0" b="0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </omni>
 
         <!-- <spot id="spotID" enabled="true" angle="60" exponent="1.0">

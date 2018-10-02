@@ -4,14 +4,18 @@
  */
 class MyCylinder extends CGFobject
 {
-	constructor(scene, slices, stacks) 
+	constructor(scene, base, top, height, slices, stacks) 
 	{
 		super(scene);
 
+		this.base = base;
+		this.top = top;
+		this.height = height
 		this.slices = slices;
 		this.stacks = stacks;
 
-		this.base = new MyCircle(scene, slices);
+		this.baseCircle = new MyCircle(scene, base, slices);
+		this.topCircle = new MyCircle(scene, top, slices);
 
 		this.initBuffers();
 	};
@@ -24,10 +28,11 @@ class MyCylinder extends CGFobject
 		this.texCoords = [];
 
 		var angle = 2* Math.PI / this.slices;
+		var dR = (this.top - this.base) / this.stacks;
 
 		for (var i = 0; i < this.stacks + 1; i++) {
 			for (var j = 0; j < this.slices; j++) {
-				this.vertices.push(Math.cos(angle * j), Math.sin(angle * j), 0 + i/this.stacks);
+				this.vertices.push(Math.cos(angle * j) * (this.base + i * dR), Math.sin(angle * j) * (this.base + i * dR), this.height * i/this.stacks);
 				this.texCoords.push(j/this.slices, i/this.stacks);
 			}
 		}
@@ -89,10 +94,10 @@ class MyCylinder extends CGFobject
 		super.display();
 		this.scene.pushMatrix();
 			this.scene.rotate(Math.PI, 1, 0, 0);
-			this.base.display();
+			this.baseCircle.display();
 		this.scene.popMatrix();		
 
-		this.scene.translate(0, 0, 1); 
-		this.base.display();
+		this.scene.translate(0, 0, this.height); 
+		this.topCircle.display();
 	};
 };

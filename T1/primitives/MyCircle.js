@@ -1,10 +1,11 @@
 
 class MyCircle extends CGFobject
 {
-	constructor(scene, slices)
+	constructor(scene, base, slices)
 	{
 		super(scene);
 
+		this.base = base;
 		this.slices = slices;
 		this.initBuffers();
 	};
@@ -20,7 +21,7 @@ class MyCircle extends CGFobject
 		var angle = 2* Math.PI / this.slices;
 
 		for (var j = 0; j < this.slices; j++) {
-			this.vertices.push(Math.cos(angle * j), Math.sin(angle * j), 0);
+			this.vertices.push(Math.cos(angle * j) * this.base, Math.sin(angle * j) * this.base, 0);
 			this.texCoords.push((Math.cos(angle * j)+1)/2, (1-(Math.sin(angle * j)+1)/2));
 			this.normals.push(0,0,1);
 		}

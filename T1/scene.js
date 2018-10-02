@@ -78,7 +78,7 @@ class Scene extends CGFscene {
         this.lights[i].setDiffuse(light.diffuseR, light.diffuseG, light.diffuseB, light.diffuseA);
         this.lights[i].setSpecular(light.specularR, light.specularG, light.specularB, light.specularA);
 
-        /*
+        /* TODO
         if (isSpot) {
             var direction = light.target.map((x, i) => x - light.direction[i]); // TODO - ensure this does what it's supposed to do
             this.lights[i].setDirection(direction.x, direction.y, direction.z);

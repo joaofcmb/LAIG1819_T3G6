@@ -33,13 +33,12 @@ class MyTorus extends CGFobject
                 var totalR = this.inner + radius + radius * Math.cos(subAngle * j);
 
                 this.vertices.push(totalR * Math.cos(mainAngle * i), totalR* Math.sin(mainAngle * i), radius * Math.sin(subAngle * j));
-                this.normals.push(Math.cos(mainAngle * i), Math.sin(mainAngle * i), Math.sin(subAngle * j));
+                this.normals.push(Math.cos(mainAngle * i), Math.sin(mainAngle * i), Math.sin(subAngle * j)); // TODO debug normals (not proper)
 				this.texCoords.push(j / this.loops, i / this.slices);
 			}
         }
 
 		// DRAW INDICES ------------
-
 		this.indices = [];
 		
 		for (var i = 0; i < this.slices; i++) {

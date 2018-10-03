@@ -33,6 +33,7 @@ class Data {
         this.omniDefault = {    
             enabled: true, 
             locationX: 0.0, locationY: 0.0, locationZ: 0.0, locationW: 0.0, 
+
             ambientR: 0.2, ambientG: 0.2, ambientB: 0.2, ambientA: 1.0, 
             diffuseR: 0.5, diffuseG: 0.5, diffuseB: 0.5, diffuseA: 1.0, 
             specularR: 0.3, specularG: 0.3, specularB: 0.3, specularA: 1.0
@@ -42,17 +43,26 @@ class Data {
             enabled: true, angle: 60, exponent: 1.0,
             locationX: 0.0, locationY: 0.0, locationZ: 0.0, locationW: 0.0, 
             targetX: 0.0, targetY: 0.0, targetZ: 0.0, 
+
             ambientR: 0.2, ambientG: 0.2, ambientB: 0.2, ambientA: 1.0, 
             diffuseR: 0.5, diffuseG: 0.5, diffuseB: 0.5, diffuseA: 1.0, 
             specularR: 0.3, specularG: 0.3, specularB: 0.3, specularA: 1.0
         };
 
 
-        // TEXTURES  - TODO
+        // TEXTURES  - TODO Test the Textures
+        this.textures = new Object(); // associative array of ID -> file
 
+        // MATERIALS  - TODO Test the Materials
+        this.materials = new Object();
 
-        // MATERIALS  - TODO
-
+        this.materialDefault = {
+            shininess: 0,
+            emissionX: 0, emissionY: 0, emissionZ: 0,
+            ambientX: 0.3, ambientY: 0.3, ambientZ: 0.3,
+            diffuseX: 0.5, diffuseY: 0.5, diffuseZ: 0.5,
+            specularX: 0.2, specularY: 0.2, specularZ: 0.2,
+        }
 
         // TRANSFORMATIONS - TODO
 

@@ -58,10 +58,10 @@ class Data {
 
         this.materialDefault = {
             shininess: 0,
-            emissionX: 0, emissionY: 0, emissionZ: 0,
-            ambientX: 0.3, ambientY: 0.3, ambientZ: 0.3,
-            diffuseX: 0.5, diffuseY: 0.5, diffuseZ: 0.5,
-            specularX: 0.2, specularY: 0.2, specularZ: 0.2,
+            emissionR: 0, emissionG: 0, emissionB: 0, emissionA: 1.0,
+            ambientR: 0.3, ambientG: 0.3, ambientB: 0.3, ambientA: 1.0,
+            diffuseR: 0.5, diffuseG: 0.5, diffuseB: 0.5, diffuseA: 1.0,
+            specularR: 0.2, specularG: 0.2, specularB: 0.2, specularA: 1.0
         }
 
         // TRANSFORMATIONS - TODO

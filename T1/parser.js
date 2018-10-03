@@ -141,6 +141,7 @@ class Parser {
         Parses the <views> block.
     */
     parseViews(viewsNode) {
+        var error;
         var viewsDefault = this.reader.getString(viewsNode, "default");
         if (viewsDefault == null)
             return "default element in <views> must be defined in order to parse XML file"
@@ -156,6 +157,9 @@ class Parser {
         for (var i = 0; i < children.length; i++)
             nodeNames.push(children[i].nodeName);
 
+        if ((error = this.checkRepeatedIDs(children, "views")) != null)
+            return error;
+
         for (var i = 0; i < children.length; i++) {
             var cam = new Object();
 
@@ -164,6 +168,9 @@ class Parser {
             cam.far = this.reader.getFloat(children[i], "far");
 
             if (nodeNames[i] == "perspective") {
+                if (camID == null || camID == "")
+                    return "Perspective view with id not properly defined.";
+
                 cam.angle = this.reader.getFloat(children[i], "angle");
 
                 var perspectiveChildren = children[i].children;
@@ -182,6 +189,9 @@ class Parser {
                 this.data.perspectiveCams[camID] = cam;
             }
             else if (nodeNames[i] == "ortho") {
+                if (camID == null || camID == "")
+                    return "Ortho view with id not properly defined.";
+
                 cam.left = this.reader.getFloat(children[i], "left");
                 cam.right = this.reader.getFloat(children[i], "right");
                 cam.top = this.reader.getFloat(children[i], "top");
@@ -193,7 +203,6 @@ class Parser {
                 return "<" + nodeNames[i] + "> is not a valid type of view. Valid types: <perspective> or <ortho>."
         }
 
-        var error;
         if ((error = this.validateViewsInfo()) != null)
             return error;
 
@@ -204,15 +213,8 @@ class Parser {
         Validates <views> XML information
     */
     validateViewsInfo() {
-        var totalCams = [];
-
         for (var firstKey in this.data.perspectiveCams) {
             if (this.data.perspectiveCams.hasOwnProperty(firstKey)) {
-                if (firstKey == "" || firstKey == null)
-                    return "Perspective view with id not properly defined.";
-                else
-                    totalCams.push(firstKey);
-
                 for (var secondKey in this.data.perspectiveCams[firstKey]) {
                     if (this.data.perspectiveCams[firstKey].hasOwnProperty(secondKey)) {
                         if (this.data.perspectiveCams[firstKey][secondKey] == null || isNaN(this.data.perspectiveCams[firstKey][secondKey])) {
@@ -226,10 +228,6 @@ class Parser {
 
         for (var firstKey in this.data.orthoCams) {
             if (this.data.orthoCams.hasOwnProperty(firstKey)) {
-                if (firstKey == "" || firstKey == null)
-                    return "Perspective view with id not properly defined.";
-                else
-                    totalCams.push(firstKey);
                 for (var secondKey in this.data.orthoCams[firstKey]) {
                     if (this.data.orthoCams[firstKey].hasOwnProperty(secondKey)) {
                         if (this.data.orthoCams[firstKey][secondKey] == null || isNaN(this.data.orthoCams[firstKey][secondKey])) {
@@ -238,13 +236,6 @@ class Parser {
                         }
                     }
                 }
-            }
-        }
-
-        for (var i = 0; i < totalCams.length; i++) {
-            for (var j = 0; j < totalCams.length; j++) {
-                if (j != i && totalCams[i] == totalCams[j])
-                    return "Two views are using same ID [" + totalCams[i] + "]"
             }
         }
     }
@@ -307,6 +298,7 @@ class Parser {
         Parses the <ligths> block.
     */
     parseLights(lightsNode) {
+        var error;
         var children = lightsNode.children;
 
         if (children.length < 1)
@@ -321,6 +313,9 @@ class Parser {
             "diffuseR", "diffuseG", "diffuseB", "diffuseA",
             "specularR", "specularG", "specularB", "specularA"
         ]
+
+        if ((error = this.checkRepeatedIDs(children, "lights")) != null)
+            return error;
 
         for (var i = 0; i < children.length; i++) {
 
@@ -391,7 +386,6 @@ class Parser {
                 return "<" + nodeNames[i] + "> is not a valid type of light. Valid types: <omni> or <perspective>."
         }
 
-        var error;
         if ((error = this.validateLightsInfo()) != null)
             return error;
 
@@ -402,12 +396,8 @@ class Parser {
        Validates <lights> XML information
    */
     validateLightsInfo() {
-        var totalLights = [];
-
         for (var firstKey in this.data.omniLights) {
             if (this.data.omniLights.hasOwnProperty(firstKey)) {
-                totalLights.push(firstKey);
-
                 for (var secondKey in this.data.omniLights[firstKey]) {
                     if (this.data.omniLights[firstKey].hasOwnProperty(secondKey)) {
                         if (secondKey == "enabled" && (!(this.data.omniLights[firstKey][secondKey] == 1 || this.data.omniLights[firstKey][secondKey] == 0 || this.data.omniLights[firstKey][secondKey] != null))) {
@@ -425,8 +415,6 @@ class Parser {
 
         for (var firstKey in this.data.spotLights) {
             if (this.data.spotLights.hasOwnProperty(firstKey)) {
-                totalLights.push(firstKey);
-
                 for (var secondKey in this.data.spotLights[firstKey]) {
                     if (this.data.spotLights[firstKey].hasOwnProperty(secondKey)) {
                         if (secondKey == "enabled" && (!(this.data.spotLights[firstKey][secondKey] == 1 || this.data.spotLights[firstKey][secondKey] == 0 || this.data.spotLights[firstKey][secondKey] != null))) {
@@ -441,23 +429,20 @@ class Parser {
                 }
             }
         }
-
-        for (var i = 0; i < totalLights.length; i++) {
-            for (var j = 0; j < totalLights.length; j++) {
-                if (j != i && totalLights[i] == totalLights[j])
-                    return "Two lights are using same ID [" + totalLights[i] + "]"
-            }
-        }
     }
 
     /*
         Parses the <textures> block.
     */
     parseTextures(texturesNode) {
+        var error;
         var children = texturesNode.children;
 
         if (children.length < 1)
             return "There must be at least one block of textures";
+
+        if ((error = this.checkRepeatedIDs(children, "textures")) != null)
+            return error;
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
@@ -469,17 +454,16 @@ class Parser {
                 nodeNames.push(children[i].nodeName);
         }
 
-        var textures = [];
         for (var i = 0; i < children.length; i++) {
-            var texture = [
-                this.reader.getString(children[i], "id"),
-                this.reader.getString(children[i], "file")
-            ];
-            textures.push(texture);
+            var textureID = this.reader.getString(children[i], "id");
+            if (textureID == "" || textureID == null)
+                return "texture block on <textures> is not properly defined."
+
+            this.data.textures[textureID] = this.reader.getString(children[i], "file");
         }
 
-        var error;
-        if ((error = this.validateTexturesInfo(textures)) != null)
+
+        if ((error = this.validateTexturesInfo()) != null)
             return error;
 
         this.log("Parsed textures");
@@ -488,18 +472,11 @@ class Parser {
     /*
       Validates <textures> XML information
     */
-    validateTexturesInfo(textures) {
-        for (var i = 0; i < textures.length; i++) {
-            if (textures[i][0] == "" || textures[i][0] == null)
-                return "texture block on <textures> is not properly defined."
-            else if (textures[i][1] == "" || textures[i][1] == null)
-                return "texture block on <textures> with [id = " + textures[i][0] + "] is not properly defined."
-        }
-
-        for (var i = 0; i < textures.length; i++) {
-            for (var j = 0; j < textures.length; j++) {
-                if (i != j && textures[i][0] == textures[j][0])
-                    return "There are two textures using the same id [" + textures[i][0] + "]."
+    validateTexturesInfo() {
+        for (var key in this.data.textures) {
+            if (this.data.textures.hasOwnProperty(key)) {
+                if (this.data.textures[key] == null || this.data.textures[key] == "")
+                    return "texture block on <textures> with [id = " + key + "] is not properly defined."
             }
         }
     }
@@ -508,10 +485,14 @@ class Parser {
         Parses the <materials> block.
     */
     parseMaterials(materialsNode) {
+        var error;
         var children = materialsNode.children;
 
         if (children.length < 1)
             return "There must be at least one block of materials";
+
+        if ((error = this.checkRepeatedIDs(children, "textures")) != null)
+            return error;
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
@@ -523,12 +504,16 @@ class Parser {
                 nodeNames.push(children[i].nodeName);
         }
 
-        var materials = [];
         for (var i = 0; i < children.length; i++) {
+            var index = 0;
             var materialChildren = children[i].children;
 
+            var materialID = this.reader.getString(children[i], "id");
+            if (materialID == null || materialID == "")
+                return "material block on <materials> is not properly defined."
+
             if (materialChildren.length != 4)
-                return "material with [id = " + this.reader.getString(children[i], "id") + "] on <materials> have not all needed elements."
+                return "material with [id = " + materialID + "] on <materials> have not all needed elements."
             else if (materialChildren[0].nodeName != "emission")
                 return "<" + materialChildren[0].nodeName + "> is not a proper element of <materials>."
             else if (materialChildren[1].nodeName != "ambient")
@@ -538,23 +523,28 @@ class Parser {
             else if (materialChildren[3].nodeName != "specular")
                 return "<" + materialChildren[3].nodeName + "> is not a proper element of <materials>."
 
-            var material = [
-                this.reader.getString(children[i], "id"),
-                this.reader.getFloat(children[i], "shininess"),
+            var material = new Object();
+            material.shininess = this.reader.getFloat(children[i], "shininess");
+
+            var materialProperties = [
+                "emissionR", "emissionG", "emissionB", "emissionA",
+                "ambientR", "ambientG", "ambientB", "ambientA",
+                "diffuseR", "diffuseG", "diffuseB", "diffuseA",
+                "specularR", "specularG", "specularB", "specularA"
             ];
 
             for (var j = 0; j < materialChildren.length; j++) {
-                material.push(this.reader.getFloat(materialChildren[j], "r"));
-                material.push(this.reader.getFloat(materialChildren[j], "g"));
-                material.push(this.reader.getFloat(materialChildren[j], "b"));
-                material.push(this.reader.getFloat(materialChildren[j], "a"));
+                material[materialProperties[index]] = this.reader.getFloat(materialChildren[j], "r");
+                material[materialProperties[index + 1]] = this.reader.getFloat(materialChildren[j], "g");
+                material[materialProperties[index + 2]] = this.reader.getFloat(materialChildren[j], "b");
+                material[materialProperties[index + 3]] = this.reader.getFloat(materialChildren[j], "a");
+                index += 4;
             }
 
-            materials.push(material);
+            this.data.materials[materialID] = material;
         }
 
-        var error;
-        if ((error = this.validateMaterialsInfo(materials)) != null)
+        if ((error = this.validateMaterialsInfo()) != null)
             return error;
 
         this.log("Parsed materials");
@@ -563,31 +553,17 @@ class Parser {
     /*
       Validates <materials> XML information
     */
-    validateMaterialsInfo(materials) {
-        var materialsDefaultValues = [
-            "unknown", 1.0,
-            1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0
-        ];
-
-        for (var i = 0; i < materials.length; i++) {
-            for (var j = 0; j < materials[i].length; j++) {
-
-                if (j == 0 && (materials[i][j] == "" || materials[i][j] == null))
-                    return "material block on <materials> is not properly defined."
-                else if (j != 0 && (materials[i][j] == null || isNaN(materials[i][j]))) {
-                    materials[i][j] = materialsDefaultValues[j];
-                    this.onXMLMinorError("material with [id = " + materials[i][0] + "] has an invalid value. Default value has been used.");
+    validateMaterialsInfo() {
+        for (var firstKey in this.data.materials) {
+            if (this.data.materials.hasOwnProperty(firstKey)) {
+                for (var secondKey in this.data.materials[firstKey]) {
+                    if (this.data.materials[firstKey].hasOwnProperty(secondKey)) {
+                        if (this.data.materials[firstKey][secondKey] == null || isNaN(this.data.materials[firstKey][secondKey])) {
+                            this.data.materials[firstKey][secondKey] = this.data.materialDefault[secondKey];
+                            this.onXMLMinorError("material with [id = " + firstKey + "] has an invalid value. Default value has been used.");
+                        }
+                    }
                 }
-            }
-        }
-
-        for (var i = 0; i < materials.length; i++) {
-            for (var j = 0; j < materials.length; j++) {
-                if (i != j && materials[i][0] == materials[j][0])
-                    return "There are two materials using the same id [" + materials[i][0] + "]."
             }
         }
     }
@@ -798,6 +774,23 @@ class Parser {
             for (var j = 0; j < primitives.length; j++) {
                 if (i != j && primitives[i].id == primitives[j].id)
                     return "There are two primitives using the same id [" + primitives[i].id + "]."
+            }
+        }
+    }
+
+    /*
+       Checks if there exists two children of node using the same ID
+    */
+    checkRepeatedIDs(node, type) {
+        var ids = [];
+
+        for (var i = 0; i < node.length; i++)
+            ids.push(this.reader.getString(node[i], "id"));
+
+        for (var i = 0; i < ids.length; i++) {
+            for (var j = 0; j < ids.length; j++) {
+                if (i != j && ids[i] == ids[j])
+                    return "There are two " + type + " using the same id [" + ids[i] + "]."
             }
         }
     }

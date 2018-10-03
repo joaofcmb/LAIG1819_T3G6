@@ -266,7 +266,7 @@ class Parser {
     /*
         Validates <ambient> XML information
     */
-    validateAmbientInfo(children, ambient, background) {
+    validateAmbientInfo(children) {
         var ar, ag, ab, aa, br, bg, bb, ba;
 
         var values = [0, 0, 0, 1,

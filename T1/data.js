@@ -66,7 +66,7 @@ class Data {
 
         // TRANSFORMATIONS - TODO integrate transforms with graph
         this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 
-                                        //  ID -> {{type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...}
+                                        //  ID -> [ {type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...} ]
 
         this.translateDefault   = { x: 0.0, y: 0.0, z: 0.0 };
         this.rotateDefault      = { axis: 'x', angle: 0.0 };
@@ -77,10 +77,33 @@ class Data {
 
         // COMPONENTS  - TODO integrate components with graph
         this.components = new Object(); // format: ID -> { 
-                                        //                  transformID: "transformID" OR {{type: rotate, axis 'x', angle: 0.0}, etc..}, 
-                                        //                  materials: "inherit" OR {materialID1, materialID2}, 
+                                        //                  transformID: "transformID" OR [ {type: rotate, axis 'x', angle: 0.0}, etc.. ], 
+                                        //                  materials: "inherit" OR [materialID1, materialID2], 
                                         //                  textureID: "texID", texLengthS: "1.0", texLengthT: "1.0",
-                                        //                  components: {"comp1ID", "comp2ID"}, primitives: {"primitiveID"}
+                                        //                  components: ["comp1ID", "comp2ID"], primitives: ["primitiveID"]
                                         //               }
+    }
+
+    /*  
+        Called from the scene after data initialization (signalled by the parser)
+
+        Sets up the scene graph nodes (pre-processing and objects initialization)
+    */
+    setupGraph(scene) {
+        for (var compID in this.components) {
+            if (!this.components.hasOwnProperty(compID))   continue;
+
+            // It is being assumed that all the parameters have been checked out on the parser
+            if (this.components[compID])
+        }
+    }
+
+    /* 
+        Called during the display() callback of the scene
+
+        Displays the scene graph contents
+    */
+    displayGraph(scene) {
+
     }
 }

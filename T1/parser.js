@@ -572,6 +572,7 @@ class Parser {
         Parses the <transformations> block.
     */
     parseTransformations(transformations) {
+        var error;
         var children = transformations.children;
 
         if (children.length < 1)
@@ -587,42 +588,41 @@ class Parser {
                 nodeNames.push(children[i].nodeName);
         }
 
-        var transformations = [];
-        for (var i = 0; i < children.length; i++) {
-            var transformation = [
-                this.reader.getString(children[i], "id")
-            ];
+        if ((error = this.checkRepeatedIDs(children, "transformations")) != null)
+            return error;
 
+
+        for (var i = 0; i < children.length; i++) {
+            var baseTransform = [];
             var transformationChildren = children[i].children;
+            var tranformID = this.reader.getString(children[i], "id");
 
             if (transformationChildren.length < 1)
-                return "Transformation with [id =" + transformation[0] + "] must have at least one transformation."
+                return "Transformation with [id = " + tranformID + "] must have at least one transformation."
 
             for (var j = 0; j < transformationChildren.length; j++) {
-                var tmpTransformation = [];
+                var transformation = new Object();
+                transformation.type = transformationChildren[j].nodeName;
 
                 if (transformationChildren[j].nodeName == "translate" || transformationChildren[j].nodeName == "scale") {
-                    tmpTransformation.push(transformationChildren[j].nodeName);
-                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "x"));
-                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "y"));
-                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "z"));
+                    transformation.x = this.reader.getFloat(transformationChildren[j], "x");
+                    transformation.y = this.reader.getFloat(transformationChildren[j], "y");
+                    transformation.z = this.reader.getFloat(transformationChildren[j], "z");
                 }
                 else if (transformationChildren[j].nodeName == "rotate") {
-                    tmpTransformation.push(transformationChildren[j].nodeName);
-                    tmpTransformation.push(this.reader.getString(transformationChildren[j], "axis"));
-                    tmpTransformation.push(this.reader.getFloat(transformationChildren[j], "angle"));
+                    transformation.axis = this.reader.getString(transformationChildren[j], "axis");
+                    transformation.angle = this.reader.getFloat(transformationChildren[j], "angle");
                 }
                 else
                     return "Transformation <" + transformationChildren[j].nodeName + "> not valid. Valid transformations <translate>, <rotate>, <scale>."
 
-                transformation.push(tmpTransformation);
+                baseTransform.push(transformation);
             }
 
-            transformations.push(transformation);
+            this.data.transforms[tranformID] = baseTransform;
         }
 
-        var error;
-        if ((error = this.validateTransformationsInfo(transformations)) != null)
+        if ((error = this.validateTransformationsInfo()) != null)
             return error;
 
         this.log("Parsed transformations");
@@ -631,39 +631,32 @@ class Parser {
     /*
       Validates <transformations> XML information
     */
-    validateTransformationsInfo(transformations) {
-        var translateDefaultValues = [0.0, 0.0, 0.0];
-        var rotateDefaultValues = ['x', 0.0];
-        var scaleDefaultValues = [1.0, 1.0, 1.0];
+    validateTransformationsInfo() {
 
-        for (var i = 0; i < transformations.length; i++) {
-            if (transformations[i][0] == null || transformations[i][0] == "")
-                return "transformation block on <transformations> is not properly defined."
+        for (var firstKey in this.data.transforms) {
+            if (this.data.transforms.hasOwnProperty(firstKey)) {
+                for (var i = 0; i < this.data.transforms[firstKey].length; i++) {
+                    for (var secondKey in this.data.transforms[firstKey][i]) {
+                        if (this.data.transforms[firstKey][i].hasOwnProperty(secondKey)) {
+                            var type = this.data.transforms[firstKey][i].type;
+                            if (type == "rotate" && secondKey == "axis" && (this.data.transforms[firstKey][i][secondKey] == null || this.data.transforms[firstKey][i][secondKey] == "")) {
+                                this.data.transforms[firstKey][i][secondKey] = this.data.rotateDefault[secondKey];
+                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                            }
+                            else if (secondKey != "type" && secondKey != "axis" && (this.data.transforms[firstKey][i][secondKey] == null || isNaN(this.data.transforms[firstKey][i][secondKey]))) {
+                                if (type == "translate")
+                                    this.data.transforms[firstKey][i][secondKey] = this.data.translateDefault[secondKey];
+                                else if (type == "rotate")
+                                    this.data.transforms[firstKey][i][secondKey] = this.data.rotateDefault[secondKey];
+                                else if (type == "scale")
+                                    this.data.transforms[firstKey][i][secondKey] = this.data.scaleDefault[secondKey];
 
-            for (var j = 1; j < transformations[i].length; j++) {
-                for (var k = 1; k < transformations[i][j].length; k++) {
-                    if (transformations[i][j][0] == "rotate" && k == 1 && (transformations[i][j][k] == null || transformations[i][j][k] == "")) {
-                        transformations[i][j][k] = rotateDefaultValues[k];
-                        this.onXMLMinorError("transformation with [id = " + transformations[i][0] + "] has an invalid value on " + transformations[i][j][0] + ". Default value has been used.");
-                    }
-                    else if ((transformations[i][j][k] == null || isNaN(transformations[i][j][k])) && !(transformations[i][j][0] == "rotate" && k == 1)) {
-                        if (transformations[i][j][0] == "translate")
-                            transformations[i][j][k] = translateDefaultValues[k];
-                        else if (transformations[i][j][0] == "rotate")
-                            transformations[i][j][k] = rotateDefaultValues[k];
-                        else if (transformations[i][j][0] == "scale")
-                            transformations[i][j][k] = scaleDefaultValues[k];
-
-                        this.onXMLMinorError("transformation with [id = " + transformations[i][0] + "] has an invalid value on " + transformations[i][j][0] + ". Default value has been used.");
+                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                            }
+                            this.log(secondKey + " -- " + this.data.transforms[firstKey][i][secondKey]);
+                        }
                     }
                 }
-            }
-        }
-
-        for (var i = 0; i < transformations.length; i++) {
-            for (var j = 0; j < transformations.length; j++) {
-                if (i != j && transformations[i][0] == transformations[j][0])
-                    return "There are two transformations using the same id [" + transformations[i][0] + "]."
             }
         }
     }

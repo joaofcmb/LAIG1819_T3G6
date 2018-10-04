@@ -85,8 +85,8 @@ class Parser {
 
         // Processes each node, verifying errors.
 
-        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations", "primitives"];
-        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX];
+        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations", "primitives", "components"];
+        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX, COMPONENTS_INDEX];
 
         for (var i = 0; i < elements.length; i++) {
             if ((index = nodeNames.indexOf(elements[i])) == -1)
@@ -111,6 +111,8 @@ class Parser {
                 else if (i == TRANSFORMATIONS_INDEX && ((error = this.parseTransformations(nodes[index])) != null))
                     return error;
                 else if (i == PRIMITIVES_INDEX && ((error = this.parsePrimitives(nodes[index])) != null))
+                    return error;
+                else if (i == COMPONENTS_INDEX && ((error = this.parseComponents(nodes[index])) != null))
                     return error;
             }
         }
@@ -746,6 +748,20 @@ class Parser {
                 }
             }
         }
+    }
+
+     /*
+       Parses the <components> block.
+    */
+    parseComponents(components) {
+        
+    }
+
+    /*
+      Validates <components> XML information
+    */
+    validateComponentsInfo() {
+
     }
 
     /*

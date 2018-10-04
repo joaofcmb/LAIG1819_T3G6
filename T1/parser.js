@@ -595,7 +595,10 @@ class Parser {
         for (var i = 0; i < children.length; i++) {
             var baseTransform = [];
             var transformationChildren = children[i].children;
+
             var tranformID = this.reader.getString(children[i], "id");
+            if (tranformID == null || tranformID == "")
+                return "transformation block on <transformations> is not properly defined."
 
             if (transformationChildren.length < 1)
                 return "Transformation with [id = " + tranformID + "] must have at least one transformation."
@@ -632,7 +635,6 @@ class Parser {
       Validates <transformations> XML information
     */
     validateTransformationsInfo() {
-
         for (var firstKey in this.data.transforms) {
             if (this.data.transforms.hasOwnProperty(firstKey)) {
                 for (var i = 0; i < this.data.transforms[firstKey].length; i++) {
@@ -653,7 +655,6 @@ class Parser {
 
                                 this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
                             }
-                            this.log(secondKey + " -- " + this.data.transforms[firstKey][i][secondKey]);
                         }
                     }
                 }
@@ -665,6 +666,7 @@ class Parser {
        Parses the <primitives> block.
     */
     parsePrimitives(primitives) {
+        var error;
         var children = primitives.children;
 
         if (children.length < 1)
@@ -680,7 +682,8 @@ class Parser {
                 nodeNames.push(children[i].nodeName);
         }
 
-        var primitives = [];
+        if ((error = this.checkRepeatedIDs(children, "primitives")) != null)
+            return error;
 
         for (var i = 0; i < children.length; i++) {
             var primitveChildren = children[i].children;
@@ -690,7 +693,10 @@ class Parser {
 
             var primitive = new Object();
             primitive.type = primitveChildren[0].nodeName;
-            primitive.id = this.reader.getString(children[i], "id");
+
+            var primitiveID = this.reader.getString(children[i], "id");
+            if (primitiveID == null || primitiveID == "")
+                return "primitive block on <primitives> is not properly defined."
 
             if (primitveChildren[0].nodeName == "rectangle") {
                 primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1");
@@ -716,10 +722,9 @@ class Parser {
             else
                 return "Primitive <" + primitveChildren[0].nodeName + "> not valid. Valid transformations <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
 
-            primitives.push(primitive);
+            this.data.primitives[primitiveID] = primitive;
         }
 
-        var error;
         if ((error = this.validatePrimitivesInfo(primitives)) != null)
             return error;
 
@@ -729,44 +734,16 @@ class Parser {
     /*
       Validates <primitives> XML information
     */
-    validatePrimitivesInfo(primitives) {
-        var rectangleDefaultValues = { x1: 1.0, y1: 1.0, x2: 1.0, y2: 1.0 };
-        var triangleDefaultValues = {
-            x1: 1.0, y1: 1.0, z1: 1.0,
-            x2: 1.0, y2: 1.0, z2: 1.0,
-            x3: 1.0, y3: 1.0, z3: 1.0
-        };
-        var cylinderDefaultValues = { base: 1.0, top: 1.0, height: 1.0, slices: 1, stacks: 1 };
-        var sphereDefaultValues = { radius: 1.0, slices: 1, stacks: 1 };
-        var torusDefaultValues = { inner: 1.0, outer: 1.0, slices: 1, loops: 1 };
-
-        for (var i = 0; i < primitives.length; i++) {
-            for (var key in primitives[i]) {
-                if (primitives[i].hasOwnProperty(key)) {
-                    if (key == "id" && (primitives[i][key] == null || primitives[i][key] == ""))
-                        return "primitive block on <primitives> is not properly defined."
-                    else if (key != "type" && key != "id" && (primitives[i][key] == null || isNaN(primitives[i][key]))) {
-                        if (primitives[i].type == "rectangle")
-                            primitives[i][key] == rectangleDefaultValues.key;
-                        else if (primitives[i].type == "triangle")
-                            primitives[i][key] == triangleDefaultValues.key;
-                        else if (primitives[i].type == "cylinder")
-                            primitives[i][key] == cylinderDefaultValues.key;
-                        else if (primitives[i].type == "sphere")
-                            primitives[i][key] == sphereDefaultValues.key;
-                        else if (primitives[i].type == "torus")
-                            primitives[i][key] == torusDefaultValues.key;
-
-                        this.onXMLMinorError("primitive with [id = " + primitives[i].id + "] has an invalid value on " + key + ". Default value has been used.");
+    validatePrimitivesInfo() {
+        for (var firstKey in this.data.primitives) {
+            if (this.data.primitives.hasOwnProperty(firstKey)) {
+                for (var secondKey in this.data.primitives[firstKey]) {
+                    if (this.data.primitives[firstKey].hasOwnProperty(secondKey)) {
+                        if (secondKey != "type" && (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
+                            return "Primitive with [id = " + firstKey + "] is not valid due to <" + secondKey + "> value on " + this.data.primitives[firstKey].type + ".";
+                        }
                     }
                 }
-            }
-        }
-
-        for (var i = 0; i < primitives.length; i++) {
-            for (var j = 0; j < primitives.length; j++) {
-                if (i != j && primitives[i].id == primitives[j].id)
-                    return "There are two primitives using the same id [" + primitives[i].id + "]."
             }
         }
     }

@@ -77,9 +77,9 @@ class Data {
 
         // COMPONENTS  - TODO integrate components with graph
         this.components = new Object(); // format: ID -> { 
-                                        //                  transformID: "transformID" OR [ {type: rotate, axis 'x', angle: 0.0}, etc.. ], 
+                                        //                  transformID: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, etc.. ], 
                                         //                  materials: "inherit" OR [materialID1, materialID2], 
-                                        //                  textureID: "texID", texLengthS: "1.0", texLengthT: "1.0",
+                                        //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
                                         //                  components: ["comp1ID", "comp2ID"], primitives: ["primitiveID"]
                                         //               }
     }
@@ -88,13 +88,54 @@ class Data {
         Called from the scene after data initialization (signalled by the parser)
 
         Sets up the scene graph nodes (pre-processing and objects initialization)
+
+        TODO test the graph setup
     */
     setupGraph(scene) {
         for (var compID in this.components) {
             if (!this.components.hasOwnProperty(compID))   continue;
 
             // It is being assumed that all the parameters have been checked out on the parser
-            if (this.components[compID])
+
+            // TRANSFORM MATRIX INIT ------------------ TODO refactor with an associative array instead of switch
+            scene.loadIdentity();
+
+            var transformOps = this.components[compID].transformID;
+            if (!Array.isArray(transformOps)) // If ID is specified instead, get transform from transforms list 
+                transformOps = this.transforms[transformOps];
+
+            for (var transOp in transformOps) {
+                switch(transOp.type) {
+                    case "translate":
+                        scene.translate(transOp.x, transOp.y, transOp.z);
+                    break;
+                    case "rotate":
+                        switch(transOp.axis) {
+                            case 'x':
+                                scene.rotate(transOp.angle, 1, 0, 0);
+                            break;
+                            case 'y':
+                                scene.rotate(transOp.angle, 0, 1, 0);
+                            break;
+                            case 'z':
+                                scene.rotate(transOp.angle, 0, 0, 1);
+                            break;
+                        }
+                    break;
+                    case "scale":
+                        scene.translate(transOp.x, transOp.y, transOp.z);
+                    break;
+                }
+            }
+
+            this.components[compID].transformMatrix = scene.getMatrix();
+
+            //  APPEARENCE(MATERIAL AND TEXTURE INIT) ------------------ (NOT FINISHED)
+            this.components[compID].activeMaterial =    Array.isArray(this.components[compID].materials) ? 
+                                                        this.components[compID].materials[0] :
+                                                        this.components[compID].materials; // inherit
+            
+            // PRIMITIVES INIT -------------------- (TODO)
         }
     }
 

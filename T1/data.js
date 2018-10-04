@@ -64,13 +64,23 @@ class Data {
             specularR: 0.2, specularG: 0.2, specularB: 0.2, specularA: 1.0
         }
 
-        // TRANSFORMATIONS - TODO
+        // TRANSFORMATIONS - TODO integrate transforms with graph
+        this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 
+                                        //  ID -> {{type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...}
 
+        this.translateDefault   = { x: 0.0, y: 0.0, z: 0.0 };
+        this.rotateDefault      = { axis: 'x', angle: 0.0 };
+        this.scaleDefault       = { x: 1.0, y: 1.0, z: 1.0 };
 
-        // PRIMITIVES - TODO
+        // PRIMITIVES - TODO integrate primitives with graph
+        this.primitives = new Object(); // format: ID -> {type: rectangle, x1: -0.5, y1: -0.5, x2: 0.5, y2: 0.5} specifying type and its arguments
 
-
-        // COMPONENTS  - TODO
-
+        // COMPONENTS  - TODO integrate components with graph
+        this.components = new Object(); // format: ID -> { 
+                                        //                  transformID: "transformID" OR {{type: rotate, axis 'x', angle: 0.0}, etc..}, 
+                                        //                  materials: "inherit" OR {materialID1, materialID2}, 
+                                        //                  textureID: "texID", texLengthS: "1.0", texLengthT: "1.0",
+                                        //                  components: {"comp1ID", "comp2ID"}, primitives: {"primitiveID"}
+                                        //               }
     }
 }

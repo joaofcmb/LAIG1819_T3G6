@@ -750,18 +750,161 @@ class Parser {
         }
     }
 
-     /*
-       Parses the <components> block.
-    */
+    /*
+      Parses the <components> block.
+   */
     parseComponents(components) {
-        
+        var error;
+        var children = components.children;
+
+        var nodeNames = [];
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "component") {
+                this.onXMLMinorError("<" + children[i].nodeName + "> block on <components> node was not properly written. Do you mean <component> ?");
+                nodeNames.push("component");
+            }
+            else
+                nodeNames.push(children[i].nodeName);
+        }
+
+        if ((error = this.checkRepeatedIDs(children, "components")) != null)
+            return error;
+
+
+        for (var i = 0; i < children.length; i++) {
+            var component = new Object();
+            var componentChildren = children[i].children;
+
+            var componentID = this.reader.getString(children[i], "id");
+            if (componentID == null || componentID == "")
+                return "component block on <components> is not properly defined."
+            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
+                return error;
+
+            for (var j = 0; j < componentChildren.length; j++) {
+                if (componentChildren[j].nodeName == "transformation") {
+                    if ((error = this.parseComponentTransform(componentChildren[j], component)) != null)
+                        return error;
+                }
+                else if (componentChildren[j].nodeName == "materials") {
+
+                }
+                else if (componentChildren[j].nodeName == "texture") {
+
+                }
+                else if (componentChildren[j].nodeName == "children") {
+
+                }
+            }
+            this.data.components[componentID] = component;
+        }
+
+        this.log("Parsed components");
+    }
+
+    /*
+        Parses transformation block on <components>
+    */
+    parseComponentTransform(node, component) {
+        var nodeChildren = node.children;
+
+        if (nodeChildren.length == 1 && nodeChildren[0].nodeName != "translate" && nodeChildren[0].nodeName != "rotate" && nodeChildren[0].nodeName != "scale") {
+            if (nodeChildren[0].nodeName == "transformationref") {
+                var tranformRefID = this.reader.getString(nodeChildren[0], "id");
+                if (tranformRefID == null || tranformRefID == "")
+                    return "Transformation block on <components> not valid due to invalid transformationref ID.";
+
+                var transform = this.data.transforms[tranformRefID];
+                if (transform == null)
+                    return "Transformation block on <components> not valid due to a non existence of transformationref ID.";
+                else
+                    component.transforms = tranformRefID;
+            }
+            else
+                return "Transformation block on <components> not valid. Valid transformations <transformationref> or <translate>, <rotate>, <scale>.";
+        }
+        else {
+            for (var i = 0; i < nodeChildren.length; i++) {
+                if (nodeChildren[i].nodeName != "translate" && nodeChildren[i].nodeName != "rotate" && nodeChildren[i].nodeName != "scale")
+                    return "Transformation block on <components> not valid. Valid transformations <transformationref> or <translate>, <rotate>, <scale>.";
+            }
+
+            var baseTransform = [];
+
+            for (var i = 0; i < nodeChildren.length; i++) {
+                var transformation = new Object();
+                transformation.type = nodeChildren[i].nodeName;
+
+                if (nodeChildren[i].nodeName == "translate" || nodeChildren[i].nodeName == "scale") {
+                    transformation.x = this.reader.getFloat(nodeChildren[i], "x");
+                    if (transformation.x == null || isNaN(transformation.x)) {
+                        if (nodeChildren[i].nodeName == "translate")
+                            transformation.x = this.data.translateDefault.x;
+                        else
+                            transformation.x = this.data.scaleDefault.x;
+                        this.onXMLMinorError("Transformation block on <components> not valid due to invalid input values. Default values has been used.");
+                    }
+
+                    transformation.y = this.reader.getFloat(nodeChildren[i], "y");
+                    if (transformation.y == null || isNaN(transformation.y)) {
+                        if (nodeChildren[i].nodeName == "translate")
+                            transformation.y = this.data.translateDefault.y;
+                        else
+                            transformation.y = this.data.scaleDefault.y;
+                        this.onXMLMinorError("Transformation block on <components> not valid due to invalid input values. Default values has been used.");
+                    }
+
+                    transformation.z = this.reader.getFloat(nodeChildren[i], "z");
+                    if (transformation.z == null || isNaN(transformation.z)) {
+                        if (nodeChildren[i].nodeName == "translate")
+                            transformation.z = this.data.translateDefault.z;
+                        else
+                            transformation.z = this.data.scaleDefault.z;
+                        this.onXMLMinorError("Transformation block on <components> not valid due to invalid input values. Default values has been used.");
+                    }
+                }
+                else if (nodeChildren[i].nodeName == "rotate") {
+                    transformation.axis = this.reader.getString(nodeChildren[i], "axis");
+                    if (transformation.axis == null || transformation.axis == "") {
+                        transformation.axis = this.data.rotateDefault.axis;
+                        this.onXMLMinorError("Transformation block on <components> not valid due to invalid input values. Default values has been used.");
+                    }
+
+                    transformation.angle = this.reader.getFloat(nodeChildren[i], "angle");
+                    if (transformation.angle == null || isNaN(transformation.angle)) {
+                        transformation.angle = this.data.rotateDefault.angle;
+                        this.onXMLMinorError("Transformation block on <components> not valid due to invalid input values. Default values has been used.");
+                    }
+                }
+                baseTransform.push(transformation);
+            }
+            component.transforms = baseTransform;
+        }
     }
 
     /*
       Validates <components> XML information
     */
-    validateComponentsInfo() {
+    validateComponentsInfo(componentChildren) {
+        var neededElements = [0, 0, 0, 0]
 
+        for (var j = 0; j < componentChildren.length; j++) {
+            if (componentChildren[j].nodeName == "transformation")
+                neededElements[0] = 1;
+            else if (componentChildren[j].nodeName == "materials")
+                neededElements[1] = 1;
+            else if (componentChildren[j].nodeName == "texture")
+                neededElements[2] = 1;
+            else if (componentChildren[j].nodeName == "children")
+                neededElements[3] = 1;
+            else
+                return "Invalid children on <components>: " + componentChildren[j].nodeName + ".";
+        }
+
+        for (var j = 0; j < neededElements.length; j++) {
+            if (neededElements[j] == 0)
+                return "<components> does not contain all needed elements. It must contain: <transformation>, <materials>, <texture>, <children> blocks.";
+        }
     }
 
     /*

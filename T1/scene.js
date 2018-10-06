@@ -165,7 +165,8 @@ class Scene extends CGFscene {
                 }
                 */
 
-                // TODO Displays the scene (MySceneGraph function)
+                // Displays the scene
+                this.data.displayGraph();
             }
         
         this.popMatrix();

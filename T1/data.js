@@ -1,8 +1,8 @@
 class Data {
     constructor() {
         // SCENE
-        this.root = "";             // TODO - Apply to graph
-        this.axisLength = 1;        // TODO - Apply to scene
+        this.root = "";
+        this.axisLength = 1;
 
         // VIEWS - TODO figure out how the cameras are supposed to be added
         this.orthoCams = new Object();
@@ -146,12 +146,15 @@ class Data {
 
                     this.materials[materialID] = appearance;
                 }
+
+                this.activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
             }
-            this.activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
+            else
+                this.activeMaterial = "inherit"
 
             // TEXTURE INIT (TODO - avoid duplicate texture instatiations)
             var textureID = this.components[compID].textureID;
-            this.activeTexture = textureID != "inherit" ? new CGFtexture(scene, this.textures[textureID].file) : "inherit";
+            this.activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID].file) : textureID;
             
             // PRIMITIVES INIT --------------------
             if (this.components[compID].hasOwnProperty("primitiveID")) {
@@ -186,9 +189,42 @@ class Data {
         Called during the display() callback of the scene
 
         Displays the scene graph contents
+
+        NOTICE: It is assumed that the scene has been initialized with identity matrix
     */
     displayGraph(scene) {
-        // Simplified version with just the transforms and primitives
+        var rootComponent = this.components[this.root];
+        this.displayComponent(scene, rootComponent, rootComponent.activeMaterial, rootComponent.activeTexture);
+    }
 
+    // recursive call of graph components
+    displayComponent(scene, component, parentMaterial, parentTexture) {
+
+        scene.multMatrix(component.transformMatrix);
+
+        var currAppearance = (component.activeMaterial != "inherit") ? component.activeMaterial : parentMaterial;
+
+        switch(component.activeTexture) {
+            case "inherit":
+                var currTexture = parentTexture;    
+            break;
+            case "none":
+                var currTexture = null;
+            break;
+            default:
+                var currTexture = component.activeTexture;
+            break;
+        }
+        currAppearance.setTexture(currTexture);
+        currAppearance.setTextureWrap(component.texLengthS, component.texLengthT);
+
+        for (var child in component.components) {
+            scene.pushMatrix();
+                this.displayComponent(scene, child, currAppearance, currTexture);
+            scene.popMatrix();
+        }
+
+        currAppearance.apply();
+        component.activePrimitive.display();
     }
 }

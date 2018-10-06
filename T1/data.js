@@ -80,7 +80,7 @@ class Data {
                                         //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, etc.. ], 
                                         //                  materials: "inherit" OR [materialID1, materialID2], 
                                         //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
-                                        //                  components: ["comp1ID", "comp2ID"], primitives: ["primitiveID"]
+                                        //                  components: ["comp1ID", "comp2ID"], primitiveID: "primitiveID"
                                         //               }
     }
 
@@ -130,12 +130,55 @@ class Data {
 
             this.components[compID].transformMatrix = scene.getMatrix();
 
-            //  APPEARENCE(MATERIAL AND TEXTURE INIT) ------------------ (NOT FINISHED)
-            this.components[compID].activeMaterial =    Array.isArray(this.components[compID].materials) ? 
-                                                        this.components[compID].materials[0] :
-                                                        this.components[compID].materials; // inherit
+            //  MATERIAL INIT ------------------
+            if (Array.isArray(this.components[compID].materials)) {
+                for (var materialID in this.components[compID].materials) {
+                    var material = this.materials[materialID];
+                    if (!material.hasOwnProperty("emissionR")) // Check if this material has been instantiated already
+                        continue;
+
+                    var appearance = new CGFappearance(scene);
+
+                    appearance.setShininess(material.shininess);
+                    appearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
+                    appearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
+                    appearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);
+
+                    this.materials[materialID] = appearance;
+                }
+            }
+            this.activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
+
+            // TEXTURE INIT (TODO - avoid duplicate texture instatiations)
+            var textureID = this.components[compID].textureID;
+            this.activeTexture = textureID != "inherit" ? new CGFtexture(scene, this.textures[textureID].file) : "inherit";
             
-            // PRIMITIVES INIT -------------------- (TODO)
+            // PRIMITIVES INIT --------------------
+            if (this.components[compID].hasOwnProperty("primitiveID")) {
+                var primitiveID = this.components[compID].primitiveID;
+                var primitive = this.primivites[primitiveID];
+
+                switch(primitive.type) {
+                    case "rectangle":
+                        this.primitives[primitiveID] = new Rectangle(primitive.x1, primitive.y1, primitive.x2, primitive.y2);
+                    break;
+                    case "triangle":
+                        this.primitives[primitiveID] = new Triangle(primitive.x1, primitive.y1, primitive.z1, 
+                                                                    primitive.x2, primitive.y2, primitive.z2, 
+                                                                    primitive.x3, primitive.y3, primitive.z3);
+                    break;
+                    case "cylinder":
+                        this.primitives[primitiveID] = new Cylinder(primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
+                    break;
+                    case "sphere":
+                        this.primitives[primitiveID] = new Sphere(primitive.radius, primitive.slices, primitive.stacks);
+                    break;
+                    case "torus":
+                        this.primitives[primitiveID] = new Sphere(primitive.inner, primitives.outer, primitive.slices, primitive.loops);
+                    break;
+                }
+                this.components[compID].activePrimitive = this.primitives[primitiveID];
+            }
         }
     }
 
@@ -145,6 +188,7 @@ class Data {
         Displays the scene graph contents
     */
     displayGraph(scene) {
+        // Simplified version with just the transforms and primitives
 
     }
 }

@@ -94,7 +94,7 @@ class Scene extends CGFscene {
     }
 
 
-    /* Handler called when the graph is finally loaded. 
+    /* Handler called when the data is finally loaded. 
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
     onDataLoaded() {
@@ -112,6 +112,9 @@ class Scene extends CGFscene {
 
         // TODO Adds lights group.
         //this.interface.addLightsGroup(this.graph.lights);
+
+        // Load data into the graph
+        this.data.setupGraph(this);
 
         this.sceneInited = true;
     }

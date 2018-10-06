@@ -1,6 +1,6 @@
 <yas>
 
-    <scene root="rootName" axis_length="2"/>
+    <scene root="componentID" axis_length="2"/>
 
     <views default="viewsName">
 
@@ -105,10 +105,11 @@
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <!-- <material id="inherit" /> -->
+                <material id="materialID" />
             </materials>
             
-            <texture id="ss" length_s="ff" length_t="ff" />
+            <texture id="textureID" length_s="1.0" length_t="1.0" />
             
             
             <children>

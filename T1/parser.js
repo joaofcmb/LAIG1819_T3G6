@@ -116,7 +116,7 @@ class Parser {
                     return error;
             }
         }
-
+        this.log("XML Parsing finished");
     }
 
     /*
@@ -756,6 +756,7 @@ class Parser {
     parseComponents(components) {
         var error;
         var children = components.children;
+        var flag = false;
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
@@ -772,7 +773,6 @@ class Parser {
 
 
         for (var i = 0; i < children.length; i++) {
-
             var component = new Object();
             var componentChildren = children[i].children;
             var componentID = this.reader.getString(children[i], "id");
@@ -781,6 +781,8 @@ class Parser {
                 return "component block on <components> is not properly defined."
             else if ((error = this.validateComponentsInfo(componentChildren)) != null)
                 return error;
+            else if (componentID == this.data.root)
+                flag = true;
 
             for (var j = 0; j < componentChildren.length; j++) {
                 if (componentChildren[j].nodeName == "transformation") {
@@ -802,6 +804,9 @@ class Parser {
             }
             this.data.components[componentID] = component;
         }
+
+        if (!flag)
+            return "There must be a component whose id corresponds to the root element on <scene> tag."
 
         this.log("Parsed components");
     }
@@ -886,29 +891,69 @@ class Parser {
         }
     }
 
+    /*
+        Parses materials block on <components>
+    */
     parseComponentMaterials(node, component, componentID) {
         var nodeChildren = node.children;
 
         if (nodeChildren.length < 1)
-            return "error 1";
-        else if (nodeChildren.length == 1 && nodeChildren[0].children.length == 0) {
+            return "component with [id = " + componentID + "] must have at least one material block on <materials>.";
+        else if (nodeChildren.length == 1) {
             var materialID = this.reader.getString(nodeChildren[0], "id");
-            if (materialID == null || materialID == "" || materialID != "inherit")
-                return "error 2";
+
+            if (nodeChildren[0].nodeName != "material")
+                return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid value <" + nodeChildren[0].nodeName + ">."
+            else if (materialID == null || materialID == "")
+                return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid ID.";
+            else if (materialID == "inherit" && componentID == this.data.root)
+                return "component with [id = " + componentID + "] is not properly defined on <materials> because material with [id = " + materialID + "] is inheriting elements from its own.";
 
             component.materials = materialID;
         }
         else {
+            var materials = [];
 
+            for (var i = 0; i < nodeChildren.length; i++) {
+                if (nodeChildren[i].nodeName != "material")
+                    return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid value <" + nodeChildren[i].nodeName + ">."
+
+                var materialID = this.reader.getString(nodeChildren[i], "id");
+
+                if (materialID == "inherit")
+                    return "component with [id = " + componentID + "] is not properly defined on <materials> due to the use of <inherit> ID along referencing material IDs.";
+                else if (materialID == null || materialID == "")
+                    return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid ID.";
+                else if (this.data.materials[materialID] == null)
+                    return "component with [id = " + componentID + "] is not properly defined on <materials> because material with [id = " + materialID + "] is referencing an non existent material.";
+
+                materials.push(materialID);
+            }
+            component.materials = materials;
         }
-
     }
 
+    /*
+        Parses textures block on <components>
+    */
     parseComponentTextures(node, component, componentID) {
+        var textureID = this.reader.getString(node, "id");
+        var textureLenS = this.reader.getFloat(node, "length_s");
+        var textureLenT = this.reader.getFloat(node, "length_t");
 
+        if (textureID == null || textureID == "")
+            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid ID.";
+        else if (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT))
+            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values.";
 
+        if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
+            return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";
+        else if (textureID == "inherit" || textureID == "none" && componentID == this.data.root)
+            return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is inheriting elements from its own.";
 
-
+        component.textureID = textureID;
+        component.texLengthS = textureLenS;
+        component.texLengthT = textureLenT;
     }
 
     /*
@@ -916,7 +961,6 @@ class Parser {
     */
     parseComponentChildren(node, component, componentID) {
         var components = [];
-        var primitives = [];
         var nodeChildren = node.children;
 
         if (nodeChildren.length < 1)
@@ -940,15 +984,16 @@ class Parser {
 
                 if (primitive == null)
                     return "component with [id = " + componentID + "] has the following tag <primitiveref> referencing a non existent component.";
+                else if (component.primitives != null)
+                    return "component with [id = " + componentID + "] has more than one primitive on <children> block.";
                 else
-                    primitives.push(nodeChildren[i]);
+                    component.primitives = primitive;
             }
             else
                 return "component with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
         }
 
         component.components = components;
-        component.primitives = primitives;
     }
 
     /*

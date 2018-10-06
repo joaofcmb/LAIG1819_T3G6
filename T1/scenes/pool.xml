@@ -63,9 +63,9 @@
     </primitives >
 
     <components>
-        <component id="componentID3">
+        <component id="componentID">
             <transformation>
-                <translate x="0.0" y="2.0" z="0.0" />
+                <translate x="1.0" y="1.0" z="0.0" />
             </transformation>
 
             <materials>
@@ -73,10 +73,12 @@
             </materials>
             
             <texture id="none" length_s="1.0" length_t="1.0" />
-           
+        
             <children>
+                <componentref id="componentID2" />
+                <componentref id="componentID3" />
                 <primitiveref id="primitiveID" />
-            </children>     
+            </children> 
         </component>
         <component id="componentID2">
             <transformation>
@@ -91,12 +93,11 @@
            
             <children>
                 <primitiveref id="primitiveID" />
-                <componentref id="componentID3" />
             </children>     
         </component>
-        <component id="componentID">
+        <component id="componentID3">
             <transformation>
-                <translate x="1.0" y="1.0" z="0.0" />
+                <translate x="0.0" y="2.0" z="0.0" />
             </transformation>
 
             <materials>
@@ -104,11 +105,10 @@
             </materials>
             
             <texture id="none" length_s="1.0" length_t="1.0" />
-        
+           
             <children>
-                <componentref id="componentID2" />
                 <primitiveref id="primitiveID" />
-            </children> 
+            </children>     
         </component>
     </components>
 

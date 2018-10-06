@@ -148,16 +148,13 @@ class Parser {
         this.data.root = this.reader.getString(sceneNode, "root");
         this.data.axisLength = this.reader.getFloat(sceneNode, "axis_length");
 
-        if (this.data.root == null)
-            return "root element in <scene> must be defined in order to parse XML file"
-        else if (this.data.root == "")
-            return "root element in <scene> must have a proper name."
+        if (this.data.root == null || this.data.root == "")
+            return "<root> element in <scene> is not properly defined."
 
         if (this.data.axisLength == null || isNaN(this.data.axisLength)) {
             this.data.axisLength = 0;
-            this.onXMLMinorError("axis_length element missing on <scene>; using 0 as default value");
+            this.onXMLMinorError("<axis_length> element is not properly defined on <scene>; using 0 as default value.");
         }
-
         this.log("Parsed scene");
     }
 
@@ -166,16 +163,14 @@ class Parser {
     */
     parseViews(viewsNode) {
         var error;
+
         var viewsDefault = this.reader.getString(viewsNode, "default");
-        if (viewsDefault == null)
-            return "default element in <views> must be defined in order to parse XML file"
-        else if (viewsDefault == "")
-            return "default element in <views> must have a proper name."
+        if (viewsDefault == null || viewsDefault == "")
+            return "<default> element in <views> is not properly defined."
 
         var children = viewsNode.children;
-
         if (children.length < 1)
-            return "There must be at least one type of view defined";
+            return "There must be at least one type of view defined.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -271,7 +266,7 @@ class Parser {
         var children = ambientNode.children;
 
         if (children.length != 2)
-            return "<ambient> block is not properly defined";
+            return "<ambient> block is not properly defined.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -310,7 +305,7 @@ class Parser {
             properValues[i] = this.reader.getFloat(children[childrenPos[i]], shortElements[i])
             if (properValues[i] == null || isNaN(properValues[i])) {
                 properValues[i] = values[i];
-                this.onXMLMinorError(elements[i] + " (" + type[i] + ") element missing on <ambient>; using " + values[i] + " as default value");
+                this.onXMLMinorError("<" + elements[i] + " -- " + type[i] + "> element missing on <ambient>; Using " + values[i] + " as default value.");
             }
         }
 
@@ -323,10 +318,10 @@ class Parser {
     */
     parseLights(lightsNode) {
         var error;
-        var children = lightsNode.children;
 
+        var children = lightsNode.children;
         if (children.length < 1)
-            return "There must be at least one block of <omni> or <spot> lights";
+            return "There must be at least one block of <omni> or <spot> lights.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -365,7 +360,7 @@ class Parser {
 
             if (nodeNames[i] == "omni") {
                 if (lightID == "" || lightID == null)
-                    return "Omni light with id not properly defined.";
+                    return "Omni light is not properly defined.";
                 else if (lightChildren.length != 4)
                     return "Omni light with [id = " + lightID + "] have not all needed elements."
 
@@ -382,7 +377,7 @@ class Parser {
             }
             else if (nodeNames[i] == "spot") {
                 if (lightID == "" || lightID == null)
-                    return "Spot light with id not properly defined"
+                    return "Spot light is not properly defined"
                 else if (lightChildren.length != 5)
                     return "Spot light with [id = " + lightID + "] have not all needed elements."
 
@@ -460,32 +455,27 @@ class Parser {
     */
     parseTextures(texturesNode) {
         var error;
-        var children = texturesNode.children;
 
+        var children = texturesNode.children;
         if (children.length < 1)
-            return "There must be at least one block of textures";
+            return "There must be at least one block of textures.";
 
         if ((error = this.checkRepeatedIDs(children, "textures")) != null)
             return error;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "texture") {
+            if (children[i].nodeName != "texture")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <textures> node was not properly written. Do you mean <texture> ?");
-                nodeNames.push("texture");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         for (var i = 0; i < children.length; i++) {
+
             var textureID = this.reader.getString(children[i], "id");
             if (textureID == "" || textureID == null)
-                return "texture block on <textures> is not properly defined."
+                return "<texture> block on <textures> is not properly defined."
 
             this.data.textures[textureID] = this.reader.getString(children[i], "file");
         }
-
 
         if ((error = this.validateTexturesInfo()) != null)
             return error;
@@ -500,7 +490,7 @@ class Parser {
         for (var key in this.data.textures) {
             if (this.data.textures.hasOwnProperty(key)) {
                 if (this.data.textures[key] == null || this.data.textures[key] == "")
-                    return "texture block on <textures> with [id = " + key + "] is not properly defined."
+                    return "<texture> block on <textures> with [id = " + key + "] is not properly defined."
             }
         }
     }
@@ -513,19 +503,14 @@ class Parser {
         var children = materialsNode.children;
 
         if (children.length < 1)
-            return "There must be at least one block of materials";
+            return "There must be at least one block of materials.";
 
         if ((error = this.checkRepeatedIDs(children, "textures")) != null)
             return error;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "material") {
+            if (children[i].nodeName != "material")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <materials> node was not properly written. Do you mean <material> ?");
-                nodeNames.push("material");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         for (var i = 0; i < children.length; i++) {
@@ -534,7 +519,7 @@ class Parser {
 
             var materialID = this.reader.getString(children[i], "id");
             if (materialID == null || materialID == "")
-                return "material block on <materials> is not properly defined."
+                return "<material> block on <materials> is not properly defined."
 
             if (materialChildren.length != 4)
                 return "material with [id = " + materialID + "] on <materials> have not all needed elements."
@@ -584,7 +569,7 @@ class Parser {
                     if (this.data.materials[firstKey].hasOwnProperty(secondKey)) {
                         if (this.data.materials[firstKey][secondKey] == null || isNaN(this.data.materials[firstKey][secondKey])) {
                             this.data.materials[firstKey][secondKey] = this.data.materialDefault[secondKey];
-                            this.onXMLMinorError("material with [id = " + firstKey + "] has an invalid value. Default value has been used.");
+                            this.onXMLMinorError("<material> with [id = " + firstKey + "] has an invalid value. Default value has been used.");
                         }
                     }
                 }
@@ -597,24 +582,18 @@ class Parser {
     */
     parseTransformations(transformations) {
         var error;
-        var children = transformations.children;
 
+        var children = transformations.children;
         if (children.length < 1)
             return "There must be at least one block of transformations";
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "transformation") {
+            if (children[i].nodeName != "transformation")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <transformations> node was not properly written. Do you mean <transformation> ?");
-                nodeNames.push("transformation");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "transformations")) != null)
             return error;
-
 
         for (var i = 0; i < children.length; i++) {
             var baseTransform = [];
@@ -622,7 +601,7 @@ class Parser {
 
             var tranformID = this.reader.getString(children[i], "id");
             if (tranformID == null || tranformID == "")
-                return "transformation block on <transformations> is not properly defined."
+                return "<transformation> block on <transformations> is not properly defined."
 
             if (transformationChildren.length < 1)
                 return "Transformation with [id = " + tranformID + "] must have at least one transformation."
@@ -667,7 +646,7 @@ class Parser {
                             var type = this.data.transforms[firstKey][i].type;
                             if (type == "rotate" && secondKey == "axis" && (this.data.transforms[firstKey][i][secondKey] == null || this.data.transforms[firstKey][i][secondKey] == "")) {
                                 this.data.transforms[firstKey][i][secondKey] = this.data.rotateDefault[secondKey];
-                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                                this.onXMLMinorError("Transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
                             }
                             else if (secondKey != "type" && secondKey != "axis" && (this.data.transforms[firstKey][i][secondKey] == null || isNaN(this.data.transforms[firstKey][i][secondKey]))) {
                                 if (type == "translate")
@@ -677,7 +656,7 @@ class Parser {
                                 else if (type == "scale")
                                     this.data.transforms[firstKey][i][secondKey] = this.data.scaleDefault[secondKey];
 
-                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                                this.onXMLMinorError("Transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
                             }
                         }
                     }
@@ -691,19 +670,14 @@ class Parser {
     */
     parsePrimitives(primitives) {
         var error;
-        var children = primitives.children;
 
+        var children = primitives.children;
         if (children.length < 1)
             return "There must be at least one block of primitives";
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "primitive") {
+            if (children[i].nodeName != "primitive")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <primitives> node was not properly written. Do you mean <primitive> ?");
-                nodeNames.push("primitive");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "primitives")) != null)
@@ -720,7 +694,7 @@ class Parser {
 
             var primitiveID = this.reader.getString(children[i], "id");
             if (primitiveID == null || primitiveID == "")
-                return "primitive block on <primitives> is not properly defined."
+                return "<primitive> block on <primitives> is not properly defined."
 
             if (primitveChildren[0].nodeName == "rectangle") {
                 primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1");
@@ -777,22 +751,16 @@ class Parser {
    */
     parseComponents(components) {
         var error;
-        var children = components.children;
         var flag = false;
+        var children = components.children;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "component") {
+            if (children[i].nodeName != "component")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <components> node was not properly written. Do you mean <component> ?");
-                nodeNames.push("component");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "components")) != null)
             return error;
-
 
         for (var i = 0; i < children.length; i++) {
             var componentChildren = children[i].children;
@@ -801,28 +769,31 @@ class Parser {
             this.data.components[componentID] = new Object();
 
             if (componentID == null || componentID == "")
-                return "component block on <components> is not properly defined."
-            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
-                return error;
+                return "<component> block on <components> is not properly defined."
             else if (componentID == this.data.root)
                 flag = true;
+            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
+                return error;
 
             for (var j = 0; j < componentChildren.length; j++) {
-                if (componentChildren[j].nodeName == "transformation") {
-                    if ((error = this.parseComponentTransform(componentChildren[j], componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "materials") {
-                    if ((error = this.parseComponentMaterials(componentChildren[j], componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "texture") {
-                    if ((error = this.parseComponentTextures(componentChildren[j], componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "children") {
-                    if ((error = this.parseComponentChildren(componentChildren[j], componentID)) != null)
-                        return error;
+
+                switch (componentChildren[j].nodeName) {
+                    case "transformation":
+                        if ((error = this.parseComponentTransform(componentChildren[j], componentID)) != null)
+                            return error;
+                        break;
+                    case "materials":
+                        if ((error = this.parseComponentMaterials(componentChildren[j], componentID)) != null)
+                            return error;
+                        break;
+                    case "texture":
+                        if ((error = this.parseComponentTextures(componentChildren[j], componentID)) != null)
+                            return error;
+                        break;
+                    case "children":
+                        if ((error = this.parseComponentChildren(componentChildren[j], componentID)) != null)
+                            return error;
+                        break;
                 }
             }
         }
@@ -843,7 +814,7 @@ class Parser {
             if (nodeChildren[0].nodeName == "transformationref") {
                 var tranformRefID = this.reader.getString(nodeChildren[0], "id");
                 if (tranformRefID == null || tranformRefID == "")
-                    return "Transformation block on <components> not valid due to invalid transformationref ID.";
+                    return "Transformation block on <components> is not properly defined.";
 
                 var transform = this.data.transforms[tranformRefID];
                 if (transform == null)
@@ -968,24 +939,38 @@ class Parser {
         Parses children block on <components>
     */
     parseComponentChildren(node, componentID) {
-        var components = [];
+        var componentsArray = [];
+        var componentsID = [];
         var nodeChildren = node.children;
 
         if (nodeChildren.length < 1)
-            return "component with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
+            return "<component> with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
 
         for (var i = 0; i < nodeChildren.length; i++) {
+            if (nodeChildren[i].nodeName == "componentref")
+                componentsID.push(this.reader.getString(nodeChildren[i], "id"));
+        }
+
+        for (var i = 0; i < nodeChildren.length; i++) {
+
             var nodeChildrenID = this.reader.getString(nodeChildren[i], "id");
             if (nodeChildrenID == null || nodeChildrenID == "")
-                return "component with [id = " + componentID + "] has the following tag <" + nodeChildren[i].nodeName + "> not properly defined.";
+                return "<component> with [id = " + componentID + "] has the following tag <" + nodeChildren[i].nodeName + "> not properly defined.";
 
             if (nodeChildren[i].nodeName == "componentref") {
-                var component = this.data.components[nodeChildrenID];
+                var flag = false;
+                //var component = this.data.components[nodeChildrenID];
 
-                if (component == null)
-                    return "component with [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+                for (var j = 0; j < componentsID.length; j++) {
+                    if (componentsID[j] == nodeChildrenID)
+                        flag = true;
+                }
+                
+                if (flag)
+                    componentsArray.push(nodeChildrenID);
                 else
-                    components.push(nodeChildrenID);
+                    return "<component with> [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+
             }
             else if (nodeChildren[i].nodeName == "primitiveref") {
                 var primitive = this.data.primitives[nodeChildrenID];
@@ -998,10 +983,10 @@ class Parser {
                     this.data.components[componentID].primitiveID = nodeChildrenID;
             }
             else
-                return "component with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
+                return "<component> with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
         }
 
-        this.data.components[componentID].components = components;
+        this.data.components[componentID].components = componentsArray;
     }
 
     /*

@@ -170,7 +170,7 @@ class Parser {
 
         var children = viewsNode.children;
         if (children.length < 1)
-            return "There must be at least one type of view defined";
+            return "There must be at least one type of view defined.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -266,7 +266,7 @@ class Parser {
         var children = ambientNode.children;
 
         if (children.length != 2)
-            return "<ambient> block is not properly defined";
+            return "<ambient> block is not properly defined.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -305,7 +305,7 @@ class Parser {
             properValues[i] = this.reader.getFloat(children[childrenPos[i]], shortElements[i])
             if (properValues[i] == null || isNaN(properValues[i])) {
                 properValues[i] = values[i];
-                this.onXMLMinorError(elements[i] + " (" + type[i] + ") element missing on <ambient>; using " + values[i] + " as default value");
+                this.onXMLMinorError("<" + elements[i] + " -- " + type[i] + "> element missing on <ambient>; Using " + values[i] + " as default value.");
             }
         }
 
@@ -318,10 +318,10 @@ class Parser {
     */
     parseLights(lightsNode) {
         var error;
-        var children = lightsNode.children;
 
+        var children = lightsNode.children;
         if (children.length < 1)
-            return "There must be at least one block of <omni> or <spot> lights";
+            return "There must be at least one block of <omni> or <spot> lights.";
 
         var nodeNames = [];
         for (var i = 0; i < children.length; i++)
@@ -360,7 +360,7 @@ class Parser {
 
             if (nodeNames[i] == "omni") {
                 if (lightID == "" || lightID == null)
-                    return "Omni light with id not properly defined.";
+                    return "Omni light is not properly defined.";
                 else if (lightChildren.length != 4)
                     return "Omni light with [id = " + lightID + "] have not all needed elements."
 
@@ -377,7 +377,7 @@ class Parser {
             }
             else if (nodeNames[i] == "spot") {
                 if (lightID == "" || lightID == null)
-                    return "Spot light with id not properly defined"
+                    return "Spot light is not properly defined"
                 else if (lightChildren.length != 5)
                     return "Spot light with [id = " + lightID + "] have not all needed elements."
 
@@ -455,32 +455,27 @@ class Parser {
     */
     parseTextures(texturesNode) {
         var error;
-        var children = texturesNode.children;
 
+        var children = texturesNode.children;
         if (children.length < 1)
-            return "There must be at least one block of textures";
+            return "There must be at least one block of textures.";
 
         if ((error = this.checkRepeatedIDs(children, "textures")) != null)
             return error;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "texture") {
+            if (children[i].nodeName != "texture")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <textures> node was not properly written. Do you mean <texture> ?");
-                nodeNames.push("texture");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         for (var i = 0; i < children.length; i++) {
+            
             var textureID = this.reader.getString(children[i], "id");
             if (textureID == "" || textureID == null)
-                return "texture block on <textures> is not properly defined."
+                return "<texture> block on <textures> is not properly defined."
 
             this.data.textures[textureID] = this.reader.getString(children[i], "file");
         }
-
 
         if ((error = this.validateTexturesInfo()) != null)
             return error;
@@ -495,7 +490,7 @@ class Parser {
         for (var key in this.data.textures) {
             if (this.data.textures.hasOwnProperty(key)) {
                 if (this.data.textures[key] == null || this.data.textures[key] == "")
-                    return "texture block on <textures> with [id = " + key + "] is not properly defined."
+                    return "<texture> block on <textures> with [id = " + key + "] is not properly defined."
             }
         }
     }

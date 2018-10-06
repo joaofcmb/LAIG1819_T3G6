@@ -65,28 +65,31 @@ class Parser {
         this.loadedOk = true;
 
         // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
-        this.scene.onDataLoaded();
+        //this.scene.onDataLoaded();
     }
 
+    /*
+        Parses the XML file
+    */
     parseXMLFile(rootElement) {
         if (rootElement.nodeName != "yas")
             return "root tag <yas> missing";
 
+        var index, error;
         var nodes = rootElement.children;
 
         // Reads the names of the nodes to an auxiliary buffer.
         var nodeNames = [];
-
         for (var i = 0; i < nodes.length; i++) {
             nodeNames.push(nodes[i].nodeName);
         }
 
-        var index, error;
-
         // Processes each node, verifying errors.
-
         var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations", "primitives", "components"];
-        var elementsIndex = [SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX, MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX, COMPONENTS_INDEX];
+        var elementsIndex = [
+            SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX,
+            MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX, COMPONENTS_INDEX
+        ];
 
         for (var i = 0; i < elements.length; i++) {
             if ((index = nodeNames.indexOf(elements[i])) == -1)
@@ -95,25 +98,44 @@ class Parser {
                 if (index != elementsIndex[i])
                     this.onXMLMinorError("tag <" + elements[i] + "> out of order");
 
-                //Parse block
-                if (i == SCENE_INDEX && ((error = this.parseScene(nodes[index])) != null))
-                    return error;
-                else if (i == VIEWS_INDEX && ((error = this.parseViews(nodes[index])) != null))
-                    return error;
-                else if (i == AMBIENT_INDEX && ((error = this.parseAmbient(nodes[index])) != null))
-                    return error;
-                else if (i == LIGHTS_INDEX && ((error = this.parseLights(nodes[index])) != null))
-                    return error;
-                else if (i == TEXTURES_INDEX && ((error = this.parseTextures(nodes[index])) != null))
-                    return error;
-                else if (i == MATERIALS_INDEX && ((error = this.parseMaterials(nodes[index])) != null))
-                    return error;
-                else if (i == TRANSFORMATIONS_INDEX && ((error = this.parseTransformations(nodes[index])) != null))
-                    return error;
-                else if (i == PRIMITIVES_INDEX && ((error = this.parsePrimitives(nodes[index])) != null))
-                    return error;
-                else if (i == COMPONENTS_INDEX && ((error = this.parseComponents(nodes[index])) != null))
-                    return error;
+                switch (i) {
+                    case SCENE_INDEX:
+                        if ((error = this.parseScene(nodes[index])) != null)
+                            return error;
+                        break;
+                    case VIEWS_INDEX:
+                        if ((error = this.parseViews(nodes[index])) != null)
+                            return error;
+                        break;
+                    case AMBIENT_INDEX:
+                        if ((error = this.parseAmbient(nodes[index])) != null)
+                            return error;
+                        break;
+                    case LIGHTS_INDEX:
+                        if ((error = this.parseLights(nodes[index])) != null)
+                            return error;
+                        break;
+                    case TEXTURES_INDEX:
+                        if ((error = this.parseTextures(nodes[index])) != null)
+                            return error;
+                        break;
+                    case MATERIALS_INDEX:
+                        if ((error = this.parseMaterials(nodes[index])) != null)
+                            return error;
+                        break;
+                    case TRANSFORMATIONS_INDEX:
+                        if ((error = this.parseTransformations(nodes[index])) != null)
+                            return error;
+                        break;
+                    case PRIMITIVES_INDEX:
+                        if ((error = this.parsePrimitives(nodes[index])) != null)
+                            return error;
+                        break;
+                    case COMPONENTS_INDEX:
+                        if ((error = this.parseComponents(nodes[index])) != null)
+                            return error;
+                        break;
+                }
             }
         }
         this.log("XML Parsing finished");
@@ -944,11 +966,11 @@ class Parser {
         if (textureID == null || textureID == "")
             return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid ID.";
         else if (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT))
-            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values.";
+            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values." + textureID + "  " + textureLenT;
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";
-        else if (textureID == "inherit" || textureID == "none" && componentID == this.data.root)
+        else if (textureID == "inherit" && componentID == this.data.root)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is inheriting elements from its own.";
 
         component.textureID = textureID;

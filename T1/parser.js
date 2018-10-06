@@ -503,19 +503,14 @@ class Parser {
         var children = materialsNode.children;
 
         if (children.length < 1)
-            return "There must be at least one block of materials";
+            return "There must be at least one block of materials.";
 
         if ((error = this.checkRepeatedIDs(children, "textures")) != null)
             return error;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "material") {
+            if (children[i].nodeName != "material") 
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <materials> node was not properly written. Do you mean <material> ?");
-                nodeNames.push("material");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         for (var i = 0; i < children.length; i++) {
@@ -524,7 +519,7 @@ class Parser {
 
             var materialID = this.reader.getString(children[i], "id");
             if (materialID == null || materialID == "")
-                return "material block on <materials> is not properly defined."
+                return "<material> block on <materials> is not properly defined."
 
             if (materialChildren.length != 4)
                 return "material with [id = " + materialID + "] on <materials> have not all needed elements."
@@ -574,7 +569,7 @@ class Parser {
                     if (this.data.materials[firstKey].hasOwnProperty(secondKey)) {
                         if (this.data.materials[firstKey][secondKey] == null || isNaN(this.data.materials[firstKey][secondKey])) {
                             this.data.materials[firstKey][secondKey] = this.data.materialDefault[secondKey];
-                            this.onXMLMinorError("material with [id = " + firstKey + "] has an invalid value. Default value has been used.");
+                            this.onXMLMinorError("<material> with [id = " + firstKey + "] has an invalid value. Default value has been used.");
                         }
                     }
                 }
@@ -587,24 +582,18 @@ class Parser {
     */
     parseTransformations(transformations) {
         var error;
+       
         var children = transformations.children;
-
         if (children.length < 1)
             return "There must be at least one block of transformations";
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "transformation") {
+            if (children[i].nodeName != "transformation") 
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <transformations> node was not properly written. Do you mean <transformation> ?");
-                nodeNames.push("transformation");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "transformations")) != null)
             return error;
-
 
         for (var i = 0; i < children.length; i++) {
             var baseTransform = [];
@@ -612,7 +601,7 @@ class Parser {
 
             var tranformID = this.reader.getString(children[i], "id");
             if (tranformID == null || tranformID == "")
-                return "transformation block on <transformations> is not properly defined."
+                return "<transformation> block on <transformations> is not properly defined."
 
             if (transformationChildren.length < 1)
                 return "Transformation with [id = " + tranformID + "] must have at least one transformation."
@@ -657,7 +646,7 @@ class Parser {
                             var type = this.data.transforms[firstKey][i].type;
                             if (type == "rotate" && secondKey == "axis" && (this.data.transforms[firstKey][i][secondKey] == null || this.data.transforms[firstKey][i][secondKey] == "")) {
                                 this.data.transforms[firstKey][i][secondKey] = this.data.rotateDefault[secondKey];
-                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                                this.onXMLMinorError("Transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
                             }
                             else if (secondKey != "type" && secondKey != "axis" && (this.data.transforms[firstKey][i][secondKey] == null || isNaN(this.data.transforms[firstKey][i][secondKey]))) {
                                 if (type == "translate")
@@ -667,7 +656,7 @@ class Parser {
                                 else if (type == "scale")
                                     this.data.transforms[firstKey][i][secondKey] = this.data.scaleDefault[secondKey];
 
-                                this.onXMLMinorError("transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
+                                this.onXMLMinorError("Transformation with [id = " + firstKey + "] has an invalid value on " + secondKey + ". Default value has been used.");
                             }
                         }
                     }
@@ -681,19 +670,14 @@ class Parser {
     */
     parsePrimitives(primitives) {
         var error;
+        
         var children = primitives.children;
-
         if (children.length < 1)
             return "There must be at least one block of primitives";
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "primitive") {
+            if (children[i].nodeName != "primitive")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <primitives> node was not properly written. Do you mean <primitive> ?");
-                nodeNames.push("primitive");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "primitives")) != null)
@@ -710,7 +694,7 @@ class Parser {
 
             var primitiveID = this.reader.getString(children[i], "id");
             if (primitiveID == null || primitiveID == "")
-                return "primitive block on <primitives> is not properly defined."
+                return "<primitive> block on <primitives> is not properly defined."
 
             if (primitveChildren[0].nodeName == "rectangle") {
                 primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1");

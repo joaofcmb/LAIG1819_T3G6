@@ -106,8 +106,8 @@ class Scene extends CGFscene {
 
         // TODO: Change ambient and background details according to parsed graph
         this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
-
         this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
+
         this.initLights();
 
         // TODO Adds lights group.

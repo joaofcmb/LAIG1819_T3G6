@@ -100,11 +100,12 @@ class Data {
             // TRANSFORM MATRIX INIT ------------------ TODO refactor with an associative array instead of switch
             scene.loadIdentity();
 
-            var transformOps = this.components[compID].transformID;
+            var transformOps = this.components[compID].transforms;
             if (!Array.isArray(transformOps)) // If ID is specified instead, get transform from transforms list 
                 transformOps = this.transforms[transformOps];
 
-            for (var transOp in transformOps) {
+            for (var transIndex in transformOps) {
+                var transOp = transformOps[transIndex];
                 switch(transOp.type) {
                     case "translate":
                         scene.translate(transOp.x, transOp.y, transOp.z);
@@ -112,28 +113,29 @@ class Data {
                     case "rotate":
                         switch(transOp.axis) {
                             case 'x':
-                                scene.rotate(transOp.angle, 1, 0, 0);
+                                scene.rotate(Math.PI * transOp.angle / 180, 1, 0, 0);
                             break;
                             case 'y':
-                                scene.rotate(transOp.angle, 0, 1, 0);
+                                scene.rotate(Math.PI * transOp.angle / 180, 0, 1, 0);
                             break;
                             case 'z':
-                                scene.rotate(transOp.angle, 0, 0, 1);
+                                scene.rotate(Math.PI * transOp.angle / 180, 0, 0, 1);
                             break;
                         }
                     break;
                     case "scale":
-                        scene.translate(transOp.x, transOp.y, transOp.z);
+                        scene.scale(transOp.x, transOp.y, transOp.z);
                     break;
                 }
             }
-
             this.components[compID].transformMatrix = scene.getMatrix();
 
             //  MATERIAL INIT ------------------
             if (Array.isArray(this.components[compID].materials)) {
-                for (var materialID in this.components[compID].materials) {
+                for (var materialIndex in this.components[compID].materials) {
+                    var materialID = this.components[compID].materials[materialIndex];
                     var material = this.materials[materialID];
+
                     if (!material.hasOwnProperty("emissionR")) // Check if this material has been instantiated already
                         continue;
 
@@ -146,38 +148,39 @@ class Data {
 
                     this.materials[materialID] = appearance;
                 }
-
-                this.activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
+                this.components[compID].activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
             }
             else
-                this.activeMaterial = "inherit"
+                this.components[compID].activeMaterial = "inherit";
 
             // TEXTURE INIT (TODO - avoid duplicate texture instatiations)
             var textureID = this.components[compID].textureID;
-            this.activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID].file) : textureID;
+            this.components[compID].activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID].file) : textureID;
             
+            console.log(this.components);
+            console.log(this.components[compID].primitiveID);
             // PRIMITIVES INIT --------------------
             if (this.components[compID].hasOwnProperty("primitiveID")) {
                 var primitiveID = this.components[compID].primitiveID;
-                var primitive = this.primivites[primitiveID];
-
+                var primitive = this.primitives[primitiveID];
+                
                 switch(primitive.type) {
                     case "rectangle":
-                        this.primitives[primitiveID] = new Rectangle(primitive.x1, primitive.y1, primitive.x2, primitive.y2);
+                        this.primitives[primitiveID] = new MyRectangle(scene, primitive.x1, primitive.y1, primitive.x2, primitive.y2);
                     break;
                     case "triangle":
-                        this.primitives[primitiveID] = new Triangle(primitive.x1, primitive.y1, primitive.z1, 
+                        this.primitives[primitiveID] = new MyTriangle(scene, primitive.x1, primitive.y1, primitive.z1, 
                                                                     primitive.x2, primitive.y2, primitive.z2, 
                                                                     primitive.x3, primitive.y3, primitive.z3);
                     break;
                     case "cylinder":
-                        this.primitives[primitiveID] = new Cylinder(primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
+                        this.primitives[primitiveID] = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
                     break;
                     case "sphere":
-                        this.primitives[primitiveID] = new Sphere(primitive.radius, primitive.slices, primitive.stacks);
+                        this.primitives[primitiveID] = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks);
                     break;
                     case "torus":
-                        this.primitives[primitiveID] = new Sphere(primitive.inner, primitives.outer, primitive.slices, primitive.loops);
+                        this.primitives[primitiveID] = new MySphere(scene, primitive.inner, primitives.outer, primitive.slices, primitive.loops);
                     break;
                 }
                 this.components[compID].activePrimitive = this.primitives[primitiveID];
@@ -199,7 +202,6 @@ class Data {
 
     // recursive call of graph components
     displayComponent(scene, component, parentMaterial, parentTexture) {
-
         scene.multMatrix(component.transformMatrix);
 
         var currAppearance = (component.activeMaterial != "inherit") ? component.activeMaterial : parentMaterial;
@@ -218,13 +220,16 @@ class Data {
         currAppearance.setTexture(currTexture);
         currAppearance.setTextureWrap(component.texLengthS, component.texLengthT);
 
-        for (var child in component.components) {
+        for (var childIndex in component.components) {
+            var child = component.components[childIndex];
+
             scene.pushMatrix();
-                this.displayComponent(scene, child, currAppearance, currTexture);
+                this.displayComponent(scene, this.components[child], currAppearance, currTexture);
             scene.popMatrix();
         }
 
         currAppearance.apply();
+
         component.activePrimitive.display();
     }
 }

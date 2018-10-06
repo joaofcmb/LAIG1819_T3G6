@@ -1,5 +1,4 @@
 <yas>
-
     <scene root="componentID" axis_length="2"/>
 
     <views default="viewsName">
@@ -39,10 +38,7 @@
     <transformations>
 
         <transformation id="tranformationID">
-            <translate x="0.0" y="0.0" z="0.0" />
-            <rotate axis="x" angle="0" />
-            <scale x="1.0" y="1.0" z="1.0" />
-            <scale x="1.0" y="1.0" z="1.0" />
+            <translate x="1.0" y="0.0" z="0.0" />
         </transformation>
 
         <transformation id="tranformationID_2">
@@ -57,7 +53,7 @@
     <primitives>
 
         <primitive id="primitiveID">
-            <rectangle x1="1.0" y1="2.1" x2="1.2" y2="2.3" />
+            <rectangle x1="-1.0" y1="-1.0" x2="1.0" y2="1.0" />
         </primitive >
 
         <primitive id="primitiveID_Sec">
@@ -67,14 +63,9 @@
     </primitives >
 
     <components>
-
-        <component id="componentID">
+        <component id="componentID3">
             <transformation>
-                <!--<transformationref id="tranformationID" />-->
-                
-                <translate x="1.0" y="1.0" z="1.0" />
-                <rotate axis="x" angle="0.0" />
-                <scale x="1.0" y="1.0" z="1.0" />
+                <translate x="0.0" y="2.0" z="0.0" />
             </transformation>
 
             <materials>
@@ -82,15 +73,43 @@
             </materials>
             
             <texture id="none" length_s="1.0" length_t="1.0" />
-            
-            
+           
             <children>
-                <!-- <componentref id="componentID" /> -->
+                <primitiveref id="primitiveID" />
+            </children>     
+        </component>
+        <component id="componentID2">
+            <transformation>
+                <translate x="2.0" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="materialID" />
+            </materials>
+            
+            <texture id="none" length_s="1.0" length_t="1.0" />
+           
+            <children>
+                <primitiveref id="primitiveID" />
+                <componentref id="componentID3" />
+            </children>     
+        </component>
+        <component id="componentID">
+            <transformation>
+                <translate x="1.0" y="1.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="materialID" />
+            </materials>
+            
+            <texture id="none" length_s="1.0" length_t="1.0" />
+        
+            <children>
+                <componentref id="componentID2" />
                 <primitiveref id="primitiveID" />
             </children> 
-            
         </component>
-
     </components>
 
 

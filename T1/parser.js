@@ -148,16 +148,13 @@ class Parser {
         this.data.root = this.reader.getString(sceneNode, "root");
         this.data.axisLength = this.reader.getFloat(sceneNode, "axis_length");
 
-        if (this.data.root == null)
-            return "root element in <scene> must be defined in order to parse XML file"
-        else if (this.data.root == "")
-            return "root element in <scene> must have a proper name."
+        if (this.data.root == null || this.data.root == "")
+            return "<root> element in <scene> is not properly defined."
 
         if (this.data.axisLength == null || isNaN(this.data.axisLength)) {
             this.data.axisLength = 0;
-            this.onXMLMinorError("axis_length element missing on <scene>; using 0 as default value");
+            this.onXMLMinorError("<axis_length> element is not properly defined on <scene>; using 0 as default value.");
         }
-
         this.log("Parsed scene");
     }
 
@@ -166,14 +163,12 @@ class Parser {
     */
     parseViews(viewsNode) {
         var error;
+
         var viewsDefault = this.reader.getString(viewsNode, "default");
-        if (viewsDefault == null)
-            return "default element in <views> must be defined in order to parse XML file"
-        else if (viewsDefault == "")
-            return "default element in <views> must have a proper name."
+        if (viewsDefault == null || viewsDefault == "")
+            return "<default> element in <views> is not properly defined."
 
         var children = viewsNode.children;
-
         if (children.length < 1)
             return "There must be at least one type of view defined";
 
@@ -931,7 +926,9 @@ class Parser {
             else if (materialID == "inherit" && componentID == this.data.root)
                 return "component with [id = " + componentID + "] is not properly defined on <materials> because material with [id = " + materialID + "] is inheriting elements from its own.";
 
-            component.materials = materialID;
+            var materials = [];
+            materials.push(materialID)
+            component.materials = materials;
         }
         else {
             var materials = [];

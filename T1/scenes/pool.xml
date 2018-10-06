@@ -1,6 +1,6 @@
 <yas>
 
-    <scene root="rootName" axis_length="2"/>
+    <scene root="componentID" axis_length="2"/>
 
     <views default="viewsName">
         <perspective id="perspectiveID" near="0.1" far="1000.0" angle="60.0">
@@ -57,7 +57,7 @@
     <primitives>
 
         <primitive id="primitiveID">
-            <rectangle x1="1.0" y1="1.1" x2="1.2" y2="1.3" />
+            <rectangle x1="1.0" y1="2.1" x2="1.2" y2="2.3" />
         </primitive >
 
         <primitive id="primitiveID_Sec">
@@ -69,7 +69,6 @@
     <components>
 
         <component id="componentID">
-
             <transformation>
                 <!--<transformationref id="tranformationID" />-->
                 
@@ -79,10 +78,10 @@
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="materialID" />
             </materials>
             
-            <texture id="ss" length_s="ff" length_t="ff" />
+            <texture id="none" length_s="1.0" length_t="1.0" />
             
             
             <children>

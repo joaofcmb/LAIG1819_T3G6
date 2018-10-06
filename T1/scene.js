@@ -166,14 +166,11 @@ class Scene extends CGFscene {
                 */
 
                 // Displays the scene
-                this.data.displayGraph();
+                this.data.displayGraph(this);
             }
         
         this.popMatrix();
 
         // ---- END Background, camera and axis setup
-
-        // Temporary Primitive draw
-        this.torus.display();
     }
 }

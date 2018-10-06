@@ -97,27 +97,23 @@
         <component id="componentID">
 
             <transformation>
-        
                 <!--<transformationref id="tranformationID" />-->
                 
                 <translate x="1.0" y="1.0" z="1.0" />
                 <rotate axis="x" angle="0.0" />
                 <scale x="1.0" y="1.0" z="1.0" />
-
-
             </transformation>
 
             <materials>
-                <material id="ss" />
+                <material id="inherit" />
             </materials>
             
             <texture id="ss" length_s="ff" length_t="ff" />
             
             
             <children>
-               
-                <componentref id="ss" />
-                <primitiveref id="ss" />
+                <!-- <componentref id="componentID" /> -->
+                <primitiveref id="primitiveID" />
             </children> 
             
         </component>

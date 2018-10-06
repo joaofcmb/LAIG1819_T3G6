@@ -77,7 +77,7 @@ class Data {
 
         // COMPONENTS  - TODO integrate components with graph
         this.components = new Object(); // format: ID -> { 
-                                        //                  transformID: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, etc.. ], 
+                                        //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, etc.. ], 
                                         //                  materials: "inherit" OR [materialID1, materialID2], 
                                         //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
                                         //                  components: ["comp1ID", "comp2ID"], primitives: ["primitiveID"]

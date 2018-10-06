@@ -772,10 +772,11 @@ class Parser {
 
 
         for (var i = 0; i < children.length; i++) {
+
             var component = new Object();
             var componentChildren = children[i].children;
-
             var componentID = this.reader.getString(children[i], "id");
+
             if (componentID == null || componentID == "")
                 return "component block on <components> is not properly defined."
             else if ((error = this.validateComponentsInfo(componentChildren)) != null)
@@ -783,17 +784,20 @@ class Parser {
 
             for (var j = 0; j < componentChildren.length; j++) {
                 if (componentChildren[j].nodeName == "transformation") {
-                    if ((error = this.parseComponentTransform(componentChildren[j], component)) != null)
+                    if ((error = this.parseComponentTransform(componentChildren[j], component, componentID)) != null)
                         return error;
                 }
                 else if (componentChildren[j].nodeName == "materials") {
-
+                    if ((error = this.parseComponentMaterials(componentChildren[j], component, componentID)) != null)
+                        return error;
                 }
                 else if (componentChildren[j].nodeName == "texture") {
-
+                    if ((error = this.parseComponentTextures(componentChildren[j], component, componentID)) != null)
+                        return error;
                 }
                 else if (componentChildren[j].nodeName == "children") {
-
+                    if ((error = this.parseComponentChildren(componentChildren[j], component, componentID)) != null)
+                        return error;
                 }
             }
             this.data.components[componentID] = component;
@@ -805,7 +809,7 @@ class Parser {
     /*
         Parses transformation block on <components>
     */
-    parseComponentTransform(node, component) {
+    parseComponentTransform(node, component, componentID) {
         var nodeChildren = node.children;
 
         if (nodeChildren.length == 1 && nodeChildren[0].nodeName != "translate" && nodeChildren[0].nodeName != "rotate" && nodeChildren[0].nodeName != "scale") {
@@ -880,6 +884,71 @@ class Parser {
             }
             component.transforms = baseTransform;
         }
+    }
+
+    parseComponentMaterials(node, component, componentID) {
+        var nodeChildren = node.children;
+
+        if (nodeChildren.length < 1)
+            return "error 1";
+        else if (nodeChildren.length == 1 && nodeChildren[0].children.length == 0) {
+            var materialID = this.reader.getString(nodeChildren[0], "id");
+            if (materialID == null || materialID == "" || materialID != "inherit")
+                return "error 2";
+
+            component.materials = materialID;
+        }
+        else {
+
+        }
+
+    }
+
+    parseComponentTextures(node, component, componentID) {
+
+
+
+
+    }
+
+    /*
+        Parses children block on <components>
+    */
+    parseComponentChildren(node, component, componentID) {
+        var components = [];
+        var primitives = [];
+        var nodeChildren = node.children;
+
+        if (nodeChildren.length < 1)
+            return "component with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
+
+        for (var i = 0; i < nodeChildren.length; i++) {
+            var nodeChildrenID = this.reader.getString(nodeChildren[i], "id");
+            if (nodeChildrenID == null || nodeChildrenID == "")
+                return "component with [id = " + componentID + "] has the following tag <" + nodeChildren[i].nodeName + "> not properly defined.";
+
+            if (nodeChildren[i].nodeName == "componentref") {
+                var component = this.data.components[nodeChildrenID];
+
+                if (component == null)
+                    return "component with [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+                else
+                    components.push(nodeChildren[i]);
+            }
+            else if (nodeChildren[i].nodeName == "primitiveref") {
+                var primitive = this.data.primitives[nodeChildrenID];
+
+                if (primitive == null)
+                    return "component with [id = " + componentID + "] has the following tag <primitiveref> referencing a non existent component.";
+                else
+                    primitives.push(nodeChildren[i]);
+            }
+            else
+                return "component with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
+        }
+
+        component.components = components;
+        component.primitives = primitives;
     }
 
     /*

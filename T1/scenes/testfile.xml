@@ -15,7 +15,7 @@
 
     <ambient>
         <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-        <background r="0.7" g="0.9" b="0.96" a="1.0" />
+        <background r="1.0" g="0.9" b="0.96" a="1.0" />
     </ambient>
 
     <lights>
@@ -98,7 +98,7 @@
 
             <transformation>
                 <!--<transformationref id="tranformationID" />-->
-                
+
                 <translate x="1.0" y="1.0" z="1.0" />
                 <rotate axis="x" angle="0.0" />
                 <scale x="1.0" y="1.0" z="1.0" />
@@ -108,15 +108,14 @@
                 <!-- <material id="inherit" /> -->
                 <material id="materialID" />
             </materials>
-            
-            <texture id="textureID" length_s="1.0" length_t="1.0" />
-            
-            
+
+            <texture id="none" length_s="1.0" length_t="1.0" />
+
             <children>
                 <!-- <componentref id="componentID" /> -->
                 <primitiveref id="primitiveID" />
-            </children> 
-            
+            </children>
+
         </component>
 
     </components>

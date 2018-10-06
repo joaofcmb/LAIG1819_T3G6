@@ -65,7 +65,7 @@ class Parser {
         this.loadedOk = true;
 
         // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
-        //this.scene.onDataLoaded();
+        this.scene.onDataLoaded();
     }
 
     /*
@@ -469,7 +469,7 @@ class Parser {
         }
 
         for (var i = 0; i < children.length; i++) {
-            
+
             var textureID = this.reader.getString(children[i], "id");
             if (textureID == "" || textureID == null)
                 return "<texture> block on <textures> is not properly defined."
@@ -509,7 +509,7 @@ class Parser {
             return error;
 
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "material") 
+            if (children[i].nodeName != "material")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <materials> node was not properly written. Do you mean <material> ?");
         }
 
@@ -582,13 +582,13 @@ class Parser {
     */
     parseTransformations(transformations) {
         var error;
-       
+
         var children = transformations.children;
         if (children.length < 1)
             return "There must be at least one block of transformations";
 
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "transformation") 
+            if (children[i].nodeName != "transformation")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <transformations> node was not properly written. Do you mean <transformation> ?");
         }
 
@@ -670,7 +670,7 @@ class Parser {
     */
     parsePrimitives(primitives) {
         var error;
-        
+
         var children = primitives.children;
         if (children.length < 1)
             return "There must be at least one block of primitives";
@@ -751,51 +751,49 @@ class Parser {
    */
     parseComponents(components) {
         var error;
-        var children = components.children;
         var flag = false;
+        var children = components.children;
 
-        var nodeNames = [];
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName != "component") {
+            if (children[i].nodeName != "component")
                 this.onXMLMinorError("<" + children[i].nodeName + "> block on <components> node was not properly written. Do you mean <component> ?");
-                nodeNames.push("component");
-            }
-            else
-                nodeNames.push(children[i].nodeName);
         }
 
         if ((error = this.checkRepeatedIDs(children, "components")) != null)
             return error;
 
-
         for (var i = 0; i < children.length; i++) {
+
             var component = new Object();
             var componentChildren = children[i].children;
             var componentID = this.reader.getString(children[i], "id");
 
             if (componentID == null || componentID == "")
-                return "component block on <components> is not properly defined."
-            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
-                return error;
+                return "<component> block on <components> is not properly defined."
             else if (componentID == this.data.root)
                 flag = true;
+            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
+                return error;
 
             for (var j = 0; j < componentChildren.length; j++) {
-                if (componentChildren[j].nodeName == "transformation") {
-                    if ((error = this.parseComponentTransform(componentChildren[j], component, componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "materials") {
-                    if ((error = this.parseComponentMaterials(componentChildren[j], component, componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "texture") {
-                    if ((error = this.parseComponentTextures(componentChildren[j], component, componentID)) != null)
-                        return error;
-                }
-                else if (componentChildren[j].nodeName == "children") {
-                    if ((error = this.parseComponentChildren(componentChildren[j], component, componentID)) != null)
-                        return error;
+
+                switch (componentChildren[j].nodeName) {
+                    case "transformation":
+                        if ((error = this.parseComponentTransform(componentChildren[j], component, componentID)) != null)
+                            return error;
+                        break;
+                    case "materials":
+                        if ((error = this.parseComponentMaterials(componentChildren[j], component, componentID)) != null)
+                            return error;
+                        break;
+                    case "texture":
+                        if ((error = this.parseComponentTextures(componentChildren[j], component, componentID)) != null)
+                            return error;
+                        break;
+                    case "children":
+                        if ((error = this.parseComponentChildren(componentChildren[j], component, componentID)) != null)
+                            return error;
+                        break;
                 }
             }
             this.data.components[componentID] = component;
@@ -817,7 +815,7 @@ class Parser {
             if (nodeChildren[0].nodeName == "transformationref") {
                 var tranformRefID = this.reader.getString(nodeChildren[0], "id");
                 if (tranformRefID == null || tranformRefID == "")
-                    return "Transformation block on <components> not valid due to invalid transformationref ID.";
+                    return "Transformation block on <components> is not properly defined.";
 
                 var transform = this.data.transforms[tranformRefID];
                 if (transform == null)
@@ -958,40 +956,54 @@ class Parser {
         Parses children block on <components>
     */
     parseComponentChildren(node, component, componentID) {
-        var components = [];
+        var componentsArray = [];
+        var componentsID = [];
         var nodeChildren = node.children;
 
         if (nodeChildren.length < 1)
-            return "component with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
+            return "<component> with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
 
         for (var i = 0; i < nodeChildren.length; i++) {
+            if (nodeChildren[i].nodeName == "componentref")
+                componentsID.push(this.reader.getString(nodeChildren[i], "id"));
+        }
+
+        for (var i = 0; i < nodeChildren.length; i++) {
+
             var nodeChildrenID = this.reader.getString(nodeChildren[i], "id");
             if (nodeChildrenID == null || nodeChildrenID == "")
-                return "component with [id = " + componentID + "] has the following tag <" + nodeChildren[i].nodeName + "> not properly defined.";
+                return "<component> with [id = " + componentID + "] has the following tag <" + nodeChildren[i].nodeName + "> not properly defined.";
 
             if (nodeChildren[i].nodeName == "componentref") {
+                var flag = false;
                 var component = this.data.components[nodeChildrenID];
 
-                if (component == null)
-                    return "component with [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+                for (var j = 0; j < componentsID.length; j++) {
+                    if (componentsID[j] == nodeChildrenID)
+                        flag = true;
+                }
+                
+                if (flag)
+                    componentsArray.push(nodeChildrenID);
                 else
-                    components.push(nodeChildren[i]);
+                    return "<component with> [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+
             }
             else if (nodeChildren[i].nodeName == "primitiveref") {
                 var primitive = this.data.primitives[nodeChildrenID];
 
                 if (primitive == null)
-                    return "component with [id = " + componentID + "] has the following tag <primitiveref> referencing a non existent component.";
+                    return "<component with> [id = " + componentID + "] has the following tag <primitiveref> referencing a non existent component.";
                 else if (component.primitives != null)
-                    return "component with [id = " + componentID + "] has more than one primitive on <children> block.";
+                    return "<component> with [id = " + componentID + "] has more than one primitive on <children> block.";
                 else
                     component.primitives = primitive;
             }
             else
-                return "component with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
+                return "<component> with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
         }
 
-        component.components = components;
+        component.components = componentsArray;
     }
 
     /*

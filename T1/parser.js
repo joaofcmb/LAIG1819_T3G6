@@ -62,9 +62,8 @@ class Parser {
             return;
         }
 
-        //this.loadedOk = true;
-
         // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
+        this.loadedOk = true;
         this.scene.onDataLoaded();
     }
 

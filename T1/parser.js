@@ -705,7 +705,7 @@ class Parser {
                 primitive.x3 = this.reader.getFloat(primitveChildren[0], "x3"); primitive.y3 = this.reader.getFloat(primitveChildren[0], "y3"); primitive.z3 = this.reader.getFloat(primitveChildren[0], "z3");
             }
             else if (primitveChildren[0].nodeName == "cylinder") {
-                primitive.base = this.reader.getFloat(primitveChildren[0], "base"); primitive.top = this.reader.getFloat(primitveChildren[0], "top");
+                primitive.base = this.reader.getFloat(primitveChildren[0], "base"); primitive.top = this.reader.getFloat(primitveChildren[0], "top"); primitive.height = this.reader.getFloat(primitveChildren[0], "height");
                 primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitveChildren[0], "stacks");
             }
             else if (primitveChildren[0].nodeName == "sphere") {
@@ -888,7 +888,7 @@ class Parser {
     */
     parseComponentMaterials(node, componentID) {
         var nodeChildren = node.children;
-
+       
         if (nodeChildren.length < 1)
             return "component with [id = " + componentID + "] must have at least one material block on <materials>.";
         else {
@@ -902,13 +902,14 @@ class Parser {
 
                 if (materialID == null || materialID == "")
                     return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid ID.";
-                else if (this.data.materials[materialID] == null)
+                else if (this.data.materials[materialID] == null && materialID != "inherit")
                     return "component with [id = " + componentID + "] is not properly defined on <materials> because material with [id = " + materialID + "] is referencing an non existent material.";
 
                 materials.push(materialID);
             }
-            this.data.components[componentID].materials = materials;
+            this.data.components[componentID].materials = materials;    
         }
+        
     }
 
     /*
@@ -964,7 +965,7 @@ class Parser {
                     if (componentsID[j] == nodeChildrenID)
                         flag = true;
                 }
-                
+
                 if (flag)
                     componentsArray.push(nodeChildrenID);
                 else

@@ -108,7 +108,7 @@ class Data {
                 var transOp = transformOps[transIndex];
                 switch (transOp.type) {
                     case "translate":
-                        scene.translate(transOp.x, transOp.z, transOp.y);
+                        scene.translate(transOp.x, transOp.y, transOp.z);
                         break;
                     case "rotate":
                         switch (transOp.axis) {

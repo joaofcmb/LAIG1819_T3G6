@@ -717,7 +717,7 @@ class Parser {
                 primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.loops = this.reader.getInteger(primitveChildren[0], "loops");
             }
             else
-                return "Primitive <" + primitveChildren[0].nodeName + "> not valid. Valid transformations <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
+                return "Primitive <" + primitveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
 
             this.data.primitives[primitiveID] = primitive;
         }

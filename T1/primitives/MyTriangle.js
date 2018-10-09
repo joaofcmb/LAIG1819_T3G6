@@ -41,7 +41,7 @@ class MyTriangle extends CGFobject
         // console.log(this.counterClockNormal);
 
         // texture pre-calc - TODO figure out why vec3.angle isnt identified
-        this.uCoord3 = .5;
+        this.uCoord3 = 0.5;
         //this.uCoord3 = vec3.length(v13) * Math.cos(vec3.angle(v12, v13)) / vec3.length(v12);
         
         //console.log(this.uCoord3);

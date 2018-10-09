@@ -159,7 +159,7 @@ class Data {
 
             // TEXTURE INIT (TODO - avoid duplicate texture instatiations)
             var textureID = this.components[compID].textureID;
-            this.components[compID].activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID].file) : textureID;
+            this.components[compID].activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID]) : textureID;
 
             console.log(this.components);
             console.log(this.components[compID].primitiveID);

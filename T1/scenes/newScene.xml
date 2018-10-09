@@ -25,6 +25,9 @@
 
     <textures>
         <texture id="grass" file="./textures/grass.jpg" />
+        <texture id="water" file="./textures/water.png" />
+        <texture id="poolDrain" file="./textures/poolDrain.jpg" />
+        <texture id="ground" file="./textures/ground.jpg" />
     </textures>
 
     <materials>
@@ -145,6 +148,10 @@
             <torus inner="0.5" outer="1.5" slices="20" loops="20" />
         </primitive >
 
+        <primitive id="cyl">
+            <cylinder base="1.0" top="1.0" height="1.5" slices="20" stacks="20" />
+        </primitive >
+
     </primitives >
 
     <components>
@@ -153,107 +160,14 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="grayMaterial" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
 
             <children>
-                <componentref id="grass" />
+                <componentref id="ground" />
                 <componentref id="pool" />
-                <componentref id="sunshade" />
-                <componentref id="sunLounger" />
-                <componentref id="sunTowel" />
-                <componentref id="floater" />
-            </children>
-        </component>
-
-        <component id="grass">
-            <transformation></transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="grass" length_s="2.5" length_t="2.5" />
-
-            <children>
-                <componentref id="grassSideA" />
-                <componentref id="grassSideB" />
-                <componentref id="grassSideC" />
-                <componentref id="grassSideD" />
-            </children>
-        </component>
-
-        <component id="grassSideA">
-            <transformation>
-                <scale x="7.5" y="1.0" z="2.5" />
-                <translate x="0.0" y="0.0" z="1.9" />
-                <rotate axis="x" angle="90" />
-            </transformation>
-
-            <materials>
-                <material id="grassMaterial" />
-            </materials>
-
-            <texture id="inherit" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="grassPrimitive" />
-            </children>
-        </component>
-
-        <component id="grassSideB">
-            <transformation>
-                <scale x="7.5" y="1.0" z="2.5" />
-                <translate x="0.0" y="0.0" z="-1.90" />
-                <rotate axis="x" angle="90" />
-            </transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="inherit" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="grassPrimitive" />
-            </children>
-        </component>
-
-        <component id="grassSideC">
-            <transformation>
-                <rotate axis="x" angle="90" />
-                <scale x="1.5" y="2.5" z="1.0" />
-                <translate x="-4.0" y="0.0" z="0.0" />
-            </transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="inherit" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="grassPrimitive" />
-            </children>
-        </component>
-
-        <component id="grassSideD">
-            <transformation>
-                <rotate axis="x" angle="90" />
-                <scale x="1.5" y="2.5" z="1.0" />
-                <translate x="4.0" y="0.0" z="0.0" />
-            </transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="inherit" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="grassPrimitive" />
             </children>
         </component>
 
@@ -272,13 +186,17 @@
                 <componentref id="poolSideC" />
                 <componentref id="poolSideD" />
                 <componentref id="poolSideE" />
+                <componentref id="poolSideF" />
+                <componentref id="poolSideG" />
+                <componentref id="poolSideH" />
+                <componentref id="poolSideI" />
+                <componentref id="poolSideJ" />
             </children>
         </component>
-
         <component id="poolSideA">
             <transformation>
-                <scale x="4.5" y="1.0" z="1.0" />
-                <translate x="0.0" y="-1.0" z="2.25" />
+                <scale x="7.5" y="1.0" z="1.0" />
+                <translate x="0.0" y="-1.0" z="3.5" />
             </transformation>
 
             <materials>
@@ -291,11 +209,10 @@
                 <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
         <component id="poolSideB">
             <transformation>
-                <scale x="4.5" y="1.0" z="1.0" />
-                <translate x="0.0" y="-1.0" z="-2.25" />
+                <scale x="7.5" y="1.0" z="1.0" />
+                <translate x="0.0" y="-1.0" z="-3.5" />
             </transformation>
 
             <materials>
@@ -308,12 +225,11 @@
                 <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
         <component id="poolSideC">
             <transformation>
-                <translate x="-4.5" y="-1.0" z="0.0" />
+                <translate x="-7.5" y="-1.0" z="0.0" />
                 <rotate axis="y" angle="90" />
-                <scale x="2.25" y="1.0" z="1.0" />
+                <scale x="3.5" y="1.0" z="1.0" />
             </transformation>
 
             <materials>
@@ -326,12 +242,11 @@
                 <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
         <component id="poolSideD">
             <transformation>
-                <translate x="4.5" y="-1.0" z="0.0" />
+                <translate x="7.5" y="-1.0" z="0.0" />
                 <rotate axis="y" angle="90" />
-                <scale x="2.25" y="1.0" z="1.0" />
+                <scale x="3.5" y="1.0" z="1.0" />
             </transformation>
 
             <materials>
@@ -344,12 +259,11 @@
                 <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
         <component id="poolSideE">
             <transformation>
                 <translate x="0.0" y="-2.0" z="0.0" />
                 <rotate axis="x" angle="90" />
-                <scale x="4.5" y="2.25" z="1.0" />
+                <scale x="7.5" y="3.5" z="1.0" />
             </transformation>
 
             <materials>
@@ -362,307 +276,210 @@
                 <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="sunshade">
-            <transformation></transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <componentref id="sunshadeSupport" />
-                <componentref id="sunshadeTop" />
-            </children>
-        </component>
-
-        <component id="sunshadeSupport">
+        <component id="poolSideF">
             <transformation>
-                <scale x="1.0" y="1.1" z="1.0" />
-                <translate x="-1.0" y="1.5" z="6.0" />
+                <scale x="7.5" y="1.0" z="0.25" />
+                <translate x="0.0" y="0.0" z="15.0" />
                 <rotate axis="x" angle="90" />
             </transformation>
-
-            <materials>
-                <material id="woodMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="sunshadeSupportPrimitive" />
-            </children>
-        </component>
-
-        <component id="sunshadeTop">
-            <transformation>
-                <scale x="1.0" y="1.1" z="1.0" />
-                <translate x="-1.0" y="1.5" z="6.0" />
-                <rotate axis="x" angle="270" />
-            </transformation>
-
-            <materials>
-                <material id="sunshadeMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="sunshadeTopPrimitive" />
-            </children>
-        </component>
-
-        <component id="sunLounger">
-            <transformation></transformation>
 
             <materials>
                 <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="ground" length_s="1.0" length_t="1.0" />
 
             <children>
-                <componentref id="sunLoungerTop" />
-                <componentref id="sunLoungerMid" />
-                <componentref id="sunLoungerBottom" />
-                <componentref id="sunLoungerLeg" />
-                <componentref id="sunLoungerTable" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="sunLoungerTop">
+        <component id="poolSideG">
             <transformation>
-                <translate x="0.0" y="0.5" z="6.0" />
-                <rotate axis="x" angle="-45" />
-                <scale x="0.5" y="0.1" z="0.5" />
-                <rotate axis="z" angle="45" />
+                <scale x="7.5" y="1.0" z="0.25" />
+                <translate x="0.0" y="0.0" z="-15.0" />
+                <rotate axis="x" angle="90" />
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="ground" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="rectangularPrism" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="sunLoungerMid">
+        <component id="poolSideH">
             <transformation>
-                <translate x="0.0" y="0.5" z="4.5" />
-                <scale x="0.5" y="0.1" z="1.0" />
-                <rotate axis="z" angle="45" />
+                <scale x="0.25" y="1.0" z="4.0" />
+                <translate x="-31.0" y="0.0" z="0.0" />
+                <rotate axis="x" angle="90" />
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="ground" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="rectangularPrism" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="sunLoungerBottom">
+        <component id="poolSideI">
             <transformation>
-                <translate x="0.0" y="0" z="4.005" />
-                <rotate axis="x" angle="-45" />
-                <scale x="0.5" y="0.1" z="0.5" />
-                <rotate axis="z" angle="45" />
+                <scale x="0.25" y="1.0" z="4.0" />
+                <translate x="31.0" y="0.0" z="0.0" />
+                <rotate axis="x" angle="90" />
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="ground" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="rectangularPrism" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="sunLoungerLeg">
+        <component id="poolSideJ">
             <transformation>
-                <translate x="0.0" y="0.25" z="5.75" />
-                <scale x="0.1" y="0.25" z="0.1" />
-                <rotate axis="z" angle="45" />
+                <translate x="0.0" y="-0.25" z="0.0" />
+                <rotate axis="x" angle="90" />
+                <scale x="7.5" y="3.5" z="1.0" />
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="water" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="rectangularPrism" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
 
-        <component id="sunLoungerTable">
-            <transformation>
-                <translate x="1.0" y="0.25" z="5.75" />
-                <scale x="0.5" y="0.25" z="0.5" />
-                <rotate axis="z" angle="45" />
-            </transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="rectangularPrism" />
-            </children>
-        </component>
-
-        <component id="sunTowel">
-            <transformation></transformation>
-
-            <materials>
-                <material id="inherit" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <componentref id="sunTowelRed" />
-                <componentref id="sunTowelWhite" />
-                <componentref id="sunTowelOrange" />
-                <componentref id="sunTowelPurple" />
-            </children>
-        </component>
-
-        <component id="sunTowelRed">
-            <transformation>
-                <translate x="1.0" y="0.25" z="-5.75" />
-                <scale x="0.75" y="0.01" z="1.5" />
-                <rotate axis="z" angle="45" />
-            </transformation>
-
-            <materials>
-                <material id="redMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="rectangularPrism" />
-            </children>
-        </component>
-
-        <component id="sunTowelOrange">
-            <transformation>
-                <translate x="-1.0" y="0.25" z="-5.75" />
-                <scale x="0.75" y="0.01" z="1.5" />
-                <rotate axis="z" angle="45" />
-            </transformation>
-
-            <materials>
-                <material id="orangeMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="rectangularPrism" />
-            </children>
-        </component>
-
-        <component id="sunTowelWhite">
-            <transformation>
-                <translate x="3.0" y="0.25" z="-5.75" />
-                <scale x="0.75" y="0.01" z="1.5" />
-                <rotate axis="z" angle="45" />
-            </transformation>
-
-            <materials>
-                <material id="whiteMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="rectangularPrism" />
-            </children>
-        </component>
-
-        <component id="sunTowelPurple">
-            <transformation>
-                <translate x="-3.0" y="0.25" z="-5.75" />
-                <scale x="0.75" y="0.01" z="1.5" />
-                <rotate axis="z" angle="45" />
-            </transformation>
-
-            <materials>
-                <material id="purpleMaterial" />
-            </materials>
-
-            <texture id="none" length_s="1.0" length_t="1.0" />
-
-            <children>
-                <primitiveref id="rectangularPrism" />
-            </children>
-        </component>
-
-        <component id="floater">
+        <component id="ground">
             <transformation></transformation>
 
             <materials>
                 <material id="defaultMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="grass" length_s="2.5" length_t="2.5" />
 
             <children>
-                <componentref id="floaterPink" />
-                <componentref id="floaterYellow" />
+                <componentref id="groundSideA" />
+                <componentref id="groundSideB" />
+                <componentref id="groundSideC" />
+                <componentref id="groundSideD" />
+                <componentref id="groundSideE" />
+                <componentref id="groundSideF" />
             </children>
         </component>
-
-        <component id="floaterPink">
+        <component id="groundSideA">
             <transformation>
-                <translate x="4.0" y="0.25" z="5.75" />
+                <scale x="8.00" y="1.0" z="4.25" />
+                <translate x="0.0" y="0.0" z="1.94" />
                 <rotate axis="x" angle="90" />
-                <scale x="0.5" y="0.5" z="0.5" />
             </transformation>
 
             <materials>
-                <material id="pinkMaterial" />
+                <material id="inherit" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="floaterPrimitive" />
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
-
-        <component id="floaterYellow">
+        <component id="groundSideB">
             <transformation>
-
-                <translate x="5.0" y="0.5" z="5.5" />
-                <rotate axis="z" angle="-20" />
+                <scale x="8.0" y="1.0" z="4.25" />
+                <translate x="0.0" y="0.0" z="-1.94" />
                 <rotate axis="x" angle="90" />
-                <scale x="0.5" y="0.5" z="0.5" />
             </transformation>
 
             <materials>
-                <material id="yellowMaterial" />
+                <material id="inherit" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
 
             <children>
-                <primitiveref id="floaterPrimitive" />
+                <primitiveref id="grassPrimitive" />
+            </children>
+        </component>
+        <component id="groundSideC">
+            <transformation>
+                <rotate axis="x" angle="90" />
+                <scale x="6.5" y="12.5" z="1.0" />
+                <translate x="2.23" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="grassPrimitive" />
+            </children>
+        </component>
+        <component id="groundSideD">
+            <transformation>
+                <rotate axis="x" angle="90" />
+                <scale x="6.5" y="12.5" z="1.0" />
+                <translate x="-2.23" y="0.0" z="0.0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="grassPrimitive" />
+            </children>
+        </component>
+        <component id="groundSideE">
+            <transformation>
+                <scale x="21.0" y="1.0" z="5.0" />
+                <translate x="0.0" y="0.0" z="-3.45" />
+                <rotate axis="x" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="grassPrimitive" />
+            </children>
+        </component>
+        <component id="groundSideF">
+            <transformation>
+                <scale x="21.0" y="1.0" z="5.0" />
+                <translate x="0.0" y="0.0" z="3.45" />
+                <rotate axis="x" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="inherit" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="grassPrimitive" />
             </children>
         </component>
 

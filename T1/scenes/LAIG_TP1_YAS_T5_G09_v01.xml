@@ -402,7 +402,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cylinder" />
+            <primitiveref id="cylinder" />
         </children>
     </component>
 
@@ -483,7 +483,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cylinder" />
+            <primitiveref id="cylinder" />
         </children>
     </component>
     <component id="arm_lamp">
@@ -497,7 +497,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cylinder" />
+            <primitiveref id="cylinder" />
         </children>
     </component>
     <component id="lamp_bot">
@@ -510,7 +510,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cut_cone" />
+            <primitiveref id="cut_cone" />
         </children>
     </component>
 
@@ -568,7 +568,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cylinder" />
+            <primitiveref id="cylinder" />
         </children>
     </component>
     <component id="chair_bar_f_l">
@@ -706,7 +706,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="cut_cone" />
+            <primitiveref id="cut_cone" />
         </children>
     </component>
     <component id="fruit1">
@@ -719,7 +719,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="sphere" />
+            <primitiveref id="sphere" />
         </children>
     </component>
     <component id="fruit2">
@@ -732,7 +732,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="sphere" />
+            <primitiveref id="sphere" />
         </children>
     </component>
     <component id="fruit3">
@@ -745,7 +745,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="sphere" />
+            <primitiveref id="sphere" />
         </children>
     </component>
     <component id="fruit4">
@@ -758,7 +758,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="sphere" />
+            <primitiveref id="sphere" />
         </children>
     </component>
     <component id="fruit5">
@@ -771,7 +771,7 @@
         </materials>
         <texture id="none" length_s="1" length_t="1" />
         <children>
-            <componentref id="sphere" />
+            <primitiveref id="sphere" />
         </children>
     </component>
 

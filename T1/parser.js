@@ -751,6 +751,7 @@ class Parser {
     parseComponents(components) {
         var error;
         var flag = false;
+        var componentsID = [];
         var children = components.children;
 
         for (var i = 0; i < children.length; i++) {
@@ -760,6 +761,10 @@ class Parser {
 
         if ((error = this.checkRepeatedIDs(children, "components")) != null)
             return error;
+
+        for (var i = 0; i < children.length; i++) {
+            componentsID.push(this.reader.getString(children[i], "id"));
+        }
 
         for (var i = 0; i < children.length; i++) {
             var componentChildren = children[i].children;
@@ -790,7 +795,7 @@ class Parser {
                             return error;
                         break;
                     case "children":
-                        if ((error = this.parseComponentChildren(componentChildren[j], componentID)) != null)
+                        if ((error = this.parseComponentChildren(componentsID, componentChildren[j], componentID)) != null)
                             return error;
                         break;
                 }
@@ -938,19 +943,15 @@ class Parser {
     /*
         Parses children block on <components>
     */
-    parseComponentChildren(node, componentID) {
+    parseComponentChildren(componentsID, node, componentID) {
         var componentsArray = [];
-        var componentsID = [];
+
         var nodeChildren = node.children;
 
         if (nodeChildren.length < 1)
             return "<component> with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
 
-        for (var i = 0; i < nodeChildren.length; i++) {
-            if (nodeChildren[i].nodeName == "componentref")
-                componentsID.push(this.reader.getString(nodeChildren[i], "id"));
-        }
-
+       
         for (var i = 0; i < nodeChildren.length; i++) {
 
             var nodeChildrenID = this.reader.getString(nodeChildren[i], "id");
@@ -959,7 +960,6 @@ class Parser {
 
             if (nodeChildren[i].nodeName == "componentref") {
                 var flag = false;
-                //var component = this.data.components[nodeChildrenID];
 
                 for (var j = 0; j < componentsID.length; j++) {
                     if (componentsID[j] == nodeChildrenID)
@@ -969,7 +969,7 @@ class Parser {
                 if (flag)
                     componentsArray.push(nodeChildrenID);
                 else
-                    return "<component with> [id = " + componentID + "] has the following tag <componentref> referencing a non existent component.";
+                    return "<component with> [id = " + componentID + "] has the following tag <componentref> referencing a non existent component <" + nodeChildrenID + ">.";
 
             }
             else if (nodeChildren[i].nodeName == "primitiveref") {

@@ -819,7 +819,7 @@ class Parser {
                 if (transform == null)
                     return "Transformation block on <components> not valid due to a non existence of transformationref ID.";
                 else
-                    component.transforms = tranformRefID;
+                    this.data.components[componentID].transforms = tranformRefID;
             }
             else
                 return "Transformation block on <components> not valid. Valid transformations <transformationref> or <translate>, <rotate>, <scale>.";
@@ -888,7 +888,7 @@ class Parser {
     */
     parseComponentMaterials(node, componentID) {
         var nodeChildren = node.children;
-       
+
         if (nodeChildren.length < 1)
             return "component with [id = " + componentID + "] must have at least one material block on <materials>.";
         else {
@@ -907,9 +907,9 @@ class Parser {
 
                 materials.push(materialID);
             }
-            this.data.components[componentID].materials = materials;    
+            this.data.components[componentID].materials = materials;
         }
-        
+
     }
 
     /*

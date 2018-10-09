@@ -10,8 +10,10 @@ class Data {
 
         // TODO - figure out unknown default values
         this.orthoDefault = {
-            near: 0.1, far: 1000.0,
-            left: 1.0, right: 1.0, top: 1.0, bottom: 1.0 // 0 fov??? how to scale camera depending on values
+            near: 0.1, far: 100.0,
+            left: 1.0, right: 1.0, top: 1.0, bottom: 1.0,
+            fromX: 15, fromY: 15, fromZ: 15,
+            toX: 0, toY: 0, toZ: 0
         };
 
         this.perspectiveDefault = {
@@ -92,6 +94,7 @@ class Data {
         TODO test the graph setup
     */
     setupGraph(scene) {
+        // SETUP COMPONENTS
         for (var compID in this.components) {
             if (!this.components.hasOwnProperty(compID)) continue;
 

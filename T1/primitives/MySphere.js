@@ -17,20 +17,22 @@ class MySphere extends CGFobject
 
 	initBuffers()
 	{
-		// DRAW VERTICES ------------
+		// DRAW VERTICES, TEXTURE COORDINATES AND NORMALS ------------
 
 		this.vertices = [];
 		this.texCoords = [];
+		this.normals = [];
 
 		var hAngle = 2* Math.PI / this.slices;
 		var vAngle = Math.PI / (2* this.stacks);
 
-		for (var i = 0; i < this.stacks + 1; i++) {
-			for (var j = 0; j < this.slices; j++) {
+		for (var i = 0; i < this.stacks * 2 + 2; i++) {
+			for (var j = 0; j < this.slices * 2; j++) {
 				this.vertices.push(	Math.cos(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(vAngle * i) * this.radius);
-				this.texCoords.push((Math.cos(hAngle * j) * Math.cos(vAngle * i)+1)/2, (1-(Math.sin(hAngle * j) * Math.cos(vAngle * i)+1)/2));
+				this.texCoords.push((Math.cos(hAngle * j) * Math.cos(vAngle * i)+1) / 2, (1-(Math.sin(hAngle * j) * Math.cos(vAngle * i)+1) / 2));
+				this.normals.push(Math.cos(hAngle * j), Math.sin(hAngle * j), Math.sin(vAngle * i));
 			}
 		}
 
@@ -38,26 +40,13 @@ class MySphere extends CGFobject
 
 		this.indices = [];
 
-		for (var j = 0; j < this.stacks; j++) {
-			for (var i = 0; i < this.slices - 1; i++) {
+		for (var j = 0; j < this.stacks * 2; j++) {
+			for (var i = 0; i < this.slices * 2 - 2; i++) {
 				this.indices.push(i + j * this.slices, i + 1 + j * this.slices, i + (j + 1) * this.slices);
 				this.indices.push(i + 1 + j * this.slices, i + 1 + (j + 1) * this.slices, i + (j + 1) * this.slices);
 			}
 			this.indices.push(this.slices - 1 + j * this.slices, j * this.slices, (2 + j) * this.slices - 1);
 			this.indices.push(j * this.slices, (j + 1) * this.slices, (2 + j) * this.slices - 1);
-		}
-
-
-		// DRAW NORMALS ------------
-
-		this.normals = [];
-		var hAngle = 2* Math.PI / this.slices;
-		var vAngle = Math.PI / (2* this.stacks);
-
-		for (var i = 0; i < this.stacks + 1; i++) {
-			for (var j = 0; j < this.slices; j++) {
-				this.normals.push(Math.cos(hAngle * j), Math.sin(hAngle * j), Math.sin(vAngle * i));
-			}
 		}
 
 		// Logs

@@ -168,7 +168,7 @@ class Data {
             if (this.components[compID].hasOwnProperty("primitiveID")) {
                 var primitiveID = this.components[compID].primitiveID;
                 var primitive = this.primitives[primitiveID];
-
+                
                 switch (primitive.type) {
                     case "rectangle":
                         this.primitives[primitiveID] = new MyRectangle(scene, primitive.x1, primitive.y1, primitive.x2, primitive.y2);
@@ -235,6 +235,8 @@ class Data {
 
         currAppearance.apply();
 
-        component.activePrimitive.display();
+        if (component.activePrimitive != null)
+            component.activePrimitive.display();
+
     }
 }

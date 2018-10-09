@@ -168,7 +168,6 @@
                 <componentref id="sunLounger" />
                 <componentref id="sunTowel" />
                 <componentref id="floater" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -186,7 +185,6 @@
                 <componentref id="grassSideB" />
                 <componentref id="grassSideC" />
                 <componentref id="grassSideD" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -277,7 +275,6 @@
                 <componentref id="poolSideC" />
                 <componentref id="poolSideD" />
                 <componentref id="poolSideE" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -381,7 +378,6 @@
             <children>
                 <componentref id="sunshadeSupport" />
                 <componentref id="sunshadeTop" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -436,7 +432,6 @@
                 <componentref id="sunLoungerBottom" />
                 <componentref id="sunLoungerLeg" />
                 <componentref id="sunLoungerTable" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -546,7 +541,6 @@
                 <componentref id="sunTowelWhite" />
                 <componentref id="sunTowelOrange" />
                 <componentref id="sunTowelPurple" />
-                <primitiveref id="none" />
             </children>
         </component>
 
@@ -634,7 +628,6 @@
             <children>
                 <componentref id="floaterPink" />
                 <componentref id="floaterYellow" />
-                <primitiveref id="none" />
             </children>
         </component>
 

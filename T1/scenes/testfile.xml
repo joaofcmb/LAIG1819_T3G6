@@ -76,7 +76,7 @@
     <primitives>
 
         <primitive id="primitiveID">
-            <sphere radius="2" slices="10" stacks="10" />
+            <torus inner="2" outer="4" slices="20" loops="20" />
         </primitive >
 
         <primitive id="primitiveID_Sec">

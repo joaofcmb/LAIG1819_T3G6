@@ -176,7 +176,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -216,7 +216,7 @@
             </transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -234,7 +234,7 @@
             </transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -252,7 +252,7 @@
             </transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -266,7 +266,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="poolMaterial" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -288,7 +288,7 @@
             </transformation>
 
             <materials>
-                <material id="poolMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -305,7 +305,7 @@
             </transformation>
 
             <materials>
-                <material id="poolMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -323,7 +323,7 @@
             </transformation>
 
             <materials>
-                <material id="poolMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -341,7 +341,7 @@
             </transformation>
 
             <materials>
-                <material id="poolMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -359,7 +359,7 @@
             </transformation>
 
             <materials>
-                <material id="poolMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -373,7 +373,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -449,7 +449,7 @@
             </transformation>
 
             <materials>
-                <material id="grayMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -467,7 +467,7 @@
             </transformation>
 
             <materials>
-                <material id="grayMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -486,7 +486,7 @@
             </transformation>
 
             <materials>
-                <material id="grayMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -504,7 +504,7 @@
             </transformation>
 
             <materials>
-                <material id="defaultMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -522,7 +522,7 @@
             </transformation>
 
             <materials>
-                <material id="woodMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -536,7 +536,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grassMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />

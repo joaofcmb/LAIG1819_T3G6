@@ -131,27 +131,31 @@ class Data {
             this.components[compID].transformMatrix = scene.getMatrix();
 
             //  MATERIAL INIT ------------------
-            if (Array.isArray(this.components[compID].materials)) {
-                for (var materialIndex in this.components[compID].materials) {
-                    var materialID = this.components[compID].materials[materialIndex];
+            this.components[compID].activeMaterials = [];
+
+            for (var materialIndex in this.components[compID].materials) {
+                var materialID = this.components[compID].materials[materialIndex];
+
+                if (materialID == "inherit") {
+                    this.components[compID].activeMaterials.push("inherit");
+                }
+                else {
                     var material = this.materials[materialID];
 
-                    if (!material.hasOwnProperty("emissionR")) // Check if this material has been instantiated already
-                        continue;
+                    if (material.hasOwnProperty("emissionR")) { // Check if this material hasnt been instantiated yet
+                        var appearance = new CGFappearance(scene);
 
-                    var appearance = new CGFappearance(scene);
+                        appearance.setShininess(material.shininess);
+                        appearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
+                        appearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
+                        appearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);
 
-                    appearance.setShininess(material.shininess);
-                    appearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
-                    appearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
-                    appearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);
-
-                    this.materials[materialID] = appearance;
+                        this.materials[materialID] = appearance;
+                    }
+                    this.components[compID].activeMaterials.push(this.materials[materialID]);
                 }
-                this.components[compID].activeMaterial = this.materials[this.components[compID].materials[0]]; // Sets first material as default
             }
-            else
-                this.components[compID].activeMaterial = "inherit";
+            this.components[compID].activeMaterial = this.components[compID].activeMaterials[0]; // Sets first material as default
 
             // TEXTURE INIT (TODO - avoid duplicate texture instatiations)
             var textureID = this.components[compID].textureID;

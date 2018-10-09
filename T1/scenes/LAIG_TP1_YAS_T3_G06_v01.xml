@@ -24,7 +24,7 @@
     </lights>
 
     <textures>
-        <texture id="textureID" file="fileNotFound" />
+        <texture id="grass" file="./textures/grass.jpg" />
     </textures>
 
     <materials>
@@ -145,10 +145,6 @@
             <torus inner="0.5" outer="1.5" slices="20" loops="20" />
         </primitive >
 
-        <primitive id="none">
-            <rectangle x1="-1.0" y1="-1.0" x2="-1.0" y2="-1.0" />
-        </primitive >
-
     </primitives >
 
     <components>
@@ -200,7 +196,7 @@
                 <material id="grassMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="grass" length_s="1.0" length_t="1.0" />
 
             <children>
                 <primitiveref id="grassPrimitive" />
@@ -218,7 +214,7 @@
                 <material id="inherit" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="grass" length_s="1.0" length_t="1.0" />
 
             <children>
                 <primitiveref id="grassPrimitive" />
@@ -236,7 +232,7 @@
                 <material id="inherit" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="grass" length_s="1.0" length_t="1.0" />
 
             <children>
                 <primitiveref id="grassPrimitive" />
@@ -254,7 +250,7 @@
                 <material id="inherit" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="grass" length_s="1.0" length_t="1.0" />
 
             <children>
                 <primitiveref id="grassPrimitive" />

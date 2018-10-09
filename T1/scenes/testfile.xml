@@ -47,7 +47,7 @@
 
         <material id="materialID" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="1.0" />
-            <ambient r="0" g="0" b="0" a="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
             <diffuse r=".5" g=".5" b=".5" a="1.0" />
             <specular r="1" g="1" b="1" a="1.0" />
         </material>
@@ -76,7 +76,7 @@
     <primitives>
 
         <primitive id="primitiveID">
-            <cylinder base="2" top="1" height="2" slices="10" stacks="10" />
+            <sphere radius="2" slices="10" stacks="10" />
         </primitive >
 
         <primitive id="primitiveID_Sec">

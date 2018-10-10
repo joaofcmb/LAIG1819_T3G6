@@ -52,18 +52,21 @@ class MyRectangle extends CGFobject
         ];
 
         // DRAW TEXCOORDS ----------
+        var dX = Math.abs(this.x2 - this.x1);
+        var dY = Math.abs(this.y2 - this.y1);
+
         this.texCoords = [
-            0, 1,
-            1, 1,
+            0, dY,
+            dX, dY,
 
-            1, 1,
-            0, 1,
+            dX, dY,
+            0, dY,
 
-            1, 0,
+            dX, 0,
             0, 0,
 
             0, 0,
-            1, 0
+            dX, 0
         ];
         
 		this.primitiveType = this.scene.gl.TRIANGLES;

@@ -25,44 +25,37 @@ class MyTriangle extends CGFobject
         ];
 
         // Geometric pre-calculations
-        var v12 = vec3.create();
-        v12 = vec3.fromValues(x2 - x1, y2 - y1, z2 - z1);
+        this.v12 = vec3.create();
+        this.v12 = vec3.fromValues(x2 - x1, y2 - y1, z2 - z1);
 
-        var v13 = vec3.create();
-        v13 = vec3.fromValues(x3 - x1, y3 - y1, z3 - z1);
+        this.v13 = vec3.create();
+        this.v13 = vec3.fromValues(x3 - x1, y3 - y1, z3 - z1);
 
-        // normal pre-calc
-        this.clockwiseNormal = vec3.create();
-        this.counterClockNormal = vec3.create();
-        vec3.cross(this.clockwiseNormal, v12, v13);
-        vec3.cross(this.counterClockNormal, v13, v12);
-
-        // console.log(this.clockwiseNormal);
-        // console.log(this.counterClockNormal);
-
-        // texture pre-calc - TODO figure out why vec3.angle isnt identified
-        this.uCoord3 = 0.5;
-        //this.uCoord3 = vec3.length(v13) * Math.cos(vec3.angle(v12, v13)) / vec3.length(v12);
-        
-        //console.log(this.uCoord3);
-
-        
 		this.initBuffers();
 	};
 
 	initBuffers()
 	{
-		// DRAW VERTICES ------------
+		// DRAW VERTICES AND NORMALS------------
+
+        // normal pre-calc
+        var clockwiseNormal = vec3.create();
+        var counterClockNormal = vec3.create();
+        vec3.cross(clockwiseNormal, this.v12, this.v13);
+        vec3.cross(counterClockNormal, this.v13, this.v12);
+
+        // console.log(this.clockwiseNormal);
+        // console.log(this.counterClockNormal);
 
 		this.vertices = [];
    	 	this.normals = [];
 
         for (var i = 0; i < this.p.length; i+= 3) {
             this.vertices.push(this.p[i], this.p[i + 1], this.p[i + 2]);
-            this.normals.push(this.clockwiseNormal[0], this.clockwiseNormal[1], this.clockwiseNormal[2]);
+            this.normals.push(clockwiseNormal[0], clockwiseNormal[1], clockwiseNormal[2]);
 
             this.vertices.push(this.p[i], this.p[i + 1], this.p[i + 2]);
-            this.normals.push(this.counterClockNormal[0], this.counterClockNormal[1], this.counterClockNormal[2]);
+            this.normals.push(counterClockNormal[0], counterClockNormal[1], counterClockNormal[2]);
         }
 
 		// DRAW INDICES ------------
@@ -73,16 +66,21 @@ class MyTriangle extends CGFobject
         ];
 
         // DRAW TEXCOORDS ----------
+        var dist12 = vec3.length(this.v12);
+        var dist13 = vec3.length(this.v13);
+        var dist23 = Math.sqrt(Math.pow(this.p[0] - this.p[6], 2) + Math.pow(this.p[1] - this.p[7], 2) + Math.pow(this.p[2] - this.p[8], 2));
+        
+        var angle = Math.acos(-dist23 * dist23 + dist13 * dist13 + dist12 * dist12 / (2 * dist13 * dist12));
 
         this.texCoords = [
             0, 1,
-            1, 1,
+            dist12, 1,
 
-            1, 1,
+            dist12, 1,
             0, 1,
 
-            this.uCoord3, 0,
-            1 - this.uCoord3, 0
+            dist13 * Math.cos(angle), 1 - dist13 * Math.sin(angle),
+            dist12 - dist13 * Math.cos(angle), 1 - dist13 * Math.sin(angle)
         ];
         
 		this.primitiveType = this.scene.gl.TRIANGLES;

@@ -22,7 +22,7 @@
 
         <omni id="omniID" enabled="true">
             <location x="0.0" y="0.0" z="5.0" w="0.0" />
-            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
             <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
             <specular r="0.6" g="0.6" b="0.6" a="1.0" />
         </omni>
@@ -39,7 +39,7 @@
 
     <textures>
 
-        <texture id="textureID" file="./textures/board.png" />
+        <texture id="textureID" file="./textures/water.png" />
 
     </textures>
 
@@ -76,11 +76,11 @@
     <primitives>
 
         <primitive id="primitiveID">
-            <sphere radius="1" slices="20" stacks="20" />
+            <sphere radius="2" slices="20" stacks="20" />
         </primitive >
 
         <primitive id="primitiveID_Sec">
-            <triangle x1="1.0" y1="1.0" z1="1.0" x2="1.0" y2="1.0" z2="1.0" x3="1.0" y3="1.0" z3="1.0" />
+            <cylinder base="2" top="1" height="3" slices="20" stacks="20" />
         </primitive >
 
     </primitives >

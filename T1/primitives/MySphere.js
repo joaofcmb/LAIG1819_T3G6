@@ -33,7 +33,7 @@ class MySphere extends CGFobject
 				this.vertices.push(	Math.cos(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(vAngle * i) * this.radius);
-				this.texCoords.push(j / this.slices, 1 - ((i + halfStacks) / this.stacks));
+				this.texCoords.push(j / this.slices * 2 * this.radius, 1 - ((i + halfStacks) / this.stacks * 2 * this.radius));
 				this.normals.push(Math.cos(hAngle * j) * Math.cos(vAngle * i), Math.sin(hAngle * j) * Math.sin(vAngle * j), Math.sin(vAngle * i));
 			}
 		}

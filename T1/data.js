@@ -226,19 +226,20 @@ class Data {
                 break;
         }
         currAppearance.setTexture(currTexture);
-        currAppearance.setTextureWrap(component.texLengthS, component.texLengthT);
+        currAppearance.setTextureWrap('REPEAT', 'REPEAT');
 
         for (var childIndex in component.components) {
             var child = component.components[childIndex];
 
             scene.pushMatrix();
-            this.displayComponent(scene, this.components[child], currAppearance, currTexture);
+                this.displayComponent(scene, this.components[child], currAppearance, currTexture);
             scene.popMatrix();
         }
 
+        // apply scale factors to primitive (the primitives texture coordinates are normalized to the unit)
         currAppearance.apply();
 
-        if (component.activePrimitive != null)
+        if (component.activePrimitive)
             component.activePrimitive.display();
 
     }

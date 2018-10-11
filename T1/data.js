@@ -225,8 +225,6 @@ class Data {
                 var currTexture = component.activeTexture;
                 break;
         }
-        currAppearance.setTexture(currTexture);
-        currAppearance.setTextureWrap('REPEAT', 'REPEAT');
 
         for (var childIndex in component.components) {
             var child = component.components[childIndex];
@@ -237,6 +235,8 @@ class Data {
         }
 
         // apply scale factors to primitive (the primitives texture coordinates are normalized to the unit)
+        currAppearance.setTexture(currTexture);
+        currAppearance.setTextureWrap('REPEAT', 'REPEAT');
         currAppearance.apply();
 
         if (component.activePrimitive)

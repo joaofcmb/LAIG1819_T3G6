@@ -50,6 +50,10 @@
         <texture id="towelE" file="./textures/towelE.jpeg" />
         <texture id="towelF" file="./textures/towelF.jpg" />
         <texture id="inox" file="./textures/inox.jpg" />
+        <texture id="floaterA" file="./textures/floaterA.jpg" />
+        <texture id="floaterB" file="./textures/floaterB.png" />
+        <texture id="ball" file="./textures/ball.jpg" />
+        <texture id="plank" file="./textures/plank.jpg" />
     </textures>
 
     <materials>
@@ -172,6 +176,10 @@
             <cylinder base="1.0" top="1.0" height="1.5" slices="4" stacks="20" />
         </primitive >
 
+        <primitive id="triangularPrism">
+            <cylinder base="1.0" top="1.0" height="1.5" slices="3" stacks="20" />
+        </primitive >
+
         <primitive id="cup">
             <cylinder base="0.5" top="0.75" height="1.0" slices="8" stacks="20" />
         </primitive >
@@ -182,6 +190,14 @@
 
         <primitive id="poolStair">
             <torus inner="0.5" outer="0.75" slices="20" loops="20" />
+        </primitive >
+
+        <primitive id="floater">
+            <torus inner="0.5" outer="1.5" slices="20" loops="20" />
+        </primitive >
+
+        <primitive id="ball">
+            <sphere radius="1.0" slices="20" stacks="20" />
         </primitive >
 
     </primitives >
@@ -202,6 +218,9 @@
                 <componentref id="pool" />
                 <componentref id="sunShadespots" />
                 <componentref id="towels" />
+                <componentref id="floaters" />
+                <componentref id="ball" />
+                <componentref id="divingBoard" />
             </children>
         </component>
 
@@ -581,7 +600,144 @@
                 <primitiveref id="rectangule" />
             </children>
         </component>
+        
+        <component id="floaters">
+            <transformation>
+            
+            </transformation>
 
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="none" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <componentref id="floaterA" />
+                <componentref id="floaterB" />
+                <componentref id="floaterC" />
+            </children>
+        </component>
+         <component id="floaterA">
+            <transformation>
+                <translate x="-15.5" y="0.65" z="5.75" />
+                <scale x="1.25" y="1.25" z="1.25" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="floaterB" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="floater" />
+            </children>
+        </component>
+        <component id="floaterB">
+            <transformation>
+                <translate x="-15.5" y="1.2" z="8.75" />
+                <scale x="1.25" y="1.25" z="1.25" />
+                <rotate axis="x" angle="-65" />
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="stripes" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="floater" />
+            </children>
+        </component>
+        <component id="floaterC">
+            <transformation>
+                <translate x="-18.0" y="1.4" z="6.75" />
+                <scale x="1.25" y="1.25" z="1.25" />
+                <rotate axis="x" angle="-10" />
+                <rotate axis="z" angle="35" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="floaterA" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="floater" />
+            </children>
+        </component>
+
+        <component id="ball">
+            <transformation>
+                <translate x="15.5" y="0.75" z="-5.75" />
+                <scale x="0.75" y="0.75" z="0.75" />
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="ball" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="ball" />
+            </children>
+        </component>
+
+        <component id="divingBoard">
+            <transformation>
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="none" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <componentref id="divingBoardTop" />
+                <componentref id="divingBoardBottom" />
+            </children>
+        </component>
+         <component id="divingBoardTop">
+            <transformation>
+                <translate x="6.75" y="1.25" z="-0.5" />
+                <scale x="3.0" y="0.2" z="0.75" />
+                <rotate axis="z" angle="45" />
+            </transformation>
+
+            <materials>
+                <material id="grayMaterial" />
+            </materials>
+
+            <texture id="plank" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="rectangularPrism" />
+            </children>
+        </component>
+        <component id="divingBoardBottom">
+            <transformation>
+                <translate x="8.25" y="0.35" z="-0.5" />
+                <scale x="0.85" y="0.75" z="0.75" />
+                <rotate axis="z" angle="90" />
+            </transformation>
+
+            <materials>
+                <material id="whiteMaterial" />
+            </materials>
+
+            <texture id="none" length_s="1.0" length_t="1.0" />
+
+            <children>
+                <primitiveref id="triangularPrism" />
+            </children>
+        </component>
 
         <component id="sunShadespots">
             <transformation></transformation>

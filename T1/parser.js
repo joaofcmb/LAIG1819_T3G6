@@ -191,19 +191,6 @@ class Parser {
 
                 cam.angle = this.reader.getFloat(children[i], "angle");
 
-                var perspectiveChildren = children[i].children;
-
-                if (perspectiveChildren.length != 2)
-                    return "Perspective view with [id = " + perspective[0] + "] must have only two children."
-                else if (perspectiveChildren[0].nodeName != "from")
-                    return "<" + perspectiveChildren[0].nodeName + "> invalid children of perspective view with [id = " + camID + "]."
-                else if (perspectiveChildren[1].nodeName != "to")
-                    return "<" + perspectiveChildren[1].nodeName + "> invalid children of perspective view with [id = " + camID + "]."
-                else {
-                    cam.fromX = this.reader.getFloat(perspectiveChildren[0], "x"); cam.fromY = this.reader.getFloat(perspectiveChildren[0], "y"); cam.fromZ = this.reader.getFloat(perspectiveChildren[0], "z");
-                    cam.toX = this.reader.getFloat(perspectiveChildren[1], "x"); cam.toY = this.reader.getFloat(perspectiveChildren[1], "y"); cam.toZ = this.reader.getFloat(perspectiveChildren[1], "z");
-                }
-
                 this.data.perspectiveCams[camID] = cam;
             }
             else if (nodeNames[i] == "ortho") {
@@ -219,6 +206,25 @@ class Parser {
             }
             else
                 return "<" + nodeNames[i] + "> is not a valid type of view. Valid types: <perspective> or <ortho>."
+
+            var perspectiveChildren = children[i].children;
+
+            if (perspectiveChildren.length != 2)
+                return "View with [id = " + perspective[0] + "] must have only two children."
+            else if (perspectiveChildren[0].nodeName != "from")
+                return "<" + perspectiveChildren[0].nodeName + "> invalid children of view with [id = " + camID + "]."
+            else if (perspectiveChildren[1].nodeName != "to")
+                return "<" + perspectiveChildren[1].nodeName + "> invalid children of view with [id = " + camID + "]."
+            else {
+                cam.fromX = this.reader.getFloat(perspectiveChildren[0], "x"); cam.fromY = this.reader.getFloat(perspectiveChildren[0], "y"); cam.fromZ = this.reader.getFloat(perspectiveChildren[0], "z");
+                cam.toX = this.reader.getFloat(perspectiveChildren[1], "x"); cam.toY = this.reader.getFloat(perspectiveChildren[1], "y"); cam.toZ = this.reader.getFloat(perspectiveChildren[1], "z");
+            }
+
+            if (nodeNames[i] == "perspective")
+                this.data.perspectiveCams[camID] = cam;
+            else if (nodeNames[i] == "ortho")
+                this.data.orthoCams[camID] = cam;
+
         }
 
         if ((error = this.validateViewsInfo()) != null)
@@ -250,7 +256,7 @@ class Parser {
                     if (this.data.orthoCams[firstKey].hasOwnProperty(secondKey)) {
                         if (this.data.orthoCams[firstKey][secondKey] == null || isNaN(this.data.orthoCams[firstKey][secondKey])) {
                             this.data.orthoCams[firstKey][secondKey] = this.data.orthoDefault[secondKey];
-                            this.onXMLMinorError("Perspective view with [id = " + firstKey + "] is not properly defined. Default values has been used.");
+                            this.onXMLMinorError("Ortho view with [id = " + firstKey + "] is not properly defined. Default values has been used.");
                         }
                     }
                 }
@@ -907,7 +913,7 @@ class Parser {
 
                 if (materialID == null || materialID == "")
                     return "component with [id = " + componentID + "] is not properly defined on <materials> due to invalid ID.";
-                else if (this.data.materials[materialID] == null && materialID != "inherit")
+                else if (materialID != "inherit" && this.data.materials[materialID] == null)
                     return "component with [id = " + componentID + "] is not properly defined on <materials> because material with [id = " + materialID + "] is referencing an non existent material.";
 
                 materials.push(materialID);
@@ -932,9 +938,7 @@ class Parser {
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";
-        else if (textureID == "inherit" && componentID == this.data.root)
-            return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is inheriting elements from its own.";
-
+        
         this.data.components[componentID].textureID = textureID;
         this.data.components[componentID].texLengthS = textureLenS;
         this.data.components[componentID].texLengthT = textureLenT;
@@ -951,7 +955,7 @@ class Parser {
         if (nodeChildren.length < 1)
             return "<component> with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
 
-       
+
         for (var i = 0; i < nodeChildren.length; i++) {
 
             var nodeChildrenID = this.reader.getString(nodeChildren[i], "id");

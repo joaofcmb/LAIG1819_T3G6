@@ -12,7 +12,7 @@ function getUrlVars() {
 }	 
 
 //Include additional files here
-serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', 
+serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js", 
                 './primitives/MyRectangle.js', './primitives/MyTriangle.js', 
                 './primitives/MyCylinder.js', './primitives/MySphere.js', './primitives/MyCircle.js', './primitives/MyTorus.js',
 
@@ -21,7 +21,7 @@ main=function()
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var data = new Data();
-    var interface = new CGFinterface();
+    var interface = new Interface();
     var scene = new Scene(data, interface);
 
     app.init();
@@ -31,7 +31,7 @@ main=function()
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
-    var filename=getUrlVars()['file'] || "testFile.xml";
+    var filename=getUrlVars()['file'] || "newScene.xml";
     // LAIG_TP1_YAS_T3_G06_v01
 
 	// create and load graph, and associate it to scene. 

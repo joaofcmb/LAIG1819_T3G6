@@ -30,13 +30,16 @@ class MyCylinder extends CGFobject
 
 		var angle = 2* Math.PI / this.slices;
 		var dR = (this.top - this.base) / this.stacks;
+
 		var zN = 1 / (this.base - this.top);
+		var nCoef = 1 / Math.sqrt(1 + zN * zN); // Coeficient to normalize the normal
+		zN *= nCoef;
 
 		for (var i = 0; i < this.stacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(Math.cos(angle * j) * (this.base + i * dR), Math.sin(angle * j) * (this.base + i * dR), this.height * i/this.stacks);
 				this.texCoords.push(1 - j/this.slices, i/this.stacks);
-				this.normals.push(Math.cos(angle * j), Math.sin(angle * j), zN);
+				this.normals.push(nCoef * Math.cos(angle * j), nCoef * Math.sin(angle * j), zN);
 			}
 		}
 

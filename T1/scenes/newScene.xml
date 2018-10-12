@@ -24,16 +24,17 @@
         <omni id="sun" enabled="true">
             <location x="-50.0" y="100.0" z="-50.0" w="0.0" />
             <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
-            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
-            <specular r="0.3" g="0.3" b="0.3" a="1.0" />
+            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
         </omni>
-
+        <!--
         <omni id="sun1" enabled="true">
             <location x="50.0" y="100.0" z="50.0" w="0.0" />
             <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
             <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
             <specular r="0.3" g="0.3" b="0.3" a="1.0" />
         </omni>
+        -->
 
     </lights>
 
@@ -65,87 +66,87 @@
 
     <materials>
         <material id="grassMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.0" g="0.5" b="0.0" a="1.0" />
             <diffuse r="0.0" g="0.5" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="poolMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.0" g="0.5" b="1.0" a="1.0" />
             <diffuse r="0.0" g="0.5" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
-        <material id="sunshadeMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+        <material id="sunshadeMaterial" shininess="10.0">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.8" g="0.7" b="0.4" a="1.0" />
             <diffuse r="0.8" g="0.7" b="0.4" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="woodMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
-            <ambient r="0.36" g="0.28" b="0.02" a="1.0" />
-            <diffuse r="0.36" g="0.28" b="0.02" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.44" g="0.42" b="0.03" a="1.0" />
+            <diffuse r="0.72" g="0.56" b="0.04" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="grayMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.77" g="0.76" b="0.72" a="1.0" />
             <diffuse r="0.77" g="0.76" b="0.72" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="whiteMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="pinkMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.99" g="0.0" b="0.99" a="1.0" />
             <diffuse r="0.99" g="0.0" b="0.99" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="orangeMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.99" g="0.56" b="0.0" a="1.0" />
             <diffuse r="0.99" g="0.56" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="redMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="1.0" g="0.0" b="0.0" a="1.0" />
             <diffuse r="1.0" g="0.0" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="purpleMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.64" g="0.0" b="0.99" a="1.0" />
             <diffuse r="0.64" g="0.0" b="0.99" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="yellowMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r="0.99" g="0.99" b="0.0" a="1.0" />
             <diffuse r="0.99" g="0.99" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="defaultMaterial" shininess="1.0">
-            <emission r="1.0" g="1.0" b="1.0" a="1.0" />
-            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
-            <diffuse r="0.0" g="0.0" b="0.0" a="1.0" />
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+            <specular r="0.3" g="0.3" b="0.3" a="1.0" />
         </material>
 
     </materials>
@@ -910,7 +911,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="woodMaterial" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -929,7 +930,7 @@
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="sunshadeMaterial" />
             </materials>
 
             <texture id="straw" length_s="1.0" length_t="1.0" />

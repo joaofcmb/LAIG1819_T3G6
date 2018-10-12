@@ -66,12 +66,6 @@ class Data {
             specularR: 0.2, specularG: 0.2, specularB: 0.2, specularA: 1.0
         }
 
-        this.defaultAppearance = new CGFappearance();
-        this.defaultAppearance.setShininess(this.materialDefault.shininess);
-        this.defaultAppearance.setAmbient(this.materialDefault.ambientR, this.materialDefault.ambientG, this.materialDefault.ambientB, this.materialDefault.ambientA);
-        this.defaultAppearance.setDiffuse(this.materialDefault.diffuseR, this.materialDefault.diffuseG, this.materialDefault.diffuseB, this.materialDefault.diffuseA);
-        this.defaultAppearance.setSpecular(this.materialDefault.specularR, this.materialDefault.specularG, this.materialDefault.specularB, this.materialDefault.specularA);
-
         // TRANSFORMATIONS - TODO integrate transforms with graph
         this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 
         //  ID -> [ {type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...} ]
@@ -140,6 +134,12 @@ class Data {
             this.components[compID].transformMatrix = scene.getMatrix();
 
             //  MATERIAL INIT ------------------
+            this.defaultAppearance = new CGFappearance(scene);
+            this.defaultAppearance.setShininess(this.materialDefault.shininess);
+            this.defaultAppearance.setAmbient(this.materialDefault.ambientR, this.materialDefault.ambientG, this.materialDefault.ambientB, this.materialDefault.ambientA);
+            this.defaultAppearance.setDiffuse(this.materialDefault.diffuseR, this.materialDefault.diffuseG, this.materialDefault.diffuseB, this.materialDefault.diffuseA);
+            this.defaultAppearance.setSpecular(this.materialDefault.specularR, this.materialDefault.specularG, this.materialDefault.specularB, this.materialDefault.specularA);
+
             this.components[compID].activeMaterials = [];
 
             for (var materialIndex in this.components[compID].materials) {
@@ -213,8 +213,11 @@ class Data {
         NOTICE: It is assumed that the scene has been initialized with identity matrix
     */
     displayGraph(scene) {
+        this.materialStack = [];
+        this.textureStack = [];
+
         var rootComponent = this.components[this.root];
-        this.displayComponent(scene, rootComponent, this.defaultAppearance, "none");
+        this.displayComponent(scene, rootComponent, this.defaultAppearance, null);
     }
 
     // recursive call of graph components
@@ -239,7 +242,11 @@ class Data {
             var child = component.components[childIndex];
             // TODO push materials and textures
             scene.pushMatrix();
+            this.materialStack.push(currAppearance);
+            this.textureStack.push(currTexture);
                 this.displayComponent(scene, this.components[child], currAppearance, currTexture);
+            this.textureStack.push(currTexture);
+            this.materialStack.push(currAppearance);
             scene.popMatrix();
         }
 

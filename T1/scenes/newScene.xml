@@ -215,7 +215,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grayMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />

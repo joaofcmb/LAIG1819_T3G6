@@ -164,34 +164,37 @@ class Data {
             var textureID = this.components[compID].textureID;
             this.components[compID].activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID]) : textureID;
 
-            console.log(this.components);
-            console.log(this.components[compID].primitiveID);
+            //console.log(this.components);
+            //console.log(this.components[compID].primitiveID);
 
             // PRIMITIVES INIT --------------------
+            // TODO Scale factors (seperate primitive per component)
             if (this.components[compID].hasOwnProperty("primitiveID")) {
                 var primitiveID = this.components[compID].primitiveID;
                 var primitive = this.primitives[primitiveID];
                 
                 switch (primitive.type) {
                     case "rectangle":
-                        this.primitives[primitiveID] = new MyRectangle(scene, primitive.x1, primitive.y1, primitive.x2, primitive.y2);
+                        this.components[compID].activePrimitive = new MyRectangle(scene, primitive.x1, primitive.y1, 
+                                                                                  primitive.x2, primitive.y2,
+                                                                                  this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "triangle":
-                        this.primitives[primitiveID] = new MyTriangle(scene, primitive.x1, primitive.y1, primitive.z1,
-                            primitive.x2, primitive.y2, primitive.z2,
-                            primitive.x3, primitive.y3, primitive.z3);
+                        this.components[compID].activePrimitive = new MyTriangle(scene, primitive.x1, primitive.y1, primitive.z1,
+                                                                                 primitive.x2, primitive.y2, primitive.z2,
+                                                                                 primitive.x3, primitive.y3, primitive.z3,
+                                                                                 this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "cylinder":
-                        this.primitives[primitiveID] = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
+                        this.components[compID].activePrimitive = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
                         break;
                     case "sphere":
-                        this.primitives[primitiveID] = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks);
+                        this.components[compID].activePrimitive = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks);
                         break;
                     case "torus":
-                        this.primitives[primitiveID] = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops);
+                        this.components[compID].activePrimitive = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops);
                         break;
                 }
-                this.components[compID].activePrimitive = this.primitives[primitiveID];
             }
         }
     }
@@ -205,7 +208,7 @@ class Data {
     */
     displayGraph(scene) {
         var rootComponent = this.components[this.root];
-        this.displayComponent(scene, rootComponent, rootComponent.activeMaterial, rootComponent.activeTexture);
+        this.displayComponent(scene, rootComponent, this.materialDefault, "none");
     }
 
     // recursive call of graph components
@@ -228,19 +231,19 @@ class Data {
 
         for (var childIndex in component.components) {
             var child = component.components[childIndex];
-
+            // TODO push materials and textures
             scene.pushMatrix();
                 this.displayComponent(scene, this.components[child], currAppearance, currTexture);
             scene.popMatrix();
         }
 
-        // apply scale factors to primitive (the primitives texture coordinates are normalized to the unit)
         currAppearance.setTexture(currTexture);
         currAppearance.setTextureWrap('REPEAT', 'REPEAT');
         currAppearance.apply();
 
-        if (component.activePrimitive)
+        if (component.activePrimitive) {
             component.activePrimitive.display();
+        }
 
     }
 }

@@ -1,11 +1,12 @@
 class MyRectangle extends CGFobject
 {
-	constructor(scene, x1, y1, x2, y2)
+	constructor(scene, x1, y1, x2, y2, fS, fT)
 	{
         super(scene);
         
         this.x1 = x1; this.y1 = y1;
         this.x2 = x2; this.y2 = y2;
+        this.fS = fS; this.fT = fT;
 
 		this.initBuffers();
 	};
@@ -56,17 +57,17 @@ class MyRectangle extends CGFobject
         var dY = Math.abs(this.y2 - this.y1);
 
         this.texCoords = [
-            0, dY,
-            dX, dY,
+            0, dY / this.fT,
+            dX / this.fS, dY / this.fT,
 
-            dX, dY,
-            0, dY,
+            dX / this.fS, dY / this.fT,
+            0, dY / this.fT,
 
-            dX, 0,
+            dX / this.fS, 0,
             0, 0,
 
             0, 0,
-            dX, 0
+            dX / this.fS, 0
         ];
         
 		this.primitiveType = this.scene.gl.TRIANGLES;

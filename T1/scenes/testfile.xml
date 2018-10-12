@@ -39,7 +39,7 @@
 
     <textures>
 
-        <texture id="textureID" file="./textures/water.png" />
+        <texture id="textureID" file="./textures/board.png" />
 
     </textures>
 
@@ -77,12 +77,18 @@
 
         <primitive id="primitiveID">
             <sphere radius="2" slices="20" stacks="20" />
-        </primitive >
+        </primitive>
 
         <primitive id="primitiveID_Sec">
             <cylinder base="2" top="1" height="3" slices="20" stacks="20" />
-        </primitive >
+        </primitive>
 
+        <primitive id="rect">
+            <rectangle x1="-1" y1="-1" x2="1" y2="1" />
+        </primitive>
+        <primitive id="tri">
+            <triangle x1="-1" y1="0" z1="0" x2="1" y2="0" z2="0" x3="0" y3="2" z3="0"/>
+        </primitive>
     </primitives >
 
     <components>
@@ -105,7 +111,7 @@
 
             <children>
                 <!-- <componentref id="componentID" /> -->
-                <primitiveref id="primitiveID" />
+                <primitiveref id="tri" />
             </children>
 
         </component>

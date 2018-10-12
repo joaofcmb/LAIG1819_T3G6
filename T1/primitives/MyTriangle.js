@@ -1,7 +1,7 @@
 
 class MyTriangle extends CGFobject
 {
-	constructor(scene, x1, y1, z1, x2, y2, z2, x3, y3, z3)
+	constructor(scene, x1, y1, z1, x2, y2, z2, x3, y3, z3, lS, lT)
 	{
         /*
                         TEXTURE RENDERIZATION
@@ -31,6 +31,8 @@ class MyTriangle extends CGFobject
         this.v13 = vec3.create();
         this.v13 = vec3.fromValues(x3 - x1, y3 - y1, z3 - z1);
 
+        this.lS = lS; this.lT = lT;
+
 		this.initBuffers();
 	};
 
@@ -43,6 +45,8 @@ class MyTriangle extends CGFobject
         var counterClockNormal = vec3.create();
         vec3.cross(clockwiseNormal, this.v12, this.v13);
         vec3.cross(counterClockNormal, this.v13, this.v12);
+        vec3.normalize(clockwiseNormal, clockwiseNormal);
+        vec3.normalize(counterClockNormal, counterClockNormal);
 
         // console.log(this.clockwiseNormal);
         // console.log(this.counterClockNormal);
@@ -68,19 +72,18 @@ class MyTriangle extends CGFobject
         // DRAW TEXCOORDS ----------
         var dist12 = vec3.length(this.v12);
         var dist13 = vec3.length(this.v13);
-        var dist23 = Math.sqrt(Math.pow(this.p[0] - this.p[6], 2) + Math.pow(this.p[1] - this.p[7], 2) + Math.pow(this.p[2] - this.p[8], 2));
-        
+        var dist23 = Math.sqrt(Math.pow(this.p[0] - this.p[6], 2) + Math.pow(this.p[1] - this.p[7], 2) + Math.pow(this.p[2] - this.p[8], 2)); 
         var angle = Math.acos(-dist23 * dist23 + dist13 * dist13 + dist12 * dist12 / (2 * dist13 * dist12));
 
         this.texCoords = [
-            0, 1,
-            dist12, 1,
+            0, 1 / this.lT,
+            dist12 / this.lS, 1 / this.lT,
 
-            dist12, 1,
-            0, 1,
+            dist12 / this.lS, 1 / this.lT,
+            0, 1 / this.lT,
 
-            dist13 * Math.cos(angle), 1 - dist13 * Math.sin(angle),
-            dist12 - dist13 * Math.cos(angle), 1 - dist13 * Math.sin(angle)
+            dist13 * Math.cos(angle) / this.lS, (1 - dist13 * Math.sin(angle)) / this.lT,
+            (dist12 - dist13 * Math.cos(angle)) / this.lS, (1 - dist13 * Math.sin(angle)) / this.lT
         ];
         
 		this.primitiveType = this.scene.gl.TRIANGLES;

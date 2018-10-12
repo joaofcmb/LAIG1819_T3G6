@@ -4,6 +4,9 @@
 class Interface extends CGFinterface {
     constructor() {
         super();
+
+        this.views = [];
+        this.Views = new Object();
     }
 
     /**
@@ -15,28 +18,45 @@ class Interface extends CGFinterface {
 
         this.gui = new dat.GUI();
 
-        // add a group of controls (and open/expand by defult)
-
         return true;
+    }
+
+    addViewsGroup(data) {
+        for (var key in data.perspectiveCams) {
+            if (data.perspectiveCams.hasOwnProperty(key)) {
+                this.views.push(key);
+            }
+        }
+
+        for (var key in data.orthoCams) {
+            if (data.orthoCams.hasOwnProperty(key)) {
+                this.views.push(key);
+            }
+        }
+
+        this.gui.add(this, 'Views', this.views);
     }
 
     /**
      * Adds a folder containing the IDs of the lights passed as parameter.
      * @param {array} lights
      */
-    addLightsGroup(lights) {
+    addLightsGroup(data) {
+        var lights = this.gui.addFolder("Lights");
+        lights.open();
 
-      /*   var group = this.gui.addFolder("Lights");
-        group.open();
-
-        // add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
-        // e.g. this.option1=true; this.option2=false;
-
-        for (var key in lights) {
-            if (lights.hasOwnProperty(key)) {
-                this.scene.lightValues[key] = lights[key][0];
-                group.add(this.scene.lightValues, key);
+        for (var key in data.omniLights) {
+            if (data.omniLights.hasOwnProperty(key)) {
+                this.scene.lightValues[key] = data.omniLights[key]["enabled"];
+                lights.add(this.scene.lightValues, key);
             }
-        } */
+        }
+
+        for (var key in data.spotLights) {
+            if (data.spotLights.hasOwnProperty(key)) {
+                this.scene.lightValues[key] = data.spotLights[key]["enabled"];
+                lights.add(this.scene.lightValues, key);
+            }
+        }
     }
 }

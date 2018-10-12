@@ -45,16 +45,20 @@ class Scene extends CGFscene {
         this.interface.setActiveCamera(this.camera);
     }
 
-     /**
-     * Initializes the scene cameras.
-     */
+    /**
+    * Updates the scene cameras.
+    */
     updateCameras() {
+        /* CFGcamera prototypes:
+         CFGcamera(angle, near, far, from, to)
+         CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - up default values vec3(0,1,0) */
+        var cam = null;
+        
+        if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
+            this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
+        else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
+            this.camera = new CGFcamera(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
 
-        var cam = this.data.perspectiveCams["perspectiveID"];
-
-        //CFGcamera(angle, near, far, from, to)
-        //CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) up(0,1,0)
-        this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
         this.interface.setActiveCamera(this.camera);
     }
 
@@ -80,7 +84,7 @@ class Scene extends CGFscene {
 
             if (this.data.spotLights.hasOwnProperty(key))
                 this.setupLight(i++, this.data.spotLights[key], true);
-        }
+        } 
     }
 
     setupLight(i, light, isSpot) {
@@ -91,16 +95,16 @@ class Scene extends CGFscene {
         this.lights[i].setSpecular(light.specularR, light.specularG, light.specularB, light.specularA);
 
         if (isSpot) {
-            this.lights[i].setDirection(light.targetX - light.locationX, light.targetY - light.locationY, light.targetZ - light.locationZ);
+            this.lights[i].setSpotDirection(light.targetX - light.locationX, light.targetY - light.locationY, light.targetZ - light.locationZ);
 
             this.lights[i].setSpotExponent(light.exponent);
             this.lights[i].setSpotCutOff(light.angle);
         }
-       
+
         this.lights[i].setVisible(true);
 
-        if (light.enabled)  this.lights[i].enable();
-        else                this.lights[i].disable();
+        if (light.enabled) this.lights[i].enable();
+        else this.lights[i].disable();
 
         this.lights[i].update();
     }
@@ -120,11 +124,11 @@ class Scene extends CGFscene {
         this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
         this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
 
+        this.interface.addViewsGroup(this.data);
+        this.interface.addLightsGroup(this.data);
+        
         this.updateCameras();
         this.initLights();
-
-        // TODO Adds lights group.
-        //this.interface.addLightsGroup(this.graph.lights);
 
         // Load data into the graph
         this.data.setupGraph(this);
@@ -153,35 +157,36 @@ class Scene extends CGFscene {
 
         this.pushMatrix();
 
-            // Draw axis
-            this.axis.display();
+        // Draw axis
+        this.axis.display();
 
-            if (this.sceneInited) {
-                // TODO Handle Lights
-                this.lights[0].update();
+        if (this.sceneInited) {
 
-                /*
-                var i = 0;
-                for (var key in this.lightValues) {
-                    if (this.lightValues.hasOwnProperty(key)) {
-                        if (this.lightValues[key]) {
-                            this.lights[i].setVisible(true);
-                            this.lights[i].enable();
-                        }
-                        else {
-                            this.lights[i].setVisible(false);
-                            this.lights[i].disable();
-                        }
-                        this.lights[i].update();
-                        i++;
+            //Handle Views
+            this.updateCameras();
+
+            //Handle Lights
+
+            var i = 0;
+            for (var key in this.lightValues) {
+                if (this.lightValues.hasOwnProperty(key)) {
+                    if (this.lightValues[key]) {
+                        this.lights[i].setVisible(true);
+                        this.lights[i].enable();
                     }
+                    else {
+                        this.lights[i].setVisible(false);
+                        this.lights[i].disable();
+                    }
+                    this.lights[i].update();
+                    i++;
                 }
-                */
-
-                // Displays the scene
-                this.data.displayGraph(this);
             }
-        
+
+            // Displays the scene
+            this.data.displayGraph(this);
+        }
+
         this.popMatrix();
 
         // ---- END Background, camera and axis setup

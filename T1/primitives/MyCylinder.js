@@ -4,7 +4,7 @@
  */
 class MyCylinder extends CGFobject
 {
-	constructor(scene, base, top, height, slices, stacks) 
+	constructor(scene, base, top, height, slices, stacks, fS, fT) 
 	{
 		super(scene);
 
@@ -13,6 +13,8 @@ class MyCylinder extends CGFobject
 		this.height = height
 		this.slices = slices;
 		this.stacks = stacks;
+
+		this.fS = fS; this.fT = fT;
 
 		this.baseCircle = new MyCircle(scene, base, slices);
 		this.topCircle = new MyCircle(scene, top, slices);
@@ -31,6 +33,9 @@ class MyCylinder extends CGFobject
 		var angle = 2* Math.PI / this.slices;
 		var dR = (this.top - this.base) / this.stacks;
 
+		var texScaleS = 2 * Math.PI * this.base / this.fS; // Linear scale using the base perimeter as reference 
+		var texScaleT = Math.sqrt(Math.pow(this.base - this.top, 2) + this.height * this.height) / this.fT; 
+
 		var zN = 1 / (this.base - this.top);
 		var nCoef = 1 / Math.sqrt(1 + zN * zN); // Coeficient to normalize the normal
 		zN *= nCoef;
@@ -38,7 +43,7 @@ class MyCylinder extends CGFobject
 		for (var i = 0; i < this.stacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(Math.cos(angle * j) * (this.base + i * dR), Math.sin(angle * j) * (this.base + i * dR), this.height * i/this.stacks);
-				this.texCoords.push(1 - j/this.slices, i/this.stacks);
+				this.texCoords.push(texScaleS * (1 - j/this.slices), texScaleT * i/this.stacks);
 				this.normals.push(nCoef * Math.cos(angle * j), nCoef * Math.sin(angle * j), zN);
 			}
 		}

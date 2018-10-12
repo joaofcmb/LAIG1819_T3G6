@@ -66,6 +66,12 @@ class Data {
             specularR: 0.2, specularG: 0.2, specularB: 0.2, specularA: 1.0
         }
 
+        this.defaultAppearance = new CGFappearance();
+        this.defaultAppearance.setShininess(material.shininess);
+        this.defaultAppearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
+        this.defaultAppearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
+        this.defaultAppearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);
+
         // TRANSFORMATIONS - TODO integrate transforms with graph
         this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 
         //  ID -> [ {type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...} ]
@@ -208,7 +214,7 @@ class Data {
     */
     displayGraph(scene) {
         var rootComponent = this.components[this.root];
-        this.displayComponent(scene, rootComponent, this.materialDefault, "none");
+        this.displayComponent(scene, rootComponent, this.defaultAppearance, "none");
     }
 
     // recursive call of graph components

@@ -192,7 +192,9 @@ class Data {
                                                                                  this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "cylinder":
-                        this.components[compID].activePrimitive = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, primitive.slices, primitive.stacks);
+                        this.components[compID].activePrimitive = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, 
+                                                                                 primitive.slices, primitive.stacks,
+                                                                                 this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "sphere":
                         this.components[compID].activePrimitive = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks);

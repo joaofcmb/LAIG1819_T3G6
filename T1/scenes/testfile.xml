@@ -78,7 +78,7 @@
             <sphere radius="2" slices="20" stacks="20" />
         </primitive>
 
-        <primitive id="primitiveID_Sec">
+        <primitive id="cylinder">
             <cylinder base="2" top="1" height="3" slices="20" stacks="20" />
         </primitive>
 
@@ -95,10 +95,7 @@
         <component id="componentID">
 
             <transformation>
-                <!--<transformationref id="tranformationID" />-->
-                <translate x="0.0" y="0.0" z="1.0" />
-                <rotate axis="y" angle="0.0" />
-                <scale x="1.0" y="1.0" z="1.0" />
+                <!--<translate x="0.0" y="0.0" z="1.0" />-->
             </transformation>
 
             <materials>
@@ -110,7 +107,7 @@
 
             <children>
                 <!-- <componentref id="componentID" /> -->
-                <primitiveref id="tri" />
+                <primitiveref id="cylinder" />
             </children>
 
         </component>

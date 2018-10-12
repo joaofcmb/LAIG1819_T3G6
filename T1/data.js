@@ -67,10 +67,10 @@ class Data {
         }
 
         this.defaultAppearance = new CGFappearance();
-        this.defaultAppearance.setShininess(material.shininess);
-        this.defaultAppearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
-        this.defaultAppearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
-        this.defaultAppearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);
+        this.defaultAppearance.setShininess(this.materialDefault.shininess);
+        this.defaultAppearance.setAmbient(this.materialDefault.ambientR, this.materialDefault.ambientG, this.materialDefault.ambientB, this.materialDefault.ambientA);
+        this.defaultAppearance.setDiffuse(this.materialDefault.diffuseR, this.materialDefault.diffuseG, this.materialDefault.diffuseB, this.materialDefault.diffuseA);
+        this.defaultAppearance.setSpecular(this.materialDefault.specularR, this.materialDefault.specularG, this.materialDefault.specularB, this.materialDefault.specularA);
 
         // TRANSFORMATIONS - TODO integrate transforms with graph
         this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 

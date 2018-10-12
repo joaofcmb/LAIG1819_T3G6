@@ -1,6 +1,6 @@
 <yas>
 
-    <scene root="componentID" axis_length="2"/>
+    <scene root="componentID" axis_length="4"/>
 
     <views default="viewsName">
         <perspective id="perspectiveID" near="0.1" far="500.0" angle="0.4">
@@ -44,7 +44,7 @@
 
     <materials>
 
-        <material id="materialID" shininess="1.0">
+        <material id="materialID" shininess="10.0">
             <emission r="0.0" g="0.0" b="0.0" a="1.0" />
             <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
             <diffuse r=".5" g=".5" b=".5" a="1.0" />
@@ -74,7 +74,7 @@
 
     <primitives>
 
-        <primitive id="primitiveID">
+        <primitive id="sphere">
             <sphere radius="2" slices="20" stacks="20" />
         </primitive>
 
@@ -107,7 +107,7 @@
 
             <children>
                 <!-- <componentref id="componentID" /> -->
-                <primitiveref id="cylinder" />
+                <primitiveref id="sphere" />
             </children>
 
         </component>

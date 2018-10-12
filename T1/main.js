@@ -21,13 +21,13 @@ main=function()
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var data = new Data();
-    var scene = new Scene(data);
     var interface = new CGFinterface();
+    var scene = new Scene(data, interface);
 
     app.init();
     app.setScene(scene);
     app.setInterface(interface);
-    interface.setActiveCamera(scene.camera);
+    
 
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 

@@ -2,10 +2,17 @@
     <scene root="poolRoot" axis_length="2"/>
 
     <views default="viewsName">
-        <perspective id="perspectiveID" near="0.1" far="1000.0" angle="60.0">
+        <perspective id="perspectiveID" near="0.1" far="500.0" angle="0.4">
             <from x="15.0" y="15.0" z="15.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
+
+        <ortho id="orthoName" near="0.1" far="1000.0" left="1.0" right="1.0" top="1.0" bottom="1.0">
+            <from x="15.0" y="15.0" z="15.0" />
+            <to x="0.0" y="0.0" z="0.0" />
+        </ortho>
+
+
     </views>
 
     <ambient>
@@ -208,7 +215,7 @@
             <transformation></transformation>
 
             <materials>
-                <material id="grayMaterial" />
+                <material id="inherit" />
             </materials>
 
             <texture id="none" length_s="1.0" length_t="1.0" />
@@ -600,10 +607,10 @@
                 <primitiveref id="rectangule" />
             </children>
         </component>
-        
+
         <component id="floaters">
             <transformation>
-            
+
             </transformation>
 
             <materials>
@@ -618,7 +625,7 @@
                 <componentref id="floaterC" />
             </children>
         </component>
-         <component id="floaterA">
+        <component id="floaterA">
             <transformation>
                 <translate x="-15.5" y="0.65" z="5.75" />
                 <scale x="1.25" y="1.25" z="1.25" />
@@ -704,7 +711,7 @@
                 <componentref id="divingBoardBottom" />
             </children>
         </component>
-         <component id="divingBoardTop">
+        <component id="divingBoardTop">
             <transformation>
                 <translate x="6.75" y="1.25" z="-0.5" />
                 <scale x="3.0" y="0.2" z="0.75" />

@@ -6,7 +6,7 @@ class Interface extends CGFinterface {
         super();
 
         this.views = [];
-        this.activeCamera = 'perspectiveID';
+        this.Views = 'perspectiveID';
     }
 
     /**
@@ -34,7 +34,7 @@ class Interface extends CGFinterface {
             }
         }
 
-        this.gui.add(this, 'activeCamera', this.views);
+        this.gui.add(this, 'Views', this.views);
     }
 
     /**

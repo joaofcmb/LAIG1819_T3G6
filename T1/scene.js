@@ -44,7 +44,7 @@ class Scene extends CGFscene {
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(75, 75, 75), vec3.fromValues(0, 0, 0));
         this.interface.setActiveCamera(this.camera);
 
-        this.interface.activeCamera = 'perspectiveID'; // change this to the default camera id
+        this.interface.Views = 'perspectiveID'; // change this to the default camera id
     }
 
     /**
@@ -56,9 +56,9 @@ class Scene extends CGFscene {
          CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - up default values vec3(0,1,0) */
         var cam = null;
         
-        if ((cam = this.data.perspectiveCams[this.interface.activeCamera]) != null)
+        if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
             this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
-        else if ((cam = this.data.orthoCams[this.interface.activeCamera]) != null)
+        else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
             this.camera = new CGFcamera(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
 
         this.interface.setActiveCamera(this.camera);
@@ -126,9 +126,9 @@ class Scene extends CGFscene {
         this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
         this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
 
-        this.interface.addViewsGroup(this.data);
         this.interface.addLightsGroup(this.data);
-        
+        this.interface.addViewsGroup(this.data);
+                
         this.updateCameras();
         this.initLights();
 

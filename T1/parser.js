@@ -157,7 +157,7 @@ class Parser {
         this.log("Parsed scene");
     }
 
-    /*
+    /* TODO: default view verificar
         Parses the <views> block.
     */
     parseViews(viewsNode) {

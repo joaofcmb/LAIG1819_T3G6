@@ -8,6 +8,7 @@ class Scene extends CGFscene {
         super();
         this.data = data;
         this.lightValues = {};
+        this.lock = {};
         this.interface = interf;
     }
 
@@ -44,7 +45,7 @@ class Scene extends CGFscene {
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(75, 75, 75), vec3.fromValues(0, 0, 0));
         this.interface.setActiveCamera(this.camera);
 
-        this.interface.Views = 'perspectiveID'; // change this to the default camera id
+        this.interface.Views = "";
     }
 
     /**
@@ -54,8 +55,12 @@ class Scene extends CGFscene {
         /* CFGcamera prototypes:
          CFGcamera(angle, near, far, from, to)
          CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - up default values vec3(0,1,0) */
+
+        if (this.interface.Views == "")
+            this.interface.Views = this.data.defaultCamID;
+
         var cam = null;
-        
+
         if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
             this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
         else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
@@ -86,9 +91,15 @@ class Scene extends CGFscene {
 
             if (this.data.spotLights.hasOwnProperty(key))
                 this.setupLight(i++, this.data.spotLights[key], true);
-        } 
+        }
     }
 
+    /**
+     * TODO  
+     * @param {*} i 
+     * @param {*} light 
+     * @param {*} isSpot 
+     */
     setupLight(i, light, isSpot) {
         //lights are predefined in cgfscene
         this.lights[i].setPosition(light.locationX, light.locationY, light.locationZ, light.locationW);
@@ -116,19 +127,14 @@ class Scene extends CGFscene {
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
     onDataLoaded() {
-        //this.camera.near = this.graph.near;
-        //this.camera.far = this.graph.far;
-
-        //TODO: Change reference length according to parsed graph
         this.axis = new CGFaxis(this, this.data.axisLength);
 
-        // TODO: Change ambient and background details according to parsed graph
         this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
         this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
 
         this.interface.addLightsGroup(this.data);
         this.interface.addViewsGroup(this.data);
-                
+
         this.updateCameras();
         this.initLights();
 
@@ -138,6 +144,28 @@ class Scene extends CGFscene {
         this.sceneInited = true;
     }
 
+    /**
+     * Updates materials by pressing key M 
+     */
+    updateMaterials() {
+        for (var key in this.data.components) {
+            if (this.data.components.hasOwnProperty(key)) {
+                var activeMaterials = this.data.components[key].activeMaterials;
+                
+                for (var i = 0; i < activeMaterials.length; i++) {
+                    if (this.data.components[key].activeMaterial == activeMaterials[i]) {
+                        if ((i + 1) == activeMaterials.length)
+                            this.data.components[key].activeMaterial = activeMaterials[0];
+                        else 
+                            this.data.components[key].activeMaterial = activeMaterials[i + 1];
+                         
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
 
     /**
      * Displays the scene.
@@ -156,7 +184,6 @@ class Scene extends CGFscene {
         // Apply transformations corresponding to the camera position relative to the origin
         this.applyViewMatrix();
 
-
         this.pushMatrix();
 
         // Draw axis
@@ -165,7 +192,8 @@ class Scene extends CGFscene {
         if (this.sceneInited) {
 
             //Handle Views
-            this.updateCameras();
+            if (this.lock["Lock Views"])
+                this.updateCameras();
 
             //Handle Lights
 

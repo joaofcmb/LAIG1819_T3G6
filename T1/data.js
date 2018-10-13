@@ -9,7 +9,7 @@ class Data {
         this.perspectiveCams = new Object();
 
         this.cameras = new Object(); // ID -> CGFCamera()
-        this.defaultCamID = ""; // TODO put the defaultCamID here
+        this.defaultCamID = "";
 
         // TODO - figure out unknown default values
         this.orthoDefault = {

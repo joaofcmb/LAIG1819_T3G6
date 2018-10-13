@@ -157,7 +157,7 @@ class Parser {
         this.log("Parsed scene");
     }
 
-    /* TODO: default view verificar
+    /* 
         Parses the <views> block.
     */
     parseViews(viewsNode) {
@@ -171,11 +171,17 @@ class Parser {
         if (children.length < 1)
             return "There must be at least one type of view defined.";
 
+        var flag = false;
         var nodeNames = [];
-        for (var i = 0; i < children.length; i++)
+        for (var i = 0; i < children.length; i++) {
             nodeNames.push(children[i].nodeName);
+            if (this.reader.getString(children[i], "id") == viewsDefault)
+                flag = true;
+        }
 
-        if ((error = this.checkRepeatedIDs(children, "views")) != null)
+        if (!flag)
+            return "default view [" + viewsDefault + "] is referecing a non existent view."
+        else if ((error = this.checkRepeatedIDs(children, "views")) != null)
             return error;
 
         for (var i = 0; i < children.length; i++) {
@@ -227,9 +233,12 @@ class Parser {
 
         }
 
+        this.data.defaultCamID = viewsDefault;
+
         if ((error = this.validateViewsInfo()) != null)
             return error;
 
+        this.scene.updateCameras();
         this.log("Parsed views");
     }
 
@@ -938,7 +947,7 @@ class Parser {
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";
-        
+
         this.data.components[componentID].textureID = textureID;
         this.data.components[componentID].texLengthS = textureLenS;
         this.data.components[componentID].texLengthT = textureLenT;

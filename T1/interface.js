@@ -6,7 +6,7 @@ class Interface extends CGFinterface {
         super();
 
         this.views = [];
-        this.Views = 'perspectiveID';
+        this.Views;
     }
 
     /**
@@ -18,8 +18,32 @@ class Interface extends CGFinterface {
 
         this.gui = new dat.GUI();
 
+        this.initKeys();
+
         return true;
     }
+    
+    initKeys()
+	{
+		this.scene.gui = this;
+		this.processKeyboard = function(){};
+		this.activeKeys = {};
+	};
+
+	processKeyDown(event) {
+		this.activeKeys[event.code] = true;
+        if(event.code == "KeyM") 
+            this.scene.updateMaterials();
+    };
+    
+    processKeyUp(event) {
+		this.activeKeys[event.code] = false;
+
+    };
+    
+    isKeyPressed(keyCode) {
+		return this.activeKeys[keyCode] || false;
+	};
 
     addViewsGroup(data) {
         for (var key in data.perspectiveCams) {
@@ -35,6 +59,9 @@ class Interface extends CGFinterface {
         }
 
         this.gui.add(this, 'Views', this.views);
+        
+        this.scene.lock["Lock Views"] = true;
+        this.gui.add(this.scene.lock, 'Lock Views');
     }
 
     /**

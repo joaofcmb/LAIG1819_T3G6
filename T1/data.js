@@ -11,7 +11,6 @@ class Data {
         this.cameras = new Object(); // ID -> CGFCamera()
         this.defaultCamID = "";
 
-        // TODO - figure out unknown default values
         this.orthoDefault = {
             near: 0.1, far: 100.0,
             left: 1.0, right: 1.0, top: 1.0, bottom: 1.0,
@@ -19,6 +18,7 @@ class Data {
             toX: 0, toY: 0, toZ: 0
         };
 
+        // TODO Change cam angle to specification (degrees)
         this.perspectiveDefault = {
             near: 0.1, far: 100.0, angle: "?", // default fov is 0.4 (out of 180 degrees ???)
             fromX: 15, fromY: 15, fromZ: 15,
@@ -55,10 +55,10 @@ class Data {
         };
 
 
-        // TEXTURES  - TODO Test the Textures
+        // TEXTURES
         this.textures = new Object(); // associative array of ID -> file
 
-        // MATERIALS  - TODO Test the Materials
+        // MATERIALS
         this.materials = new Object();
 
         this.materialDefault = {
@@ -69,7 +69,7 @@ class Data {
             specularR: 0.2, specularG: 0.2, specularB: 0.2, specularA: 1.0
         }
 
-        // TRANSFORMATIONS - TODO integrate transforms with graph
+        // TRANSFORMATIONS
         this.transforms = new Object(); //  transforms format (Each transform has multiple objects for each step): 
         //  ID -> [ {type: rotate, axis: 'x', angle: 0.0},  {type: translate, x: 0.0, y: 0.0, z: 0.0}, ...} ]
 
@@ -77,10 +77,10 @@ class Data {
         this.rotateDefault = { axis: 'x', angle: 0.0 };
         this.scaleDefault = { x: 1.0, y: 1.0, z: 1.0 };
 
-        // PRIMITIVES - TODO integrate primitives with graph
+        // PRIMITIVES
         this.primitives = new Object(); // format: ID -> {type: rectangle, x1: -0.5, y1: -0.5, x2: 0.5, y2: 0.5} specifying type and its arguments
 
-        // COMPONENTS  - TODO integrate components with graph
+        // COMPONENTS
         this.components = new Object(); // format: ID -> { 
         //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, etc.. ], 
         //                  materials: "inherit" OR [materialID1, materialID2], 
@@ -93,8 +93,6 @@ class Data {
         Called from the scene after data initialization (signalled by the parser)
 
         Sets up the scene graph nodes (pre-processing and objects initialization)
-
-        TODO test the graph setup
     */
     setupGraph(scene) {
         // SETUP COMPONENTS
@@ -177,7 +175,6 @@ class Data {
             //console.log(this.components[compID].primitiveID);
 
             // PRIMITIVES INIT --------------------
-            // TODO Scale factors (seperate primitive per component)
             if (this.components[compID].hasOwnProperty("primitiveID")) {
                 var primitiveID = this.components[compID].primitiveID;
                 var primitive = this.primitives[primitiveID];
@@ -200,7 +197,8 @@ class Data {
                                                                                  this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "sphere":
-                        this.components[compID].activePrimitive = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks);
+                        this.components[compID].activePrimitive = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks,
+                                                                               this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "torus":
                         this.components[compID].activePrimitive = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops);
@@ -221,8 +219,7 @@ class Data {
         this.materialStack = [];
         this.textureStack = [];
 
-        var rootComponent = this.components[this.root];
-        this.displayComponent(scene, rootComponent, this.defaultAppearance, null);
+        this.displayComponent(scene, this.components[this.root], this.defaultAppearance, null);
     }
 
     // recursive call of graph components
@@ -245,21 +242,21 @@ class Data {
 
         for (var childIndex in component.components) {
             var child = component.components[childIndex];
-            // TODO push materials and textures
+
             scene.pushMatrix();
-            this.materialStack.push(currAppearance);
-            this.textureStack.push(currTexture);
-                this.displayComponent(scene, this.components[child], currAppearance, currTexture);
-            this.textureStack.push(currTexture);
-            this.materialStack.push(currAppearance);
+                this.materialStack.push(currAppearance);
+                    this.textureStack.push(currTexture);
+                        this.displayComponent(scene, this.components[child], currAppearance, currTexture);
+                    this.textureStack.pop(currTexture);
+                this.materialStack.pop(currAppearance);
             scene.popMatrix();
         }
 
-        currAppearance.setTexture(currTexture);
-        currAppearance.setTextureWrap('REPEAT', 'REPEAT');
-        currAppearance.apply();
-
         if (component.activePrimitive) {
+            currAppearance.setTexture(currTexture);
+            currAppearance.setTextureWrap('REPEAT', 'REPEAT');
+            currAppearance.apply();
+            
             component.activePrimitive.display();
         }
 

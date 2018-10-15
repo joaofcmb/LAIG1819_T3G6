@@ -25,7 +25,6 @@ class MyCylinder extends CGFobject
 	initBuffers() 
 	{	
 		// DRAW VERTICES, TEXTURE COORDINATES AND NORMALS------------
-
 		this.vertices = [];
 		this.texCoords = [];
 		this.normals = [];

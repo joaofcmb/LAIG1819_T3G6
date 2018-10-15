@@ -1,8 +1,8 @@
 <yas>
 
-    <scene root="componentID" axis_length="4"/>
+    <scene root="componentID" axis_length="3"/>
 
-    <views default="viewsName">
+    <views default="perspectiveID">
         <perspective id="perspectiveID" near="0.1" far="500.0" angle="0.4">
             <from x="15.0" y="15.0" z="15.0" />
             <to x="0.0" y="0.0" z="0.0" />
@@ -73,9 +73,12 @@
     </transformations>
 
     <primitives>
+        <primitive id="torus">
+            <torus inner="1" outer="1.5" slices="20" loops="20" />
+        </primitive>
 
         <primitive id="sphere">
-            <sphere radius="2" slices="20" stacks="20" />
+            <sphere radius="1" slices="20" stacks="20" />
         </primitive>
 
         <primitive id="cylinder">
@@ -85,6 +88,7 @@
         <primitive id="rect">
             <rectangle x1="-1" y1="-1" x2="1" y2="1" />
         </primitive>
+
         <primitive id="tri">
             <triangle x1="-1" y1="0" z1="0" x2="1" y2="0" z2="0" x3="0" y3="2" z3="0"/>
         </primitive>
@@ -107,7 +111,7 @@
 
             <children>
                 <!-- <componentref id="componentID" /> -->
-                <primitiveref id="sphere" />
+                <primitiveref id="torus" />
             </children>
 
         </component>

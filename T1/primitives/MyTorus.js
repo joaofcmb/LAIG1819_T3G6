@@ -18,23 +18,21 @@ class MyTorus extends CGFobject
 
 	initBuffers() 
 	{	
-		// DRAW VERTICES, NORMALS AND TEXTURE COORDINATES ------------
+		// DRAW VERTICES, TEXTURE COORDINATES AND NORMALS ------------
         this.vertices = [];
-        this.normals = [];
-        this.texCoords = [];
-        
-        var radius = (this.outer - this.inner) / 2;
+		this.texCoords = [];
+		this.normals = [];
 
         var mainAngle = 2 * Math.PI / this.slices;
         var subAngle = 2 * Math.PI / this.loops;
 
 		for (var i = 0; i < this.slices + 1; i++) {
 			for (var j = 0; j < this.loops + 1; j++) {
-                var totalR = this.inner + radius + radius * Math.cos(subAngle * j);
+                var totalR = this.outer + this.inner * Math.cos(subAngle * j);
 
-                this.vertices.push(totalR * Math.cos(mainAngle * i), totalR* Math.sin(mainAngle * i), radius * Math.sin(subAngle * j));
-                this.normals.push(Math.cos(mainAngle * i) * Math.cos(subAngle * j), Math.sin(mainAngle * i) * Math.cos(subAngle * j), Math.sin(subAngle * j)); // TODO debug normals (not proper)
+				this.vertices.push(totalR * Math.cos(mainAngle * i), totalR* Math.sin(mainAngle * i), this.inner * Math.sin(subAngle * j));
 				this.texCoords.push(j / this.loops, i / this.slices);
+                this.normals.push(Math.cos(mainAngle * i) * Math.cos(subAngle * j), Math.sin(mainAngle * i), Math.sin(subAngle * j));
 			}
         }
 

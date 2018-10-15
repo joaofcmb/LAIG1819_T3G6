@@ -64,7 +64,8 @@ class Scene extends CGFscene {
         if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
             this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
         else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
-            this.camera = new CGFcamera(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
+            this.camera = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), 
+                                             vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
 
         this.interface.setActiveCamera(this.camera);
     }

@@ -4,7 +4,7 @@
  */
 class MySphere extends CGFobject
 {
-	constructor(scene, radius, slices, stacks)
+	constructor(scene, radius, slices, stacks, fS, fT)
 	{
 		super(scene);
 
@@ -12,13 +12,14 @@ class MySphere extends CGFobject
 		this.slices = slices;
 		this.stacks = stacks;
 
+		this.fS = fS; this.fT = fT;
+
 		this.initBuffers();
 	};
 
 	initBuffers()
 	{
 		// DRAW VERTICES, TEXTURE COORDINATES AND NORMALS ------------
-
 		this.vertices = [];
 		this.texCoords = [];
 		this.normals = [];
@@ -28,13 +29,16 @@ class MySphere extends CGFobject
 
 		var halfStacks = this.stacks / 2;
 
+		var texScaleS = 2 * Math.PI * this.radius / this.fS;
+		var texScaleT = 2 * Math.PI * this.radius / this.fT; 
+
 		for (var i = - halfStacks; i < halfStacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(	Math.cos(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(vAngle * i) * this.radius);
-				this.texCoords.push(j / this.slices * 2 * this.radius, 1 - ((i + halfStacks) / this.stacks * 2 * this.radius)); // TODO Apply Texture Scale Factors
-				this.normals.push(Math.cos(hAngle * j) * Math.cos(vAngle * i), Math.sin(hAngle * j) * Math.cos(vAngle * i), Math.sin(vAngle * i)); // TODO: Normalize
+				this.texCoords.push(texScaleS * j / this.slices, texScaleT * (1 - ((i + halfStacks) / this.stacks)));
+				this.normals.push(Math.cos(hAngle * j) * Math.cos(vAngle * i), Math.sin(hAngle * j) * Math.cos(vAngle * i), Math.sin(vAngle * i));
 			}
 		}
 

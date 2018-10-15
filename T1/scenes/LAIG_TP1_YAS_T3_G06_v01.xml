@@ -28,8 +28,8 @@
             <to x="-7.5" y="-0.75" z="2.0" />
         </perspective>
 
-        <ortho id="NotDefined" near="0.1" far="500.0" left="0.0" right="5.0" top="5.0" bottom="0.0">
-            <from x="15.0" y="15.0" z="15.0" />
+        <ortho id="NotDefined" near="0.1" far="500.0" left="-5.0" right="5.0" top="5.0" bottom="-5.0">
+            <from x="60.0" y="60.0" z="60.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </ortho>
 
@@ -59,7 +59,7 @@
          <spot id="PoolLight" enabled="false" angle="0.0" exponent="2.0">
             <location x="0.0" y="-2.5" z="0.0" w="0.0" />
             <target x="0.0" y="-5.0" z="0.0" />
-            <ambient r="0.6" g="0.92" b="1.0" a="1.0" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
             <diffuse r="0.6" g="0.92" b="1.0" a="1.0" />
             <specular r="0.6" g="0.92" b="1.0" a="1.0" />
         </spot>
@@ -222,15 +222,15 @@
         </primitive >
 
         <primitive id="cupTop">
-            <torus inner="0.7" outer="0.8" slices="8" loops="20" />
+            <torus inner="0.05" outer="0.75" slices="8" loops="20" />
         </primitive >
 
         <primitive id="poolStair">
-            <torus inner="0.5" outer="0.75" slices="20" loops="20" />
+            <torus inner="0.125" outer="0.625" slices="20" loops="20" />
         </primitive >
 
         <primitive id="floater">
-            <torus inner="0.5" outer="1.5" slices="20" loops="20" />
+            <torus inner="0.5" outer="1.0" slices="20" loops="20" />
         </primitive >
 
         <primitive id="ball">

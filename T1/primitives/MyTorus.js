@@ -4,7 +4,7 @@
  */
 class MyTorus extends CGFobject
 {
-	constructor(scene, inner, outer, slices, loops) 
+	constructor(scene, inner, outer, slices, loops, fS, fT) 
 	{
 		super(scene);
 
@@ -12,7 +12,9 @@ class MyTorus extends CGFobject
 		this.outer = outer;
 		this.slices = slices;
         this.loops = loops;
-        
+		
+		this.fS = fS; this.fT = fT;
+
 		this.initBuffers();
 	};
 
@@ -24,15 +26,18 @@ class MyTorus extends CGFobject
 		this.normals = [];
 
         var mainAngle = 2 * Math.PI / this.slices;
-        var subAngle = 2 * Math.PI / this.loops;
+		var subAngle = 2 * Math.PI / this.loops;
+		
+		var texScaleS = 2 * Math.PI * this.inner / this.fS;
+		var texScaleT = 2 * Math.PI * this.outer / this.fT; // Linear scale using the outer (middle circle) perimeter as reference
 
 		for (var i = 0; i < this.slices + 1; i++) {
 			for (var j = 0; j < this.loops + 1; j++) {
                 var totalR = this.outer + this.inner * Math.cos(subAngle * j);
 
 				this.vertices.push(totalR * Math.cos(mainAngle * i), totalR* Math.sin(mainAngle * i), this.inner * Math.sin(subAngle * j));
-				this.texCoords.push(j / this.loops, i / this.slices);
-                this.normals.push(Math.cos(mainAngle * i) * Math.cos(subAngle * j), Math.sin(mainAngle * i), Math.sin(subAngle * j));
+				this.texCoords.push(texScaleS * j / this.loops, texScaleT * i / this.slices);
+                this.normals.push(Math.cos(mainAngle * i) * Math.cos(subAngle * j), Math.sin(mainAngle * i) * Math.cos(subAngle * j), Math.sin(subAngle * j));
 			}
         }
 

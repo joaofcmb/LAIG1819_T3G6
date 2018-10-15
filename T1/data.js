@@ -201,7 +201,8 @@ class Data {
                                                                                this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                     case "torus":
-                        this.components[compID].activePrimitive = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops);
+                        this.components[compID].activePrimitive = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops,
+                                                                              this.components[compID].texLengthS, this.components[compID].texLengthT);
                         break;
                 }
             }

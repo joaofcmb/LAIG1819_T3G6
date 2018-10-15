@@ -1,19 +1,21 @@
 
 class MyCircle extends CGFobject
 {
-	constructor(scene, base, slices)
+	constructor(scene, base, slices, fS, fT)
 	{
 		super(scene);
 
 		this.base = base;
 		this.slices = slices;
+
+		this.fS = fS; this.fT = fT;
+
 		this.initBuffers();
 	};
 
 	initBuffers()
 	{
-		// DRAW VERTICES ------------
-
+		// DRAW VERTICES, TEXTURE COORDINATES AND NORMALS ------------
 		this.vertices = [];
     	this.texCoords = [];
    	 	this.normals = [];

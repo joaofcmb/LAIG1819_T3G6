@@ -16,8 +16,8 @@ class MyCylinder extends CGFobject
 
 		this.fS = fS; this.fT = fT;
 
-		this.baseCircle = new MyCircle(scene, base, slices);
-		this.topCircle = new MyCircle(scene, top, slices);
+		this.baseCircle = new MyCircle(scene, base, slices, fS, fT);
+		this.topCircle = new MyCircle(scene, top, slices, fS, fT);
 
 		this.initBuffers();
 	};

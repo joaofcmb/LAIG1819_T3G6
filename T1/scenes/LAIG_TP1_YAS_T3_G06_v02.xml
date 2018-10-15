@@ -18,7 +18,7 @@
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
 
-         <perspective id="TowelToPoolCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="TowelToPoolCam" near="0.1" far="500.0" angle="0.4">
             <from x="-0.0" y="50.0" z="-80.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
@@ -28,8 +28,8 @@
             <to x="-7.5" y="-0.75" z="2.0" />
         </perspective>
 
-        <ortho id="NotDefined" near="0.1" far="500.0" left="-5.0" right="5.0" top="5.0" bottom="-5.0">
-            <from x="60.0" y="60.0" z="60.0" />
+        <ortho id="OrthoCam" near="0.1" far="1000.0" left="-15.0" right="15.0" top="25.0" bottom="-25.0">
+            <from x="115.0" y="115.0" z="115.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </ortho>
 
@@ -56,7 +56,7 @@
             <specular r="0.5" g="0.5" b="0.5" a="1.0" />
         </spot>
 
-         <spot id="PoolLight" enabled="false" angle="0.0" exponent="2.0">
+        <spot id="PoolLight" enabled="false" angle="0.0" exponent="2.0">
             <location x="0.0" y="-2.5" z="0.0" w="0.0" />
             <target x="0.0" y="-5.0" z="0.0" />
             <ambient r="0.0" g="0.0" b="0.0" a="1.0" />

@@ -22,19 +22,8 @@ class Parser {
 
         this.loadedOk = null;
 
-        // Establish bidirectional references between scene and graph.
         this.scene = scene;
         this.data = data;
-        //scene.graph = this;
-
-        //this.nodes = [];
-
-        //this.idRoot = null;                    // The id of the root element.
-
-        //this.axisCoords = [];
-        //this.axisCoords['x'] = [1, 0, 0];
-        //this.axisCoords['y'] = [0, 1, 0];
-        //this.axisCoords['z'] = [0, 0, 1];
 
         // File reading 
         this.reader = new CGFXMLreader();
@@ -63,7 +52,6 @@ class Parser {
         }
 
         // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
-        this.loadedOk = true;
         this.scene.onDataLoaded();
     }
 
@@ -942,7 +930,7 @@ class Parser {
 
         if (textureID == null || textureID == "")
             return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid ID.";
-        else if (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT))
+        else if (textureID != "inherit" && textureID != "none" && (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT)))
             return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values." + textureID + "  " + textureLenT;
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)

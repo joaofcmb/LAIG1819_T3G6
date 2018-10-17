@@ -100,6 +100,9 @@ class MyCylinder extends CGFobject
 	};
 
 	setScaleFactors(scaleFactors) {
+		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
+			return;
+
 		this,this.baseCircle.setScaleFactors(scaleFactors);
 		this,this.topCircle.setScaleFactors(scaleFactors);
 

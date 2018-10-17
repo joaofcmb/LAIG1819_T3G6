@@ -32,6 +32,9 @@ main=function()
 	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
 	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
     var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v02.xml";
+    
+    //TODO: Substituir transformações nos components por transformation refs para ficar equilibrado
+    //TODO: Adicionar primitiva que falta (Triangulo): Sinal com warning "No diving"
 
 	// create and load graph, and associate it to scene. 
 	// Check console for loading errors

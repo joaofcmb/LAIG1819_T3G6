@@ -59,6 +59,9 @@ class MyTorus extends CGFobject
 	};
 
 	setScaleFactors(scaleFactors) {
+		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
+			return;
+			
 		var i = 0; 
 		while (i < this.texCoords.size()) {
 			this.textCoords[i++] *= this.fS / scaleFactors[0];

@@ -3,7 +3,7 @@
     <scene root="componentID" axis_length="3"/>
 
     <views default="perspectiveID">
-        <perspective id="perspectiveID" near="0.1" far="500.0" angle="0.4">
+        <perspective id="perspectiveID" near="0.1" far="500.0" angle="60">
             <from x="15.0" y="15.0" z="15.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>

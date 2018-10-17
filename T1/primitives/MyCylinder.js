@@ -98,4 +98,18 @@ class MyCylinder extends CGFobject
 		this.scene.translate(0, 0, this.height); 
 		this.topCircle.display();
 	};
+
+	setScaleFactors(scaleFactors) {
+		this,this.baseCircle.setScaleFactors(scaleFactors);
+		this,this.topCircle.setScaleFactors(scaleFactors);
+
+		var i = 0; 
+		while (i < this.texCoords.size()) {
+			this.textCoords[i++] *= this.fS / scaleFactors[0];
+			this.textCoords[i++] *= this.fT / scaleFactors[1];
+		}
+
+		this.fS = scaleFactors[0];
+		this.fT = scaleFactors[1];
+	}
 };

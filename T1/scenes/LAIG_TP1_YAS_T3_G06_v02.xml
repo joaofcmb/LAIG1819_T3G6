@@ -3,27 +3,27 @@
 
     <views default="DefaultCam">
 
-        <perspective id="DefaultCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
             <from x="65.0" y="65.0" z="95.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
 
-        <perspective id="TopCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="TopCam" near="0.1" far="500.0" angle="60">
             <from x="0.1" y="115.0" z="0.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
 
-        <perspective id="DiagonalCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="DiagonalCam" near="0.1" far="500.0" angle="60">
             <from x="30.0" y="4.0" z="30.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
 
-        <perspective id="TowelToPoolCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="TowelToPoolCam" near="0.1" far="500.0" angle="60">
             <from x="-0.0" y="50.0" z="-80.0" />
             <to x="0.0" y="0.0" z="0.0" />
         </perspective>
 
-        <perspective id="UnderWaterCam" near="0.1" far="500.0" angle="0.4">
+        <perspective id="UnderWaterCam" near="0.1" far="500.0" angle="60">
             <from x="7.5" y="-0.75" z="-2.0" />
             <to x="-7.5" y="-0.75" z="2.0" />
         </perspective>

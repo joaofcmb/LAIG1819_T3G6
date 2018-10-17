@@ -88,5 +88,16 @@ class MyTriangle extends CGFobject
         
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
-	};
+    };
+    
+    setScaleFactors(scaleFactors) {
+		var i = 0; 
+		while (i < this.texCoords.size()) {
+			this.textCoords[i++] *= this.fS / scaleFactors[0];
+			this.textCoords[i++] *= this.fT / scaleFactors[1];
+		}
+
+		this.fS = scaleFactors[0];
+		this.fT = scaleFactors[1];
+	}
 };

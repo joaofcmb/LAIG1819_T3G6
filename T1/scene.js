@@ -62,7 +62,7 @@ class Scene extends CGFscene {
         var cam = null;
 
         if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
-            this.camera = new CGFcamera(cam.angle, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
+            this.camera = new CGFcamera(Math.PI * cam.angle / 180, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
         else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
             this.camera = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), 
                                              vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));

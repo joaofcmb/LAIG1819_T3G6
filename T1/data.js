@@ -171,6 +171,9 @@ class Data {
             var textureID = this.components[compID].textureID;
             this.components[compID].activeTexture = textureID != "inherit" && textureID != "none" ? new CGFtexture(scene, this.textures[textureID]) : textureID;
 
+            this.components[compID].isTexScaleSet = (this.components[compID].texLengthS && this.components[compID].texLengthT);
+
+
             //console.log(this.components);
             //console.log(this.components[compID].primitiveID);
 
@@ -183,26 +186,31 @@ class Data {
                     case "rectangle":
                         this.components[compID].activePrimitive = new MyRectangle(scene, primitive.x1, primitive.y1, 
                                                                                   primitive.x2, primitive.y2,
-                                                                                  this.components[compID].texLengthS, this.components[compID].texLengthT);
+                                                                                  this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1
+                                                                                 );
                         break;
                     case "triangle":
                         this.components[compID].activePrimitive = new MyTriangle(scene, primitive.x1, primitive.y1, primitive.z1,
                                                                                  primitive.x2, primitive.y2, primitive.z2,
                                                                                  primitive.x3, primitive.y3, primitive.z3,
-                                                                                 this.components[compID].texLengthS, this.components[compID].texLengthT);
+                                                                                 this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1
+                                                                                );
                         break;
                     case "cylinder":
                         this.components[compID].activePrimitive = new MyCylinder(scene, primitive.base, primitive.top, primitive.height, 
                                                                                  primitive.slices, primitive.stacks,
-                                                                                 this.components[compID].texLengthS, this.components[compID].texLengthT);
+                                                                                 this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1
+                                                                                );
                         break;
                     case "sphere":
                         this.components[compID].activePrimitive = new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks,
-                                                                               this.components[compID].texLengthS, this.components[compID].texLengthT);
+                                                                               this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1
+                                                                              );
                         break;
                     case "torus":
                         this.components[compID].activePrimitive = new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops,
-                                                                              this.components[compID].texLengthS, this.components[compID].texLengthT);
+                                                                              this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1
+                                                                             );
                         break;
                 }
             }
@@ -220,11 +228,11 @@ class Data {
         this.materialStack = [];
         this.textureStack = [];
 
-        this.displayComponent(scene, this.components[this.root], this.defaultAppearance, null);
+        this.displayComponent(scene, this.components[this.root], this.defaultAppearance, null, [1,1]);
     }
 
     // recursive call of graph components
-    displayComponent(scene, component, parentMaterial, parentTexture) {
+    displayComponent(scene, component, parentMaterial, parentTexture, parentScaleFactors) {
         scene.multMatrix(component.transformMatrix);
 
         var currAppearance = (component.activeMaterial != "inherit") ? component.activeMaterial : parentMaterial;
@@ -241,13 +249,18 @@ class Data {
                 break;
         }
 
+        if (!component.isTexScaleSet) {
+            component.texLengthS = parentScaleFactors[0];
+            component.texLengthT = parentScaleFactors[1];
+        }
+
         for (var childIndex in component.components) {
             var child = component.components[childIndex];
 
             scene.pushMatrix();
                 this.materialStack.push(currAppearance);
                     this.textureStack.push(currTexture);
-                        this.displayComponent(scene, this.components[child], currAppearance, currTexture);
+                        this.displayComponent(scene, this.components[child], currAppearance, currTexture, [component.texLengthS, component.texLengthT]);
                     this.textureStack.pop(currTexture);
                 this.materialStack.pop(currAppearance);
             scene.popMatrix();
@@ -258,6 +271,11 @@ class Data {
             currAppearance.setTextureWrap('REPEAT', 'REPEAT');
             currAppearance.apply();
             
+            if (!component.isTexScaleSet) {
+                component.activePrimitive.setScaleFactors(parentScaleFactors);
+                component.isTexScaleSet = true;
+            }
+
             component.activePrimitive.display();
         }
 

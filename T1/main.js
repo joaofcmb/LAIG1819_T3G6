@@ -35,6 +35,10 @@ main=function()
     
     //TODO: Substituir transformações nos components por transformation refs para ficar equilibrado
     //TODO: Adicionar primitiva que falta (Triangulo): Sinal com warning "No diving"
+    //TODO: Verificar primitivas 2d para saber se são visiveis dos dois lados
+    //TODO: Duvida acerca do cilindro com as tampas
+    //TODO: Duvida relativamente a warnings, no sentido de ser possivel ou não usar default values
+    //TODO: Verificar se é possivel ter ou não o Lock Views
 
 	// create and load graph, and associate it to scene. 
 	// Check console for loading errors

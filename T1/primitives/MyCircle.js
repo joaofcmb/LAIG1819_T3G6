@@ -22,9 +22,12 @@ class MyCircle extends CGFobject
 
 		var angle = 2* Math.PI / this.slices;
 
+		var texScaleS = 2 * this.base / this.fS;
+		var texScaleT = 2 * this.base / this.fT;
+
 		for (var j = 0; j < this.slices; j++) {
 			this.vertices.push(Math.cos(angle * j) * this.base, Math.sin(angle * j) * this.base, 0);
-			this.texCoords.push((Math.cos(angle * j)+1)/2, (1-(Math.sin(angle * j)+1)/2));
+			this.texCoords.push((texScaleS * Math.cos(angle * j)+ 1)/2, 1 - (texScaleT * Math.sin(angle * j)+1)/2);
 			this.normals.push(0,0,1);
 		}
 

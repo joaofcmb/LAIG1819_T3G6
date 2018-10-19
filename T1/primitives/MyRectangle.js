@@ -1,5 +1,18 @@
+/**
+ * MyRectangle class
+ */
 class MyRectangle extends CGFobject
-{
+{   
+    /**
+     * MyRectangle constructor
+     * @param {any} scene 
+     * @param {number} x1 
+     * @param {number} y1 
+     * @param {number} x2 
+     * @param {number} y2 
+     * @param {number} fS 
+     * @param {number} fT 
+     */
 	constructor(scene, x1, y1, x2, y2, fS, fT)
 	{
         super(scene);
@@ -12,6 +25,7 @@ class MyRectangle extends CGFobject
 		this.initBuffers();
 	};
 
+    
 	initBuffers()
 	{
 		// DRAW VERTICES ------------
@@ -75,6 +89,10 @@ class MyRectangle extends CGFobject
 		this.initGLBuffers();
     };
     
+    /**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
     setScaleFactors(scaleFactors) {
         if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
             return;

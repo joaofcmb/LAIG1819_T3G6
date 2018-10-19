@@ -44,8 +44,8 @@
         <omni id="OmniLight" enabled="1">
             <location x="-50.0" y="100.0" z="-50.0" w="0.0" />
             <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
-            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
-            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.8" g="0.8" b="0.8" a="1.0" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
         </omni>
 
         <spot id="SpotLight" enabled="0" angle="0.0" exponent="0.0">
@@ -97,21 +97,21 @@
     <materials>
         <material id="grassMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.0" g="0.5" b="0.0" a="1.0" />
-            <diffuse r="0.0" g="0.5" b="0.0" a="1.0" />
-            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <ambient r="0.3" g="0.5" b="0.3" a="1.0" />
+            <diffuse r="0.3" g="0.7" b="0.3" a="1.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="1.0" />
         </material>
 
         <material id="poolMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.0" g="0.5" b="1.0" a="1.0" />
+            <ambient r="0.0" g="0.25" b="0.5" a="1.0" />
             <diffuse r="0.0" g="0.5" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="sunshadeMaterial" shininess="10.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.8" g="0.7" b="0.4" a="1.0" />
+            <ambient r="0.4" g="0.35" b="0.2" a="1.0" />
             <diffuse r="0.8" g="0.7" b="0.4" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
@@ -125,49 +125,49 @@
 
         <material id="grayMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.77" g="0.76" b="0.72" a="1.0" />
+            <ambient r="0.38" g="0.38" b="0.36" a="1.0" />
             <diffuse r="0.77" g="0.76" b="0.72" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="whiteMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="pinkMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.99" g="0.0" b="0.99" a="1.0" />
+            <ambient r="0.49" g="0.0" b="0.49" a="1.0" />
             <diffuse r="0.99" g="0.0" b="0.99" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="orangeMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.99" g="0.56" b="0.0" a="1.0" />
+            <ambient r="0.59" g="0.36" b="0.0" a="1.0" />
             <diffuse r="0.99" g="0.56" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="redMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="1.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.5" g="0.0" b="0.0" a="1.0" />
             <diffuse r="1.0" g="0.0" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="purpleMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.64" g="0.0" b="0.99" a="1.0" />
+            <ambient r="0.32" g="0.0" b="0.49" a="1.0" />
             <diffuse r="0.64" g="0.0" b="0.99" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
 
         <material id="yellowMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.99" g="0.99" b="0.0" a="1.0" />
+            <ambient r="0.49" g="0.49" b="0.0" a="1.0" />
             <diffuse r="0.99" g="0.99" b="0.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
         </material>
@@ -183,16 +183,79 @@
 
     <transformations>
 
-        <transformation id="towelTransform">
-            <rotate axis="x" angle="0" />
+        <transformation id="ballTransform">
+            <translate x="15.5" y="0.75" z="-5.75" />
+            <scale x="0.75" y="0.75" z="0.75" />
         </transformation>
 
+        <transformation id="cupTransform">
+            <translate x="-15.0" y="1.0" z="19.5" />
+            <scale x="0.35" y="0.75" z="0.35" />
+            <rotate axis="x" angle="-90" />
+        </transformation>
+
+
+        <transformation id="floaterATransform">
+            <translate x="-15.5" y="0.65" z="5.75" />
+            <scale x="1.25" y="1.25" z="1.25" />
+            <rotate axis="x" angle="-90" />
+        </transformation>
+
+        <transformation id="floaterBTransform">
+            <translate x="-15.5" y="1.2" z="8.75" />
+            <scale x="1.25" y="1.25" z="1.25" />
+            <rotate axis="x" angle="-65" />
+        </transformation>
+
+        <transformation id="floaterCTransform">
+            <translate x="-18.0" y="1.4" z="6.75" />
+            <scale x="1.25" y="1.25" z="1.25" />
+            <rotate axis="x" angle="-10" />
+            <rotate axis="z" angle="35" />
+            <rotate axis="x" angle="-90" />
+        </transformation>
+
+
+        <transformation id="towelATransform">
+            <translate x="-10.0" y="0.1" z="-14.5" />
+            <scale x="2.5" y="0.01" z="5.0" />
+            <rotate axis="y" angle="45" />
+            <rotate axis="x" angle="90" />
+        </transformation>
+
+        <transformation id="towelBTransform">
+            <translate x="-5.0" y="0.1" z="-14.5" />
+            <scale x="2.5" y="0.01" z="5.0" />
+            <rotate axis="y" angle="45" />
+            <rotate axis="x" angle="90" />
+        </transformation>
+
+        <transformation id="towelCTransform">
+            <translate x="0.0" y="0.1" z="-14.5" />
+            <scale x="2.5" y="0.01" z="5.0" />
+            <rotate axis="y" angle="45" />
+            <rotate axis="x" angle="90" />
+        </transformation>
+
+        <transformation id="towelDTransform">
+            <translate x="5.0" y="0.1" z="-14.5" />
+            <scale x="2.5" y="0.01" z="5.0" />
+            <rotate axis="y" angle="45" />
+            <rotate axis="x" angle="90" />
+        </transformation>
+
+        <transformation id="towelETransform">
+            <translate x="10" y="0.1" z="-14.5" />
+            <scale x="2.5" y="0.01" z="5.0" />
+            <rotate axis="y" angle="45" />
+            <rotate axis="x" angle="90" />
+        </transformation>
 
     </transformations>
 
     <primitives>
         <primitive id="triangle">
-            <triangle x1="0" y1="0" z1="-.5" x2="0" y2="0" z2=".5" x3="0" y3="1" z3="0" /> 
+            <triangle x1="0" y1="0" z1="-.5" x2="0" y2="0" z2=".5" x3="0" y3=".866" z3="0" /> 
         </primitive>
         <primitive id="rectangule">
             <rectangle x1="-1.0" y1="-1.0" x2="1.0" y2="1.0" />
@@ -264,7 +327,9 @@
         </component>
 
         <component id="pool">
-            <transformation></transformation>
+            <transformation>
+
+            </transformation>
 
             <materials>
                 <material id="grayMaterial" />
@@ -290,6 +355,7 @@
             <transformation>
                 <scale x="7.5" y="1.0" z="1.0" />
                 <translate x="0.0" y="-1.0" z="3.5" />
+                <rotate axis="y" angle="180" />
             </transformation>
 
             <materials>
@@ -304,8 +370,9 @@
         </component>
         <component id="poolSideB">
             <transformation>
-                <scale x="7.5" y="1.0" z="1.0" />
+                <scale x="-7.5" y="1.0" z="1.0" />
                 <translate x="0.0" y="-1.0" z="-3.5" />
+                <rotate axis="y" angle="180" />
             </transformation>
 
             <materials>
@@ -321,8 +388,8 @@
         <component id="poolSideC">
             <transformation>
                 <translate x="-7.5" y="-1.0" z="0.0" />
-                <rotate axis="y" angle="90" />
-                <scale x="3.5" y="1.0" z="1.0" />
+                <rotate axis="y" angle="270" />
+                <scale x="-3.5" y="1.0" z="1.0" />
             </transformation>
 
             <materials>
@@ -338,8 +405,8 @@
         <component id="poolSideD">
             <transformation>
                 <translate x="7.5" y="-1.0" z="0.0" />
-                <rotate axis="y" angle="90" />
-                <scale x="3.5" y="1.0" z="1.0" />
+                <rotate axis="y" angle="-90" />
+                <scale x="-3.5" y="-1.0" z="1.0" />
             </transformation>
 
             <materials>
@@ -355,8 +422,8 @@
         <component id="poolSideE">
             <transformation>
                 <translate x="0.0" y="-2.0" z="0.0" />
-                <rotate axis="x" angle="90" />
-                <scale x="7.5" y="3.5" z="1.0" />
+                <rotate axis="x" angle="-90" />
+                <scale x="-7.5" y="-3.5" z="1.0" />
             </transformation>
 
             <materials>
@@ -371,7 +438,7 @@
         </component>
         <component id="poolSideF">
             <transformation>
-                <scale x="7.5" y="1.0" z="0.75" />
+                <scale x="-7.5" y="-1.0" z="0.75" />
                 <translate x="0.0" y="0.0" z="5.5" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -388,7 +455,7 @@
         </component>
         <component id="poolSideG">
             <transformation>
-                <scale x="7.5" y="1.0" z="0.75" />
+                <scale x="-7.5" y="-1.0" z="0.75" />
                 <translate x="0.0" y="0.0" z="-5.5" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -405,7 +472,7 @@
         </component>
         <component id="poolSideH">
             <transformation>
-                <scale x="0.75" y="1.0" z="4.875" />
+                <scale x="-0.75" y="-1.0" z="4.875" />
                 <translate x="-11.0" y="0.0" z="0.0" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -422,7 +489,7 @@
         </component>
         <component id="poolSideI">
             <transformation>
-                <scale x="0.75" y="1.0" z="4.875" />
+                <scale x="-0.75" y="-1.0" z="4.875" />
                 <translate x="11.0" y="0.0" z="0.0" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -440,8 +507,8 @@
         <component id="poolSideJ">
             <transformation>
                 <translate x="0.0" y="-0.25" z="0.0" />
-                <rotate axis="x" angle="90" />
-                <scale x="7.5" y="3.5" z="1.0" />
+                <rotate axis="x" angle="-90" />
+                <scale x="-7.5" y="-3.5" z="1.0" />
             </transformation>
 
             <materials>
@@ -523,7 +590,6 @@
             <transformation></transformation>
 
             <materials>
-                <material id="defaultMaterial" />
                 <material id="grassMaterial" />
                 <material id="redMaterial" />
             </materials>
@@ -541,7 +607,7 @@
         </component>
         <component id="groundSideA">
             <transformation>
-                <scale x="9.0" y="1.0" z="4.25" />
+                <scale x="-9.0" y="-1.0" z="4.25" />
                 <translate x="0.0" y="0.0" z="2.15" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -558,7 +624,7 @@
         </component>
         <component id="groundSideB">
             <transformation>
-                <scale x="9.0" y="1.0" z="4.25" />
+                <scale x="-9.0" y="-1.0" z="4.25" />
                 <translate x="0.0" y="0.0" z="-2.15" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -575,8 +641,8 @@
         </component>
         <component id="groundSideC">
             <transformation>
-                <rotate axis="x" angle="90" />
-                <scale x="6.5" y="13.35" z="1.0" />
+                <rotate axis="x" angle="-90" />
+                <scale x="-6.5" y="-13.35" z="1.0" />
                 <translate x="2.38" y="0.0" z="0.0" />
             </transformation>
 
@@ -592,8 +658,8 @@
         </component>
         <component id="groundSideD">
             <transformation>
-                <rotate axis="x" angle="90" />
-                <scale x="6.5" y="13.35" z="1.0" />
+                <rotate axis="x" angle="-90" />
+                <scale x="-6.5" y="-13.35" z="1.0" />
                 <translate x="-2.38" y="0.0" z="0.0" />
             </transformation>
 
@@ -609,7 +675,7 @@
         </component>
         <component id="groundSideE">
             <transformation>
-                <scale x="22.0" y="1.0" z="5.0" />
+                <scale x="-22.0" y="-1.0" z="5.0" />
                 <translate x="0.0" y="0.0" z="-3.65" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -626,7 +692,7 @@
         </component>
         <component id="groundSideF">
             <transformation>
-                <scale x="22.0" y="1.0" z="5.0" />
+                <scale x="-22.0" y="-1.0" z="5.0" />
                 <translate x="0.0" y="0.0" z="3.65" />
                 <rotate axis="x" angle="90" />
             </transformation>
@@ -659,9 +725,7 @@
         </component>
         <component id="floaterA">
             <transformation>
-                <translate x="-15.5" y="0.65" z="5.75" />
-                <scale x="1.25" y="1.25" z="1.25" />
-                <rotate axis="x" angle="-90" />
+                <transformationref id= "floaterATransform" />
             </transformation>
 
             <materials>
@@ -676,9 +740,7 @@
         </component>
         <component id="floaterB">
             <transformation>
-                <translate x="-15.5" y="1.2" z="8.75" />
-                <scale x="1.25" y="1.25" z="1.25" />
-                <rotate axis="x" angle="-65" />
+                <transformationref id= "floaterBTransform" />
             </transformation>
 
             <materials>
@@ -693,11 +755,7 @@
         </component>
         <component id="floaterC">
             <transformation>
-                <translate x="-18.0" y="1.4" z="6.75" />
-                <scale x="1.25" y="1.25" z="1.25" />
-                <rotate axis="x" angle="-10" />
-                <rotate axis="z" angle="35" />
-                <rotate axis="x" angle="-90" />
+                <transformationref id= "floaterCTransform" />
             </transformation>
 
             <materials>
@@ -713,8 +771,7 @@
 
         <component id="ball">
             <transformation>
-                <translate x="15.5" y="0.75" z="-5.75" />
-                <scale x="0.75" y="0.75" z="0.75" />
+                <transformationref id="ballTransform" />
             </transformation>
 
             <materials>
@@ -731,7 +788,6 @@
         <component id="warningSign">
             <transformation>
                 <translate x="15" y="0" z="-3" />
-                <rotate axis="y" angle="180" />
             </transformation>
 
             <materials>
@@ -1183,9 +1239,7 @@
         </component>
         <component id="cup">
             <transformation>
-                <translate x="-15.0" y="1.0" z="19.5" />
-                <scale x="0.35" y="0.75" z="0.35" />
-                <rotate axis="x" angle="-90" />
+                <transformationref id= "cupTransform" />
             </transformation>
 
             <materials>
@@ -1268,7 +1322,8 @@
 
 
         <component id="towels">
-            <transformation></transformation>
+            <transformation>
+            </transformation>
 
             <materials>
                 <material id="grayMaterial" />
@@ -1287,10 +1342,7 @@
 
         <component id="towelA">
             <transformation>
-                <translate x="-10.0" y="0.1" z="-14.5" />
-                <scale x="2.5" y="0.01" z="5.0" />
-                <rotate axis="y" angle="45" />
-                <rotate axis="x" angle="90" />
+                <transformationref id="towelATransform" />
             </transformation>
 
             <materials>
@@ -1305,10 +1357,7 @@
         </component>
         <component id="towelB">
             <transformation>
-                <translate x="-5.0" y="0.1" z="-14.5" />
-                <scale x="2.5" y="0.01" z="5.0" />
-                <rotate axis="y" angle="45" />
-                <rotate axis="x" angle="90" />
+                <transformationref id="towelBTransform" />
             </transformation>
 
             <materials>
@@ -1323,10 +1372,7 @@
         </component>
         <component id="towelC">
             <transformation>
-                <translate x="0.0" y="0.1" z="-14.5" />
-                <scale x="2.5" y="0.01" z="5.0" />
-                <rotate axis="y" angle="45" />
-                <rotate axis="x" angle="90" />
+                <transformationref id="towelCTransform" />
             </transformation>
 
             <materials>
@@ -1341,10 +1387,7 @@
         </component>
         <component id="towelD">
             <transformation>
-                <translate x="5.0" y="0.1" z="-14.5" />
-                <scale x="2.5" y="0.01" z="5.0" />
-                <rotate axis="y" angle="45" />
-                <rotate axis="x" angle="90" />
+                <transformationref id="towelDTransform" />
             </transformation>
 
             <materials>
@@ -1359,10 +1402,7 @@
         </component>
         <component id="towelE">
             <transformation>
-                <translate x="10.0" y="0.1" z="-14.5" />
-                <scale x="2.5" y="0.01" z="5.0" />
-                <rotate axis="y" angle="45" />
-                <rotate axis="x" angle="90" />
+                <transformationref id="towelETransform" />
             </transformation>
 
             <materials>
@@ -1376,9 +1416,6 @@
             </children>
         </component>
 
-
-
     </components>
-
 
 </yas>

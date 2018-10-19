@@ -859,7 +859,7 @@ class Parser {
 
                 var transform = this.data.transforms[tranformRefID];
                 if (transform == null)
-                    return "Transformation block on <components> not valid due to a non existence of transformationref ID.";
+                    return "Transformation block on <components> not valid due to the non existence of transformationred with the given ID.";
                 else
                     this.data.components[componentID].transforms = tranformRefID;
             }

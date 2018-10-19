@@ -33,9 +33,7 @@ main=function()
 	// Get file name provided in URL, http://localhost/myproj/?file=myfile.xml or use "LAIG_TP1_YAS_T#_G0#_v0#.xml" as default 
     var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v02.xml";
     
-    //TODO: Substituir transformaçoes nos components por transformation refs para ficar equilibrado (Sobretudo se houverem repetições de transformaçoes)
     //TODO: Mudar textura do sinal de diving para ficar melhor
-    //TODO: Alterar rectangulo e triangulo para serem visiveis so de um lado. Posteriormente corrigir XML nas respetivas primitivas
     //TODO: Documentar: Circle, Cylinder, Sphere, Torus, Triangle
 
 	//Parse information present on XML named "filename"

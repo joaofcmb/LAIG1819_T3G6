@@ -111,7 +111,7 @@
 
             <children>
                 <!-- <componentref id="componentID" /> -->
-                <primitiveref id="cylinder" />
+                <primitiveref id="tri" />
             </children>
 
         </component>

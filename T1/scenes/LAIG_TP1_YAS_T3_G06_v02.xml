@@ -643,9 +643,7 @@
         </component>
 
         <component id="floaters">
-            <transformation>
-
-            </transformation>
+            <transformation></transformation>
 
             <materials>
                 <material id="grayMaterial" />
@@ -954,7 +952,6 @@
         </component>
         <component id="sunShadespotG">
             <transformation>
-
                 <translate x="0.0" y="0.0" z="-6.0" />
                 <rotate axis="y" angle="90" />
             </transformation>
@@ -973,7 +970,6 @@
         </component>
         <component id="sunShadespotH">
             <transformation>
-
                 <translate x="0.0" y="0.0" z="-12.0" />
                 <rotate axis="y" angle="90" />
             </transformation>
@@ -1278,7 +1274,7 @@
                 <material id="grayMaterial" />
             </materials>
 
-            <texture id="none" length_s="1.0" length_t="1.0" />
+            <texture id="none" />
 
             <children>
                 <componentref id="towelA" />
@@ -1288,6 +1284,7 @@
                 <componentref id="towelE" />
             </children>
         </component>
+
         <component id="towelA">
             <transformation>
                 <translate x="-10.0" y="0.1" z="-14.5" />

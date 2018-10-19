@@ -36,7 +36,6 @@ main=function()
     //TODO: Substituir transformaçoes nos components por transformation refs para ficar equilibrado (Sobretudo se houverem repetições de transformaçoes)
     //TODO: Mudar textura do sinal de diving para ficar melhor
     //TODO: Alterar rectangulo e triangulo para serem visiveis so de um lado. Posteriormente corrigir XML nas respetivas primitivas
-    //TODO: Testar inherit de lenS e lenT
     //TODO: Documentar: Primitives
 
 	//Parse information present on XML named "filename"

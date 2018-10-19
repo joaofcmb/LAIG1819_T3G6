@@ -40,7 +40,7 @@ main=function()
     //TODO: Substituir booleans por 0 e 1
     //TODO: Testar inherit de lenS e lenT
     //TODO: Verificar se scale factors no rectangulo estão bem
-    //TODO: Documentar: Primitives, parser, scene
+    //TODO: Documentar: Primitives
 
 	//Parse information present on XML named "filename"
 	var parser = new Parser(filename, data, scene);

@@ -231,11 +231,11 @@ class Data {
     }
 
     /**
-     * Called during the display() callback of the scene
+     * Called during the display() callback of the scene.
      * 
-     * Displays the scene graph contents
+     * Displays the scene graph contents.
      * 
-     * It is assumed that the scene has been initialized with identity matrix
+     * It is assumed that the scene has been initialized with identity matrix.
      * 
      * @param {any} scene 
      */

@@ -1,19 +1,27 @@
+// Global variable
 var DEGREE_TO_RAD = Math.PI / 180;
 
 /**
- * XMLscene class, representing the scene that is to be rendered.
+ * Scene class, representing the scene that is going to be rendered.
  */
 class Scene extends CGFscene {
+    /**
+     * Scene constructor
+     * 
+     * @param {object} data 
+     * @param {class} interf 
+     */
     constructor(data, interf) {
         super();
+        this.lock = {};
         this.data = data;
         this.lightValues = {};
-        this.lock = {};
         this.interface = interf;
     }
 
     /**
      * Initializes the scene, setting some WebGL defaults, initializing the camera and the axis.
+     * 
      * @param {CGFApplication} application
      */
     init(application) {
@@ -29,13 +37,6 @@ class Scene extends CGFscene {
         this.gl.depthFunc(this.gl.LEQUAL);
 
         this.axis = new CGFaxis(this);
-
-        // Adds primitives (most likely temporary)
-        this.rectangle = new MyRectangle(this, -.5, -.5, .5, .5);
-        this.triangle = new MyTriangle(this, -0.5, 0, 0, 0.5, 0, 0, 0, 1, 1);
-        this.cylinder = new MyCylinder(this, 0.5, 1.5, 1.5, 8, 8);
-        this.sphere = new MySphere(this, 1, 8, 8);
-        this.torus = new MyTorus(this, .5, 1.5, 6, 8)
     }
 
     /**
@@ -49,12 +50,12 @@ class Scene extends CGFscene {
     }
 
     /**
-    * Updates the scene cameras.
-    */
+     * Updates the scene cameras. 
+     */
     updateCameras() {
-        /* CFGcamera prototypes:
-         CFGcamera(angle, near, far, from, to)
-         CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - up default values vec3(0,1,0) */
+        // CFGcamera prototypes:
+        // ----------------------> CFGcamera(angle, near, far, from, to)
+        // ----------------------> CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - UP(0,1,0)
 
         if (this.interface.Views == "")
             this.interface.Views = this.data.defaultCamID;
@@ -72,60 +73,63 @@ class Scene extends CGFscene {
 
     /**
      * Initializes the scene lights with the values read from the XML file.
-     *
      */
     initLights() {
-        var i = 0;  // Lights index.
+        var index = 0;
 
         // Reads the lights from the data
         for (var key in this.data.omniLights) {
-            if (i >= 8)
+            if (index >= 8)
                 break;              // Only eight lights allowed by WebGL.
 
             if (this.data.omniLights.hasOwnProperty(key))
-                this.setupLight(i++, this.data.omniLights[key], false);
+                this.setupLight(index++, this.data.omniLights[key], false);
         }
 
         for (var key in this.data.spotLights) {
-            if (i >= 8)
+            if (index >= 8)
                 break;              // Only eight lights allowed by WebGL.
 
             if (this.data.spotLights.hasOwnProperty(key))
-                this.setupLight(i++, this.data.spotLights[key], true);
+                this.setupLight(index++, this.data.spotLights[key], true);
         }
     }
 
     /**
-     * TODO  
-     * @param {*} i 
-     * @param {*} light 
-     * @param {*} isSpot 
+     * Setup up lights previously inited on initLights() function.
+     * 
+     * @param {number} index 
+     * @param {object} light 
+     * @param {boolean} isSpot 
      */
-    setupLight(i, light, isSpot) {
-        //lights are predefined in cgfscene
-        this.lights[i].setPosition(light.locationX, light.locationY, light.locationZ, light.locationW);
-        this.lights[i].setAmbient(light.ambientR, light.ambientG, light.ambientB, light.ambientA);
-        this.lights[i].setDiffuse(light.diffuseR, light.diffuseG, light.diffuseB, light.diffuseA);
-        this.lights[i].setSpecular(light.specularR, light.specularG, light.specularB, light.specularA);
+    setupLight(index, light, isSpot) {
+
+        // Lights are predefined in CGFscene
+        this.lights[index].setPosition(light.locationX, light.locationY, light.locationZ, light.locationW);
+        this.lights[index].setAmbient(light.ambientR, light.ambientG, light.ambientB, light.ambientA);
+        this.lights[index].setDiffuse(light.diffuseR, light.diffuseG, light.diffuseB, light.diffuseA);
+        this.lights[index].setSpecular(light.specularR, light.specularG, light.specularB, light.specularA);
 
         if (isSpot) {
-            this.lights[i].setSpotDirection(light.targetX - light.locationX, light.targetY - light.locationY, light.targetZ - light.locationZ);
+            this.lights[index].setSpotDirection(light.targetX - light.locationX, light.targetY - light.locationY, light.targetZ - light.locationZ);
 
-            this.lights[i].setSpotExponent(light.exponent);
-            this.lights[i].setSpotCutOff(light.angle);
+            this.lights[index].setSpotExponent(light.exponent);
+            this.lights[index].setSpotCutOff(light.angle);
         }
 
-        this.lights[i].setVisible(true);
+        this.lights[index].setVisible(true);
 
-        if (light.enabled) this.lights[i].enable();
-        else this.lights[i].disable();
+        if (light.enabled) this.lights[index].enable();
+        else this.lights[index].disable();
 
-        this.lights[i].update();
+        this.lights[index].update();
     }
 
 
-    /* Handler called when the data is finally loaded. 
-     * As loading is asynchronous, this may be called already after the application has started the run loop
+    /**
+     * Handler called by parser when the data is finally loaded. 
+     * 
+     * As loading is asynchronous, this may be called already after the application has started the run loop. 
      */
     onDataLoaded() {
         this.axis = new CGFaxis(this, this.data.axisLength);
@@ -146,7 +150,7 @@ class Scene extends CGFscene {
     }
 
     /**
-     * Updates materials by pressing key M 
+     * Updates materials by pressing key M. 
      */
     updateMaterials() {
         for (var key in this.data.components) {
@@ -197,7 +201,6 @@ class Scene extends CGFscene {
                 this.updateCameras();
 
             //Handle Lights
-
             var i = 0;
             for (var key in this.lightValues) {
                 if (this.lightValues.hasOwnProperty(key)) {

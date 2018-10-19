@@ -14,7 +14,8 @@ function getUrlVars() {
 //Include additional files here
 serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js", 
                 './primitives/MyRectangle.js', './primitives/MyTriangle.js', 
-                './primitives/MyCylinder.js', './primitives/MySphere.js', './primitives/MyCircle.js', './primitives/MyTorus.js',
+                './primitives/MyCylinder.js', './primitives/MySphere.js', 
+                './primitives/MyCircle.js', './primitives/MyTorus.js',
 
 main=function()
 {
@@ -29,22 +30,22 @@ main=function()
     app.setInterface(interface);
     
 
-	// get file name provided in URL, e.g. http://localhost/myproj/?file=myfile.xml 
-	// or use "demo.xml" as default (assumes files in subfolder "scenes", check MySceneGraph constructor) 
+	// Get file name provided in URL, http://localhost/myproj/?file=myfile.xml or use "LAIG_TP1_YAS_T#_G0#_v0#.xml" as default 
     var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v02.xml";
     
     //TODO: Substituir transformações nos components por transformation refs para ficar equilibrado
     //TODO: Adicionar primitiva que falta (Triangulo): Sinal com warning "No diving"
-    //TODO: Verificar primitivas 2d para saber se são visiveis dos dois lados
-    //TODO: Duvida acerca do cilindro com as tampas
-    //TODO: Duvida relativamente a warnings, no sentido de ser possivel ou não usar default values
-    //TODO: Verificar se é possivel ter ou não o Lock Views
+    //TODO: Alterar rectangulo e triangulo para serem visiveis so de um lado. Posteriormente corrigir XML nas respetivas primitivas
+    //TODO: Acabar scale factors no cilindro
+    //TODO: Substituir booleans por 0 e 1
+    //TODO: Testar inherit de lenS e lenT
+    //TODO: Verificar se scale factors no rectangulo estão bem
+    //TODO: Documentar: Primitives
 
-	// create and load graph, and associate it to scene. 
-	// Check console for loading errors
+	//Parse information present on XML named "filename"
 	var parser = new Parser(filename, data, scene);
 	
-	// start
+	// Start
     app.run();
 }
 

@@ -1,5 +1,3 @@
-var DEGREE_TO_RAD = Math.PI / 180;
-
 // Order of the groups in the XML document.
 var SCENE_INDEX = 0;
 var VIEWS_INDEX = 1;
@@ -13,10 +11,19 @@ var COMPONENTS_INDEX = 8;
 var LOCATION_INDEX = 0;
 var TARGET_INDEX = 1;
 
+var DEGREE_TO_RAD = Math.PI / 180;
+
+/**
+ * Parser class, that is responsible for processing XML file.
+ */
 class Parser {
 
     /**
-     * @constructor
+     * Parser default constructor.
+     * 
+     * @param {string} filename 
+     * @param {any} data 
+     * @param {any} scene 
      */
     constructor(filename, data, scene) {
 
@@ -38,26 +45,27 @@ class Parser {
     }
 
     /*
-     * Callback to be executed after successful reading
+     * Callback to be executed after successful reading.
      */
     onXMLReady() {
         this.log("XML Loading finished.");
         var rootElement = this.reader.xmlDoc.documentElement;
 
-        // Here should go the calls for different functions to parse the various blocks
         var error = this.parseXMLFile(rootElement);
         if (error != null) {
             this.onXMLError(error);
             return;
         }
 
-        // As the data is loaded ok, signal the scene so that any additional initialization depending on the data can take place
+        // Signal the scene so that any additional initialization depending on the data can take place
         this.scene.onDataLoaded();
     }
 
-    /*
-        Parses the XML file
-    */
+    /**
+     * Parses the XML file.
+     * 
+     * @param {any} rootElement 
+     */
     parseXMLFile(rootElement) {
         if (rootElement.nodeName != "yas")
             return "root tag <yas> missing";
@@ -128,9 +136,11 @@ class Parser {
         this.log("XML Parsing finished");
     }
 
-    /*
-        Parses the <scene> block.
-    */
+    /**
+     * Parses the <scene> block.
+     * 
+     * @param {any} sceneNode 
+     */
     parseScene(sceneNode) {
         this.data.root = this.reader.getString(sceneNode, "root");
         this.data.axisLength = this.reader.getFloat(sceneNode, "axis_length");
@@ -144,10 +154,12 @@ class Parser {
         }
         this.log("Parsed scene");
     }
-
-    /* 
-        Parses the <views> block.
-    */
+    
+    /**
+     * Parses the <views> block.
+     * 
+     * @param {any} viewsNode 
+     */
     parseViews(viewsNode) {
         var error;
 
@@ -230,9 +242,9 @@ class Parser {
         this.log("Parsed views");
     }
 
-    /*
-        Validates <views> XML information
-    */
+    /**
+     * Validates <views> XML information.
+     */
     validateViewsInfo() {
         for (var firstKey in this.data.perspectiveCams) {
             if (this.data.perspectiveCams.hasOwnProperty(firstKey)) {
@@ -261,9 +273,11 @@ class Parser {
         }
     }
 
-    /*
-       Parses the <ambient> block.
-   */
+    /**
+     * Parses the <ambient> block.
+     * 
+     * @param {any} ambientNode 
+     */
     parseAmbient(ambientNode) {
         var children = ambientNode.children;
 
@@ -284,9 +298,11 @@ class Parser {
         this.log("Parsed ambient");
     }
 
-    /*
-        Validates <ambient> XML information
-    */
+    /**
+     * Validates <ambient> XML information.
+     * 
+     * @param {Array} children 
+     */
     validateAmbientInfo(children) {
         var ar, ag, ab, aa, br, bg, bb, ba;
 
@@ -315,9 +331,12 @@ class Parser {
         this.data.background.r = properValues[4]; this.data.background.g = properValues[5]; this.data.background.b = properValues[6]; this.data.background.a = properValues[7];
     }
 
-    /*
-        Parses the <ligths> block.
-    */
+   
+    /**
+     * Parses the <ligths> block.
+     * 
+     * @param {any} lightsNode 
+     */
     parseLights(lightsNode) {
         var error;
 
@@ -413,9 +432,9 @@ class Parser {
         this.log("Parsed lights");
     }
 
-    /*
-       Validates <lights> XML information
-   */
+    /**
+     * Validates <lights> XML information.
+     */
     validateLightsInfo() {
         for (var firstKey in this.data.omniLights) {
             if (this.data.omniLights.hasOwnProperty(firstKey)) {
@@ -452,9 +471,12 @@ class Parser {
         }
     }
 
-    /*
-        Parses the <textures> block.
-    */
+    
+    /**
+     * Parses the <textures> block.
+     * 
+     * @param {any} texturesNode 
+     */
     parseTextures(texturesNode) {
         var error;
 
@@ -485,9 +507,9 @@ class Parser {
         this.log("Parsed textures");
     }
 
-    /*
-      Validates <textures> XML information
-    */
+    /**
+     * Validates <textures> XML information.
+     */
     validateTexturesInfo() {
         for (var key in this.data.textures) {
             if (this.data.textures.hasOwnProperty(key)) {
@@ -497,9 +519,12 @@ class Parser {
         }
     }
 
-    /*
-        Parses the <materials> block.
-    */
+
+    /**
+     * Parses the <materials> block.
+     * 
+     * @param {any} materialsNode 
+     */
     parseMaterials(materialsNode) {
         var error;
         var children = materialsNode.children;
@@ -561,9 +586,9 @@ class Parser {
         this.log("Parsed materials");
     }
 
-    /*
-      Validates <materials> XML information
-    */
+    /**
+     * Validates <materials> XML information.
+     */
     validateMaterialsInfo() {
         for (var firstKey in this.data.materials) {
             if (this.data.materials.hasOwnProperty(firstKey)) {
@@ -579,9 +604,11 @@ class Parser {
         }
     }
 
-    /*
-        Parses the <transformations> block.
-    */
+    /**
+     * Parses the <transformations> block.
+     * 
+     * @param {any} transformations 
+     */
     parseTransformations(transformations) {
         var error;
 
@@ -636,9 +663,9 @@ class Parser {
         this.log("Parsed transformations");
     }
 
-    /*
-      Validates <transformations> XML information
-    */
+    /**
+     * Validates <transformations> XML information.
+     */
     validateTransformationsInfo() {
         for (var firstKey in this.data.transforms) {
             if (this.data.transforms.hasOwnProperty(firstKey)) {
@@ -667,9 +694,11 @@ class Parser {
         }
     }
 
-    /*
-       Parses the <primitives> block.
-    */
+    /**
+     * Parses the <primitives> block.
+     * 
+     * @param {any} primitives 
+     */
     parsePrimitives(primitives) {
         var error;
 
@@ -731,9 +760,9 @@ class Parser {
         this.log("Parsed primitives");
     }
 
-    /*
-      Validates <primitives> XML information
-    */
+    /**
+     * Validates <primitives> XML information. 
+     */
     validatePrimitivesInfo() {
         for (var firstKey in this.data.primitives) {
             if (this.data.primitives.hasOwnProperty(firstKey)) {
@@ -748,9 +777,11 @@ class Parser {
         }
     }
 
-    /*
-      Parses the <components> block.
-   */
+    /**
+     * Parses the <components> block.
+     * 
+     * @param {any} components 
+     */
     parseComponents(components) {
         var error;
         var flag = false;
@@ -811,9 +842,12 @@ class Parser {
         this.log("Parsed components");
     }
 
-    /*
-        Parses transformation block on <components>
-    */
+    /**
+     * Parses transformation block on <components>.
+     * 
+     * @param {any} node 
+     * @param {number} componentID 
+     */
     parseComponentTransform(node, componentID) {
         var nodeChildren = node.children;
 
@@ -891,9 +925,12 @@ class Parser {
         }
     }
 
-    /*
-        Parses materials block on <components>
-    */
+    /**
+     * Parses materials block on <components>.
+     * 
+     * @param {any} node 
+     * @param {number} componentID 
+     */
     parseComponentMaterials(node, componentID) {
         var nodeChildren = node.children;
 
@@ -920,18 +957,27 @@ class Parser {
 
     }
 
-    /*
-        Parses textures block on <components>
-    */
+    
+    /**
+     * Parses textures block on <components>.
+     * 
+     * @param {any} node 
+     * @param {number} componentID 
+     */
     parseComponentTextures(node, componentID) {
         var textureID = this.reader.getString(node, "id");
-        var textureLenS = this.reader.getFloat(node, "length_s");
-        var textureLenT = this.reader.getFloat(node, "length_t");
+        var textureLenS = null;
+        var textureLenT = null;
+
+        if(this.reader.hasAttribute(node, "length_s") && this.reader.hasAttribute(node, "length_t")) {
+            textureLenS = this.reader.getFloat(node, "length_s");
+            textureLenT = this.reader.getFloat(node, "length_t");
+        }
 
         if (textureID == null || textureID == "")
             return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid ID.";
         else if (textureID != "inherit" && textureID != "none" && (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT)))
-            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values." + textureID + "  " + textureLenT;
+            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values. " + textureID + "  " + textureLenT + "  " + textureLenT;
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";
@@ -941,9 +987,13 @@ class Parser {
         this.data.components[componentID].texLengthT = textureLenT;
     }
 
-    /*
-        Parses children block on <components>
-    */
+    /**
+     * Parses children block on <components>.
+     * 
+     * @param {number} componentsID 
+     * @param {any} node 
+     * @param {number} componentID 
+     */
     parseComponentChildren(componentsID, node, componentID) {
         var componentsArray = [];
 
@@ -990,9 +1040,12 @@ class Parser {
         this.data.components[componentID].components = componentsArray;
     }
 
-    /*
-      Validates <components> XML information
-    */
+    
+    /**
+     * Validates <components> XML information.
+     * 
+     * @param {any} componentChildren 
+     */
     validateComponentsInfo(componentChildren) {
         var neededElements = [0, 0, 0, 0]
 
@@ -1015,9 +1068,11 @@ class Parser {
         }
     }
 
-    /*
-       Checks if there exists two children of node using the same ID
-    */
+    /**
+     * Checks if there exists two children of node using the same ID.
+     * @param {any} node 
+     * @param {string} type 
+     */
     checkRepeatedIDs(node, type) {
         var ids = [];
 
@@ -1032,10 +1087,11 @@ class Parser {
         }
     }
 
-    /*
-    * Callback to be executed on any read error, showing an error on the console.
-    * @param {string} message
-    */
+    /**
+     * Callback to be executed on any read error, showing an error on the console.
+     * 
+     * @param {string} message 
+     */
     onXMLError(message) {
         console.error("XML Loading Error: " + message);
         this.loadedOk = false;

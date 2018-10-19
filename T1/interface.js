@@ -1,7 +1,10 @@
 /**
-* MyInterface class, creating a GUI interface.
+* Interface class, creating a GUI interface.
 */
 class Interface extends CGFinterface {
+    /**
+     * Interface default constructor.
+     */
     constructor() {
         super();
 
@@ -23,6 +26,9 @@ class Interface extends CGFinterface {
         return true;
     }
     
+    /**
+     * Initializes interface needed elements.
+     */
     initKeys()
 	{
 		this.scene.gui = this;
@@ -30,21 +36,36 @@ class Interface extends CGFinterface {
 		this.activeKeys = {};
 	};
 
+    /**
+     * Activates key event after being pressed.
+     * @param {any} event 
+     */
 	processKeyDown(event) {
 		this.activeKeys[event.code] = true;
         if(event.code == "KeyM") 
             this.scene.updateMaterials();
     };
     
+    /**
+     * Deactivates key event after its release is detected.
+     * @param {any} event 
+     */
     processKeyUp(event) {
 		this.activeKeys[event.code] = false;
-
     };
     
+    /**
+     * Verifies if key with keycode passed as parameter is being pressed.
+     * @param {any} keyCode 
+     */
     isKeyPressed(keyCode) {
 		return this.activeKeys[keyCode] || false;
 	};
 
+    /**
+     * Add combo-box to allow user to change between the available views passed in data parameter.
+     * @param {array} data 
+     */
     addViewsGroup(data) {
         for (var key in data.perspectiveCams) {
             if (data.perspectiveCams.hasOwnProperty(key)) {
@@ -65,8 +86,8 @@ class Interface extends CGFinterface {
     }
 
     /**
-     * Adds a folder containing the IDs of the lights passed as parameter.
-     * @param {array} lights
+     * Adds a folder containing the IDs of the lights passed in data parameter.
+     * @param {array} data
      */
     addLightsGroup(data) {
         var lights = this.gui.addFolder("Lights");

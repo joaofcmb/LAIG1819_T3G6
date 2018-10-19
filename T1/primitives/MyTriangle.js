@@ -1,6 +1,24 @@
-
+/**
+ * MyTriangle class
+ */
 class MyTriangle extends CGFobject
-{
+{   
+    /**
+     * MyTriangle constructor.
+     * 
+     * @param {any} scene 
+     * @param {number} x1 
+     * @param {number} y1 
+     * @param {number} z1 
+     * @param {number} x2 
+     * @param {number} y2 
+     * @param {number} z2 
+     * @param {number} x3 
+     * @param {number} y3 
+     * @param {number} z3 
+     * @param {number} lS 
+     * @param {number} lT 
+     */
 	constructor(scene, x1, y1, z1, x2, y2, z2, x3, y3, z3, lS, lT)
 	{
         /*
@@ -89,7 +107,11 @@ class MyTriangle extends CGFobject
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
     };
-    
+
+    /**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
     setScaleFactors(scaleFactors) {
         if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
             return;

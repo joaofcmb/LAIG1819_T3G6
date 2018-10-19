@@ -37,7 +37,7 @@ main=function()
     //TODO: Mudar textura do sinal de diving para ficar melhor
     //TODO: Alterar rectangulo e triangulo para serem visiveis so de um lado. Posteriormente corrigir XML nas respetivas primitivas
     //TODO: Testar inherit de lenS e lenT
-    //TODO: Documentar: Primitives
+    //TODO: Documentar: Circle, Cylinder, Sphere, Torus, Triangle
 
 	//Parse information present on XML named "filename"
 	var parser = new Parser(filename, data, scene);

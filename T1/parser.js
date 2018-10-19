@@ -925,13 +925,18 @@ class Parser {
     */
     parseComponentTextures(node, componentID) {
         var textureID = this.reader.getString(node, "id");
-        var textureLenS = this.reader.getFloat(node, "length_s");
-        var textureLenT = this.reader.getFloat(node, "length_t");
+        var textureLenS = null;
+        var textureLenT = null;
+
+        if(this.reader.hasAttribute(node, "length_s") && this.reader.hasAttribute(node, "length_t")) {
+            textureLenS = this.reader.getFloat(node, "length_s");
+            textureLenT = this.reader.getFloat(node, "length_t");
+        }
 
         if (textureID == null || textureID == "")
             return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid ID.";
         else if (textureID != "inherit" && textureID != "none" && (textureLenS == null || isNaN(textureLenS) || textureLenT == null || isNaN(textureLenT)))
-            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values." + textureID + "  " + textureLenT;
+            return "component with [id = " + componentID + "] is not properly defined on <texture> due to invalid values. " + textureID + "  " + textureLenT + "  " + textureLenT;
 
         if (textureID != "inherit" && textureID != "none" && this.data.textures[textureID] == null)
             return "component with [id = " + componentID + "] is not properly defined on <texture> because texture with [id = " + textureID + "] is referencing an non existent texture.";

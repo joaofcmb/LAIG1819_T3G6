@@ -35,11 +35,12 @@ main=function()
     
     //TODO: Substituir transformações nos components por transformation refs para ficar equilibrado
     //TODO: Adicionar primitiva que falta (Triangulo): Sinal com warning "No diving"
-    //TODO: Verificar primitivas 2d para saber se são visiveis dos dois lados
-    //TODO: Duvida acerca do cilindro com as tampas
-    //TODO: Duvida relativamente a warnings, no sentido de ser possivel ou não usar default values
-    //TODO: Verificar se é possivel ter ou não o Lock Views
+    //TODO: Alterar rectangulo e triangulo para serem visiveis so de um lado. Posteriormente corrigir XML nas respetivas primitivas
+    //TODO: Acabar scale factors no cilindro
     //TODO: Substituir booleans por 0 e 1
+    //TODO: Testar inherit de lenS e lenT
+    //TODO: Verificar se scale factors no rectangulo estão bem
+    //TODO: Documentar: Primitives, parser, scene
 
 	//Parse information present on XML named "filename"
 	var parser = new Parser(filename, data, scene);

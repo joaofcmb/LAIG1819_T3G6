@@ -285,7 +285,7 @@
         </primitive >
 
         <primitive id="cupTop">
-            <torus inner="0.05" outer="0.75" slices="8" loops="20" />
+            <torus inner="0.05" outer="0.75" slices="16" loops="20" />
         </primitive >
 
         <primitive id="poolStair">

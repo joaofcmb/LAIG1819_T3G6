@@ -31,7 +31,7 @@ main=function()
     
 
 	// Get file name provided in URL, http://localhost/myproj/?file=myfile.xml or use "LAIG_TP1_YAS_T#_G0#_v0#.xml" as default 
-    var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v02.xml";
+    var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v03.xml";
     
     //TODO: Documentar: Circle, Cylinder, Sphere, Torus, Triangle
 

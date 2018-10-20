@@ -154,7 +154,7 @@ class Parser {
         }
         this.log("Parsed scene");
     }
-    
+
     /**
      * Parses the <views> block.
      * 
@@ -331,7 +331,7 @@ class Parser {
         this.data.background.r = properValues[4]; this.data.background.g = properValues[5]; this.data.background.b = properValues[6]; this.data.background.a = properValues[7];
     }
 
-   
+
     /**
      * Parses the <ligths> block.
      * 
@@ -471,7 +471,7 @@ class Parser {
         }
     }
 
-    
+
     /**
      * Parses the <textures> block.
      * 
@@ -550,13 +550,13 @@ class Parser {
 
             if (materialChildren.length != 4)
                 return "material with [id = " + materialID + "] on <materials> have not all needed elements."
-            else if (materialChildren[0].nodeName != "emission")
+            else if (materialChildren[0].nodeName != "emission" && materialChildren[0].nodeName != "ambient" && materialChildren[0].nodeName != "diffuse" && materialChildren[0].nodeName != "specular")
                 return "<" + materialChildren[0].nodeName + "> is not a proper element of <materials>."
-            else if (materialChildren[1].nodeName != "ambient")
+            else if (materialChildren[1].nodeName != "emission" && materialChildren[1].nodeName != "ambient" && materialChildren[1].nodeName != "diffuse" && materialChildren[1].nodeName != "specular")
                 return "<" + materialChildren[1].nodeName + "> is not a proper element of <materials>."
-            else if (materialChildren[2].nodeName != "diffuse")
+            else if (materialChildren[2].nodeName != "emission" && materialChildren[2].nodeName != "ambient" && materialChildren[2].nodeName != "diffuse" && materialChildren[2].nodeName != "specular")
                 return "<" + materialChildren[2].nodeName + "> is not a proper element of <materials>."
-            else if (materialChildren[3].nodeName != "specular")
+            else if (materialChildren[3].nodeName != "emission" && materialChildren[3].nodeName != "ambient" && materialChildren[3].nodeName != "diffuse" && materialChildren[3].nodeName != "specular")
                 return "<" + materialChildren[3].nodeName + "> is not a proper element of <materials>."
 
             var material = new Object();
@@ -957,7 +957,7 @@ class Parser {
 
     }
 
-    
+
     /**
      * Parses textures block on <components>.
      * 
@@ -969,7 +969,7 @@ class Parser {
         var textureLenS = null;
         var textureLenT = null;
 
-        if(this.reader.hasAttribute(node, "length_s") && this.reader.hasAttribute(node, "length_t")) {
+        if (this.reader.hasAttribute(node, "length_s") && this.reader.hasAttribute(node, "length_t")) {
             textureLenS = this.reader.getFloat(node, "length_s");
             textureLenT = this.reader.getFloat(node, "length_t");
         }
@@ -1040,7 +1040,7 @@ class Parser {
         this.data.components[componentID].components = componentsArray;
     }
 
-    
+
     /**
      * Validates <components> XML information.
      * 

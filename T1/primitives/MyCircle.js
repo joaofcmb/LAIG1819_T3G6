@@ -1,6 +1,17 @@
-
+/**
+ * MyCircle class
+ */
 class MyCircle extends CGFobject
-{
+{	
+	/**
+	 * MyCircle constructor
+	 * 
+	 * @param {any} scene 
+	 * @param {number} base 
+	 * @param {number} slices 
+	 * @param {number} fS 
+	 * @param {number} fT 
+	 */
 	constructor(scene, base, slices, fS, fT)
 	{
 		super(scene);
@@ -35,7 +46,6 @@ class MyCircle extends CGFobject
 		this.texCoords.push(0.5,0.5);
 		this.normals.push(0,0,1);
 
-
 		// DRAW INDICES ------------
 
 		this.indices = [];
@@ -53,6 +63,10 @@ class MyCircle extends CGFobject
 		this.initGLBuffers();
 	};
 
+	/**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
 	setScaleFactors(scaleFactors) {
 		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
 			return;

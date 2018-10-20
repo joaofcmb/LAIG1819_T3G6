@@ -1,9 +1,18 @@
 /**
- * MyQuad
- * @constructor
+ * MySphere class
  */
 class MySphere extends CGFobject
-{
+{	
+	/**
+	 * MySphere constructor.
+	 * 
+	 * @param {any} scene 
+	 * @param {number} radius 
+	 * @param {number} slices 
+	 * @param {number} stacks 
+	 * @param {number} fS 
+	 * @param {number} fT 
+	 */
 	constructor(scene, radius, slices, stacks, fS, fT)
 	{
 		super(scene);
@@ -52,35 +61,14 @@ class MySphere extends CGFobject
 			}
 		}
 
-		// Logs
-        /*
-		for (var i = 0; i < this.vertices.length; i++) {
-			console.log(this.vertices[i]);
-			console.log("--");
-		}
-
-		console.log("INDICES");
-		for (var i = 0; i < this.indices.length; i++) {
-			console.log(this.indices[i]);
-			console.log("--");
-		}
-
-		console.log("NORMALS");
-		for (var i = 0; i < this.normals.length; i++) {
-			console.log(this.normals[i]);
-			console.log("--");
-		}
-
-
-
-		console.log(this.vertices.length);
-		console.log(this.indices.length);
-		console.log(this.normals.length);
-        */
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
 	};
 
+	/**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
 	setScaleFactors(scaleFactors) {
 		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
 			return;

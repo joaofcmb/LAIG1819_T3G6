@@ -42,12 +42,10 @@ class MyTriangle extends CGFobject
 	{
 		// DRAW VERTICES, INDICES AND NORMALS------------
 
-        // normal pre-calc
+        // Normal pre-calc
         var clockwiseNormal = vec3.create();
         vec3.cross(clockwiseNormal, this.v12, this.v13);
         vec3.normalize(clockwiseNormal, clockwiseNormal);
-
-        // console.log(this.clockwiseNormal);
 
 		this.vertices = [];
    	 	this.normals = [];

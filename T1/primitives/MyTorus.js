@@ -1,9 +1,19 @@
 /**
- * MyTorus
- * @constructor
+ * MyTorus class
  */
 class MyTorus extends CGFobject
-{
+{	
+	/**
+	 * MyTorus constructor.
+	 * 
+	 * @param {any} scene 
+	 * @param {number} inner 
+	 * @param {number} outer 
+	 * @param {number} slices 
+	 * @param {number} loops 
+	 * @param {number} fS 
+	 * @param {number} fT 
+	 */
 	constructor(scene, inner, outer, slices, loops, fS, fT) 
 	{
 		super(scene);
@@ -58,6 +68,10 @@ class MyTorus extends CGFobject
 		this.initGLBuffers();
 	};
 
+	/**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
 	setScaleFactors(scaleFactors) {
 		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
 			return;

@@ -1,9 +1,20 @@
 /**
- * MyCylinder
- * @constructor
+ * MyCylinder class
  */
 class MyCylinder extends CGFobject
-{
+{	
+	/**
+	 * MyCylinder constructor.
+	 * 
+	 * @param {any} scene 
+	 * @param {number} base 
+	 * @param {number} top 
+	 * @param {number} height 
+	 * @param {number} slices 
+	 * @param {number} stacks 
+	 * @param {number} fS 
+	 * @param {number} fT 
+	 */
 	constructor(scene, base, top, height, slices, stacks, fS, fT) 
 	{
 		super(scene);
@@ -58,35 +69,13 @@ class MyCylinder extends CGFobject
 			}
 		}
 		
-        /*
-		for (var i = 0; i < this.vertices.length; i++) {
-			console.log(this.vertices[i]);
-			console.log("--");
-		}
-		
-		console.log("INDICES");
-		for (var i = 0; i < this.indices.length; i++) {
-			console.log(this.indices[i]);
-			console.log("--");
-		}
-
-		console.log("NORMALS");
-		for (var i = 0; i < this.normals.length; i++) {
-			console.log(this.normals[i]);
-			console.log("--");
-		}
-
-		
-
-		console.log(this.vertices.length);
-		console.log(this.indices.length);
-		console.log(this.normals.length);
-        */
-
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
 	};
-
+	
+	/**
+	 * Cylinder display function
+	 */
 	display()
 	{
 		super.display();
@@ -99,6 +88,10 @@ class MyCylinder extends CGFobject
 		this.topCircle.display();
 	};
 
+	/**
+     * Change texture coordinates to new scale factors
+     * @param {Array} scaleFactors 
+     */
 	setScaleFactors(scaleFactors) {
 		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
 			return;

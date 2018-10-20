@@ -67,31 +67,30 @@
     </lights>
 
     <textures>
-        <texture id="grass" file="./textures/grass.jpg" />
-        <texture id="ground" file="./textures/ground.jpg" />
-        <texture id="water" file="./textures/water.png" />
-        <texture id="poolDrain" file="./textures/poolDrain.jpg" />
-        <texture id="straw" file="./textures/straw.jpg" />
-        <texture id="sunLounger" file="./textures/sunLounger.jpg" />
-        <texture id="cup" file="./textures/cup.jpg" />
-        <texture id="limon" file="./textures/limon.jpg" />
-        <texture id="juice" file="./textures/juice.jpg" />
-        <texture id="whitePlastic" file="./textures/whitePlastic.jpg" />
-        <texture id="wood" file="./textures/wood.jpg" />
-        <texture id="stripes" file="./textures/stripes.jpg" />
-        <texture id="towelA" file="./textures/towelA.png" />
-        <texture id="towelB" file="./textures/towelB.jpg" />
-        <texture id="towelC" file="./textures/towelC.jpg" />
-        <texture id="towelD" file="./textures/towelD.png" />
-        <texture id="towelE" file="./textures/towelE.jpeg" />
-        <texture id="towelF" file="./textures/towelF.jpg" />
-        <texture id="inox" file="./textures/inox.jpg" />
-        <texture id="floaterA" file="./textures/floaterA.jpg" />
-        <texture id="floaterB" file="./textures/floaterB.png" />
-        <texture id="ball" file="./textures/ball.jpg" />
-        <texture id="sign" file="./textures/sign.jpg" />
-        <texture id="plank" file="./textures/plank.jpg" />
-        <texture id="poolTiles" file="./textures/poolTiles.jpg" />
+        <texture id="grass" file="./scenes/textures/grass.jpg" />
+        <texture id="ground" file="./scenes/textures/ground.jpg" />
+        <texture id="water" file="./scenes/textures/water.png" />
+        <texture id="straw" file="./scenes/textures/straw.jpg" />
+        <texture id="sunLounger" file="./scenes/textures/sunLounger.jpg" />
+        <texture id="cup" file="./scenes/textures/cup.jpg" />
+        <texture id="limon" file="./scenes/textures/limon.jpg" />
+        <texture id="juice" file="./scenes/textures/juice.jpg" />
+        <texture id="whitePlastic" file="./scenes/textures/whitePlastic.jpg" />
+        <texture id="wood" file="./scenes/textures/wood.jpg" />
+        <texture id="stripes" file="./scenes/textures/stripes.jpg" />
+        <texture id="towelA" file="./scenes/textures/towelA.png" />
+        <texture id="towelB" file="./scenes/textures/towelB.jpg" />
+        <texture id="towelC" file="./scenes/textures/towelC.jpg" />
+        <texture id="towelD" file="./scenes/textures/towelD.png" />
+        <texture id="towelE" file="./scenes/textures/towelE.jpeg" />
+        <texture id="towelF" file="./scenes/textures/towelF.jpg" />
+        <texture id="inox" file="./scenes/textures/inox.jpg" />
+        <texture id="floaterA" file="./scenes/textures/floaterA.jpg" />
+        <texture id="floaterB" file="./scenes/textures/floaterB.png" />
+        <texture id="ball" file="./scenes/textures/ball.jpg" />
+        <texture id="sign" file="./scenes/textures/sign.png" />
+        <texture id="plank" file="./scenes/textures/plank.jpg" />
+        <texture id="poolTiles" file="./scenes/textures/poolTiles.jpg" />
     </textures>
 
     <materials>
@@ -215,7 +214,6 @@
             <rotate axis="x" angle="-90" />
         </transformation>
 
-
         <transformation id="towelATransform">
             <translate x="-10.0" y="0.1" z="-14.5" />
             <scale x="2.5" y="0.01" z="5.0" />
@@ -254,6 +252,7 @@
     </transformations>
 
     <primitives>
+
         <primitive id="triangle">
             <triangle x1="0" y1="0" z1="-.5" x2="0" y2="0" z2=".5" x3="0" y3=".866" z3="0" /> 
         </primitive>
@@ -798,14 +797,14 @@
 
             <children>
                 <componentref id="signPost" />
-                <componentref id="signSymbol" />
+                <componentref id="signSymbolA" />
+                <componentref id="signSymbolB" />
             </children>
         </component>
-
         <component id="signPost">
             <transformation>
                 <rotate axis="x" angle="-90" />
-                <scale x=".2" y=".2" z="2" />
+                <scale x=".2" y=".2" z="1.675" />
             </transformation>
 
             <materials>
@@ -818,10 +817,25 @@
                 <primitiveref id="cylinder"/>
             </children>
         </component>
-
-        <component id="signSymbol">
+        <component id="signSymbolA">
             <transformation>
-                <translate x=".02" y="2.5" z="0" />
+                <translate x="-0.02" y="2.5" z="0" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="sign" length_s="1.0" length_t="1.0"/>
+
+            <children>
+                <primitiveref id="triangle" />
+            </children>
+        </component>
+         <component id="signSymbolB">
+            <transformation>
+                <rotate axis="y" angle="180" />
+                <translate x="-0.02" y="2.5" z="0" />
             </transformation>
 
             <materials>

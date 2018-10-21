@@ -193,7 +193,7 @@ class Data {
 
 
             // Primitives init
-            this.components.activePrimitives = [];
+            this.components[compID].activePrimitives = [];
 
             for (var primiI in this.components[compID].primitives) {
                 var primitiveID = this.components[compID].primitives[primiI];

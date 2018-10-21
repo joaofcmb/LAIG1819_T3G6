@@ -60,9 +60,9 @@ class MyTriangle extends CGFobject
         // DRAW TEXCOORDS ----------
         var dist12 = vec3.length(this.v12);
         var dist13 = vec3.length(this.v13);
-        var dist23 = Math.sqrt(Math.pow(this.p[0] - this.p[6], 2) + Math.pow(this.p[1] - this.p[7], 2) + Math.pow(this.p[2] - this.p[8], 2)); 
-        var angle = Math.acos(-dist13 * dist13 + dist12 * dist12 + dist23 * dist23 / (2 * dist12 * dist23));
-
+        var dist23 = Math.sqrt(Math.pow(this.p[6] - this.p[3], 2) + Math.pow(this.p[7] - this.p[4], 2) + Math.pow(this.p[8] - this.p[5], 2)); 
+        var angle = Math.acos((-dist13 * dist13 + dist12 * dist12 + dist23 * dist23) / (2 * dist12 * dist23));
+        
         this.texCoords = [
             dist12 * Math.cos(angle) / this.fS, (1 - dist12 * Math.sin(angle)) / this.fT,
             0, 1 / this.fT,

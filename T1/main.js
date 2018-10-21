@@ -34,7 +34,7 @@ main=function()
     var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v04.xml";
 
 	//Parse information present on XML named "filename"
-	var parser = new Parser(filename, data, scene);
+	new Parser(filename, data, scene);
 	
 	// Start
     app.run();

@@ -39,14 +39,14 @@ class MySphere extends CGFobject
 		var halfStacks = this.stacks / 2;
 
 		var texScaleS = 2 * Math.PI * this.radius / this.fS;
-		var texScaleT = 2 * Math.PI * this.radius / this.fT; 
+		var texScaleT = Math.PI * this.radius / this.fT; 
 
 		for (var i = - halfStacks; i < halfStacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(	Math.cos(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(vAngle * i) * this.radius);
-				this.texCoords.push(texScaleS * j / this.slices, texScaleT * (1 - ((i + halfStacks) / this.stacks)));
+				this.texCoords.push(texScaleS * (1 - j / this.slices), texScaleT * (i + halfStacks) / this.stacks);
 				this.normals.push(Math.cos(hAngle * j) * Math.cos(vAngle * i), Math.sin(hAngle * j) * Math.cos(vAngle * i), Math.sin(vAngle * i));
 			}
 		}

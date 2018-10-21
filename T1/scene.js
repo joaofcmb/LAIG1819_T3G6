@@ -117,8 +117,6 @@ class Scene extends CGFscene {
             this.lights[index].setSpotCutOff(light.angle);
         }
 
-        this.lights[index].setVisible(true);
-
         if (light.enabled) this.lights[index].enable();
         else this.lights[index].disable();
 

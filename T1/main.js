@@ -31,7 +31,7 @@ main=function()
     
 
 	// Get file name provided in URL, http://localhost/myproj/?file=myfile.xml or use "LAIG_TP1_YAS_T#_G0#_v0#.xml" as default 
-    var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v03.xml";
+    var filename=getUrlVars()['file'] || "LAIG_TP1_YAS_T3_G06_v04.xml";
 
 	//Parse information present on XML named "filename"
 	var parser = new Parser(filename, data, scene);

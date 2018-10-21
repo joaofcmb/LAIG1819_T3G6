@@ -46,7 +46,7 @@ class MyCylinder extends CGFobject
 		var texScaleS = 2 * Math.PI * this.base / this.fS; // Linear scale using the base perimeter as reference 
 		var texScaleT = Math.sqrt(Math.pow(this.base - this.top, 2) + this.height * this.height) / this.fT; 
 
-		var zN = this.base - this.top;
+		var zN = (this.base - this.top) / this.height;
 		var nCoef = 1 / Math.sqrt(1 + zN * zN); // Coeficient to normalize the normal
 		zN *= nCoef;
 

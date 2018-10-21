@@ -64,9 +64,9 @@ class MyTriangle extends CGFobject
         var angle = Math.acos(-dist23 * dist23 + dist13 * dist13 + dist12 * dist12 / (2 * dist13 * dist12));
 
         this.texCoords = [
+            dist13 * Math.cos(angle) / this.fS, (1 - dist13 * Math.sin(angle)) / this.fT,
             0, 1 / this.fT,
-            dist12 / this.fS, 1 / this.fT,
-            dist13 * Math.cos(angle) / this.fS, (1 - dist13 * Math.sin(angle)) / this.fT
+            dist12 / this.fS, 1 / this.fT
         ];
         
 		this.primitiveType = this.scene.gl.TRIANGLES;

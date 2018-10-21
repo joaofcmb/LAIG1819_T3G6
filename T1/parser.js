@@ -196,8 +196,6 @@ class Parser {
                     return "Perspective view with id not properly defined.";
 
                 cam.angle = this.reader.getFloat(children[i], "angle");
-
-                this.data.perspectiveCams[camID] = cam;
             }
             else if (nodeNames[i] == "ortho") {
                 if (camID == null || camID == "")
@@ -207,23 +205,21 @@ class Parser {
                 cam.right = this.reader.getFloat(children[i], "right");
                 cam.top = this.reader.getFloat(children[i], "top");
                 cam.bottom = this.reader.getFloat(children[i], "bottom");
-
-                this.data.orthoCams[camID] = cam;
             }
             else
                 return "<" + nodeNames[i] + "> is not a valid type of view. Valid types: <perspective> or <ortho>."
 
-            var perspectiveChildren = children[i].children;
+            var viewChildren = children[i].children;
 
-            if (perspectiveChildren.length != 2)
+            if (viewChildren.length != 2)
                 return "View with [id = " + camID + "] must have two children (<from> and <to>)."
-            else if (perspectiveChildren[0].nodeName != "from")
-                return "<" + perspectiveChildren[0].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <from>"
-            else if (perspectiveChildren[1].nodeName != "to")
-                return "<" + perspectiveChildren[1].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <to>"
+            else if (viewChildren[0].nodeName != "from")
+                return "<" + viewChildren[0].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <from>"
+            else if (viewChildren[1].nodeName != "to")
+                return "<" + viewChildren[1].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <to>"
             else {
-                cam.fromX = this.reader.getFloat(perspectiveChildren[0], "x"); cam.fromY = this.reader.getFloat(perspectiveChildren[0], "y"); cam.fromZ = this.reader.getFloat(perspectiveChildren[0], "z");
-                cam.toX = this.reader.getFloat(perspectiveChildren[1], "x"); cam.toY = this.reader.getFloat(perspectiveChildren[1], "y"); cam.toZ = this.reader.getFloat(perspectiveChildren[1], "z");
+                cam.fromX = this.reader.getFloat(viewChildren[0], "x"); cam.fromY = this.reader.getFloat(viewChildren[0], "y"); cam.fromZ = this.reader.getFloat(viewChildren[0], "z");
+                cam.toX = this.reader.getFloat(viewChildren[1], "x"); cam.toY = this.reader.getFloat(viewChildren[1], "y"); cam.toZ = this.reader.getFloat(viewChildren[1], "z");
             }
 
             if (nodeNames[i] == "perspective")

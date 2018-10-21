@@ -216,11 +216,11 @@ class Parser {
             var perspectiveChildren = children[i].children;
 
             if (perspectiveChildren.length != 2)
-                return "View with [id = " + perspective[0] + "] must have only two children."
+                return "View with [id = " + camID + "] must have two children (<from> and <to>)."
             else if (perspectiveChildren[0].nodeName != "from")
-                return "<" + perspectiveChildren[0].nodeName + "> invalid children of view with [id = " + camID + "]."
+                return "<" + perspectiveChildren[0].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <from>"
             else if (perspectiveChildren[1].nodeName != "to")
-                return "<" + perspectiveChildren[1].nodeName + "> invalid children of view with [id = " + camID + "]."
+                return "<" + perspectiveChildren[1].nodeName + "> invalid child of view with [id = " + camID + "]. Expected <to>"
             else {
                 cam.fromX = this.reader.getFloat(perspectiveChildren[0], "x"); cam.fromY = this.reader.getFloat(perspectiveChildren[0], "y"); cam.fromZ = this.reader.getFloat(perspectiveChildren[0], "z");
                 cam.toX = this.reader.getFloat(perspectiveChildren[1], "x"); cam.toY = this.reader.getFloat(perspectiveChildren[1], "y"); cam.toZ = this.reader.getFloat(perspectiveChildren[1], "z");

@@ -153,6 +153,7 @@ class Data {
             //  Material init
             this.defaultAppearance = new CGFappearance(scene);
             this.defaultAppearance.setShininess(this.materialDefault.shininess);
+            this.defaultAppearance.setEmission(this.materialDefault.emissionR, this.materialDefault.emissionG, this.materialDefault.emissionB, this.materialDefault.emissionA);
             this.defaultAppearance.setAmbient(this.materialDefault.ambientR, this.materialDefault.ambientG, this.materialDefault.ambientB, this.materialDefault.ambientA);
             this.defaultAppearance.setDiffuse(this.materialDefault.diffuseR, this.materialDefault.diffuseG, this.materialDefault.diffuseB, this.materialDefault.diffuseA);
             this.defaultAppearance.setSpecular(this.materialDefault.specularR, this.materialDefault.specularG, this.materialDefault.specularB, this.materialDefault.specularA);
@@ -172,6 +173,7 @@ class Data {
                         var appearance = new CGFappearance(scene);
 
                         appearance.setShininess(material.shininess);
+                        appearance.setEmission(material.emissionR, material.emissionG, material.emissionB, material.emissionA);
                         appearance.setAmbient(material.ambientR, material.ambientG, material.ambientB, material.ambientA);
                         appearance.setDiffuse(material.diffuseR, material.diffuseG, material.diffuseB, material.diffuseA);
                         appearance.setSpecular(material.specularR, material.specularG, material.specularB, material.specularA);

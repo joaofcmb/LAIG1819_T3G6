@@ -992,9 +992,9 @@ class Parser {
      */
     parseComponentChildren(componentsID, node, componentID) {
         var componentsArray = [];
+        var primitivesArray = [];
 
         var nodeChildren = node.children;
-        this.data.components[componentID].primitives = [];
 
         if (nodeChildren.length < 1)
             return "<component> with [id = " + componentID + "] must have at least one of the following tags: <componentref> or <primitiveref>.";
@@ -1025,14 +1025,15 @@ class Parser {
 
                 if (primitive == null)
                     return "component with [id = " + componentID + "] has the following tag <primitiveref> referencing a non existent primitive.";
-               
-                this.data.components[componentID].primitives.push(primitive);
+
+                primitivesArray.push(nodeChildrenID);
             }
             else
                 return "<component> with [id = " + componentID + "] has an invalid tag <" + nodeChildren[i].nodeName + ">. Available tags: <componentref> or <primitiveref>";
         }
 
         this.data.components[componentID].components = componentsArray;
+        this.data.components[componentID].primitives = primitivesArray;
     }
 
 

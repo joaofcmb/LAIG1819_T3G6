@@ -253,7 +253,7 @@
     <primitives>
 
         <primitive id="triangle">
-            <triangle x1="0" y1="0" z1="-.5" x2="0" y2="0" z2=".5" x3="0" y3=".866" z3="0" /> 
+            <triangle x1="0" y1=".866" z1="0" x2="0" y2="0" z2="-.5" x3="0" y3="0" z3=".5" /> 
         </primitive>
         <primitive id="rectangule">
             <rectangle x1="-1.0" y1="-1.0" x2="1.0" y2="1.0" />

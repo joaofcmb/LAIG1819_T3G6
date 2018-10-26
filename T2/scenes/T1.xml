@@ -1467,3 +1467,55 @@
     </components>
 
 </yas>
+
+<!-- 
+
+    T = 10 000 ms
+
+    delta_T = null.
+    last_T = null.
+
+    update(t) {
+
+        if(last_t != null) {
+
+            delta_t = t - last_t;
+            animate(delta_t);
+        
+        }
+        else {
+            last_t = t;
+        }
+
+    ###############################
+     ______________________
+    | P.1                  |  -> D = Sumatorio: di  (i=1; i=n)  d_deltaT = (D * delta_t) / T
+    |  \        P.3        |  
+    |   \       / \        |  
+    | d1 \  d2 /   \  d3   |
+    |     \   /     \      |
+    |      \ /       \     |
+    |      P.2       P.4   |
+    |______________________|
+
+    ###############################
+
+    Init: 
+        segmento = 1;
+        d_animado = 0;
+
+    ###############################
+    
+    d_deltaT = (D * delta_t) / T;
+
+    d_animado += d_deltaT;
+
+    if(d_animado >= d_segmento) {
+
+        d_animado -= d_segmento;
+        segmento++;
+
+    }
+
+    ###############################
+ -->

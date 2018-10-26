@@ -725,6 +725,8 @@ class Parser {
 
             animation.controlPoints = [];
             animation.span = this.reader.getFloat(children[i], "span");
+            if(animation.span == null || isNaN(animation.span))
+                return "<span> value on animation with [id = " + animationID + "] is not properly defined";
 
             if (children[i].nodeName == "linear") {
                 var linearChildren = children[i].children;
@@ -738,8 +740,16 @@ class Parser {
                         this.onXMLMinorError("<" + linearChildren[j].nodeName + "> block on linear animation with [id = " + animationID + "] was not properly written. Do you mean <controlpoint> ?");
 
                     var x = this.reader.getFloat(linearChildren[j], "xx");
+                    if(x == null || isNaN(x))
+                        return "<xx> value on linear animation with [id = " + animationID + "] is not properly defined";
+
                     var y = this.reader.getFloat(linearChildren[j], "yy");
+                    if(y == null || isNaN(y))
+                        return "<yy> value on linear animation with [id = " + animationID + "] is not properly defined";
+
                     var z = this.reader.getFloat(linearChildren[j], "zz");
+                    if(z == null || isNaN(z))
+                        return "<zz> value on linear animation with [id = " + animationID + "] is not properly defined";
 
                     animation.controlPoints.push(vec3.fromValues(x, y, z));
                 }
@@ -748,9 +758,20 @@ class Parser {
             }
             else {
                 animation.center = this.reader.getVector3(children[i], "center", false);
+                if(animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
+                    return "<center> values on circular animation with [id = " + animationID + "] are not properly defined";
+
                 animation.radius = this.reader.getFloat(children[i], "radius");
+                if(animation.radius == null || isNaN(animation.radius))
+                    return "<radius> value on circular animation with [id = " + animationID + "] is not properly defined";
+                
                 animation.startang = this.reader.getFloat(children[i], "startang");
+                if(animation.startang == null || isNaN(animation.startang))
+                    return "<startang> value on circular animation with [id = " + animationID + "] is not properly defined";
+
                 animation.rotang = this.reader.getFloat(children[i], "rotang");
+                if(animation.rotang == null || isNaN(animation.rotang))
+                    return "<rotang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
                 this.data.circularAnimations.animationID = animation;
             }

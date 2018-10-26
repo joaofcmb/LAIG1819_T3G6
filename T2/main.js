@@ -34,7 +34,6 @@ main=function()
     var filename=getUrlVars()['file'] || "testfile.xml";
 
     // TODO - Remove scale factors from Quadratic Primitives (Sphere, Cylinder, Torus)
-    // TODO - Add validation on animation values
 
 	//Parse information present on XML named "filename"
 	new Parser(filename, data, scene);

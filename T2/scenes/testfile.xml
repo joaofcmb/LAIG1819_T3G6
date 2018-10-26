@@ -72,7 +72,7 @@
     
     <animations>
 
-        <linear id="linearAnimID" span="ff">
+        <linear id="linearAnimID" span="1000">
             <controlpoint xx="1.0" yy="1.0" zz="1.0" />
             <controlpoint xx="1.0" yy="1.5" zz="2.0" />
         </linear>

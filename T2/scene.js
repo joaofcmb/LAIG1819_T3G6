@@ -8,8 +8,8 @@ class Scene extends CGFscene {
     /**
      * Scene constructor
      * 
-     * @param {object} data 
-     * @param {class} interf 
+     * @param {object} data
+     * @param {class} interf
      */
     constructor(data, interf) {
         super();
@@ -145,6 +145,19 @@ class Scene extends CGFscene {
         this.data.setupGraph(this);
 
         this.sceneInited = true;
+    }
+
+    update(currTime) {
+        this.lastTime = this.lastTime || 0;
+		this.deltaTime = currTime - this.lastTime;
+        this.lastTime = currTime;
+        
+        // Animate each animation
+        for (var animID in this.data.animations) {
+            if (!this.data.components.hasOwnProperty(animID))   continue;
+
+            animation.update(this.data.animations[animID]);
+        }
     }
 
     /**

@@ -89,6 +89,12 @@ class Data {
         this.rotateDefault = { axis: 'x', angle: 0.0 };
         this.scaleDefault = { x: 1.0, y: 1.0, z: 1.0 };
 
+        // ANIMATIONS
+        this.linearAnimations = new Object();   // Format e.g: ID -> {span: 1000, controlPoints: [{x: 0, y: 0, z: 0}, {x: 1, y: 0, z: 1}]}
+        this.circularAnimations = new Object(); // Format e.g: ID -> {span: 1000, center: {x: 0, y: 0, z: 0}, radius: 1, startAng: 0, rotAng: 90}
+
+        this.animations = new Object();     // Contains all animations after being instantiated
+
         // PRIMITIVES
         this.primitives = new Object();     // Format e.g: ID -> {type: rectangle, x1: -0.5, y1: -0.5, x2: 0.5, y2: 0.5}
 

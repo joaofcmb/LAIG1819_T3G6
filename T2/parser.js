@@ -6,8 +6,9 @@ var LIGHTS_INDEX = 3;
 var TEXTURES_INDEX = 4;
 var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
-var PRIMITIVES_INDEX = 7;
-var COMPONENTS_INDEX = 8;
+var ANIMATIONS_INDEX = 7;
+var PRIMITIVES_INDEX = 8;
+var COMPONENTS_INDEX = 9;
 var LOCATION_INDEX = 0;
 var TARGET_INDEX = 1;
 
@@ -80,10 +81,11 @@ class Parser {
         }
 
         // Processes each node, verifying errors.
-        var elements = ["scene", "views", "ambient", "lights", "textures", "materials", "transformations", "primitives", "components"];
+        var elements = ["scene", "views", "ambient", "lights", "textures", "materials",
+            "transformations", "animations", "primitives", "components"];
         var elementsIndex = [
             SCENE_INDEX, VIEWS_INDEX, AMBIENT_INDEX, LIGHTS_INDEX, TEXTURES_INDEX,
-            MATERIALS_INDEX, TRANSFORMATIONS_INDEX, PRIMITIVES_INDEX, COMPONENTS_INDEX
+            MATERIALS_INDEX, TRANSFORMATIONS_INDEX, ANIMATIONS_INDEX, PRIMITIVES_INDEX, COMPONENTS_INDEX
         ];
 
         for (var i = 0; i < elements.length; i++) {
@@ -120,6 +122,10 @@ class Parser {
                         break;
                     case TRANSFORMATIONS_INDEX:
                         if ((error = this.parseTransformations(nodes[index])) != null)
+                            return error;
+                        break;
+                    case ANIMATIONS_INDEX:
+                        if ((error = this.parseAnimations(nodes[index])) != null)
                             return error;
                         break;
                     case PRIMITIVES_INDEX:
@@ -688,6 +694,90 @@ class Parser {
                 }
             }
         }
+    }
+
+    /**
+     * Parses the <animations> block.
+     * 
+     * @param {any} animations 
+     */
+    parseAnimations(animations) {
+        var error;
+
+        var children = animations.children;
+        if (children.length == 0)
+            return
+
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "linear" && children[i].nodeName != "circular")
+                return "<" + children[i].nodeName + "> block on <animations> is not valid. Valid animations: <linear> or <circular>.";
+        }
+
+        if ((error = this.checkRepeatedIDs(children, "animations")) != null)
+            return error;
+
+        for (var i = 0; i < children.length; i++) {
+            var animation = new Object();
+
+            var animationID = this.reader.getString(children[i], "id");
+            if (animationID == null || animationID == "")
+                return "Animation on <animations> block is not properly defined";
+
+            animation.controlPoints = [];
+            animation.span = this.reader.getFloat(children[i], "span");
+            if(animation.span == null || isNaN(animation.span))
+                return "<span> value on animation with [id = " + animationID + "] is not properly defined";
+
+            if (children[i].nodeName == "linear") {
+                var linearChildren = children[i].children;
+
+                if (linearChildren.length < 2)
+                    return "Linear animation with [id = " + animationID + "] must have at least 2 children."
+
+                for (var j = 0; j < linearChildren.length; j++) {
+
+                    if (linearChildren[j].nodeName != "controlpoint")
+                        this.onXMLMinorError("<" + linearChildren[j].nodeName + "> block on linear animation with [id = " + animationID + "] was not properly written. Do you mean <controlpoint> ?");
+
+                    var x = this.reader.getFloat(linearChildren[j], "xx");
+                    if(x == null || isNaN(x))
+                        return "<xx> value on linear animation with [id = " + animationID + "] is not properly defined";
+
+                    var y = this.reader.getFloat(linearChildren[j], "yy");
+                    if(y == null || isNaN(y))
+                        return "<yy> value on linear animation with [id = " + animationID + "] is not properly defined";
+
+                    var z = this.reader.getFloat(linearChildren[j], "zz");
+                    if(z == null || isNaN(z))
+                        return "<zz> value on linear animation with [id = " + animationID + "] is not properly defined";
+
+                    animation.controlPoints.push(vec3.fromValues(x, y, z));
+                }
+
+                this.data.linearAnimations.animationID = animation;
+            }
+            else {
+                animation.center = this.reader.getVector3(children[i], "center", false);
+                if(animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
+                    return "<center> values on circular animation with [id = " + animationID + "] are not properly defined";
+
+                animation.radius = this.reader.getFloat(children[i], "radius");
+                if(animation.radius == null || isNaN(animation.radius))
+                    return "<radius> value on circular animation with [id = " + animationID + "] is not properly defined";
+                
+                animation.startang = this.reader.getFloat(children[i], "startang");
+                if(animation.startang == null || isNaN(animation.startang))
+                    return "<startang> value on circular animation with [id = " + animationID + "] is not properly defined";
+
+                animation.rotang = this.reader.getFloat(children[i], "rotang");
+                if(animation.rotang == null || isNaN(animation.rotang))
+                    return "<rotang> value on circular animation with [id = " + animationID + "] is not properly defined";
+
+                this.data.circularAnimations.animationID = animation;
+            }
+        }
+
+        this.log("Parsed animations");
     }
 
     /**

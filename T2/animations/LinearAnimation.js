@@ -8,9 +8,12 @@ class LinearAnimation extends Animation {
 
         this.span = span;
         this.controlPoints = controlPoints;
+        this.
+
+        for ()
     }
 
     update(deltaTime) {
-        
+
     }
 }

@@ -152,11 +152,10 @@ class Scene extends CGFscene {
 		this.deltaTime = currTime - this.lastTime;
         this.lastTime = currTime;
         
-        // Animate each animation
+        // Update each animation
         for (var animID in this.data.animations) {
-            if (!this.data.components.hasOwnProperty(animID))   continue;
-
-            animation.update(this.data.animations[animID]);
+            if (this.data.components.hasOwnProperty(animID))
+                this.data.animations[animID].update(this.deltaTime);
         }
     }
 

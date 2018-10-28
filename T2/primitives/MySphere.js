@@ -9,19 +9,15 @@ class MySphere extends CGFobject
 	 * @param {any} scene 
 	 * @param {number} radius 
 	 * @param {number} slices 
-	 * @param {number} stacks 
-	 * @param {number} fS 
-	 * @param {number} fT 
+	 * @param {number} stacks
 	 */
-	constructor(scene, radius, slices, stacks, fS, fT)
+	constructor(scene, radius, slices, stacks)
 	{
 		super(scene);
 
 		this.radius = radius;
 		this.slices = slices;
 		this.stacks = stacks;
-
-		this.fS = fS; this.fT = fT;
 
 		this.initBuffers();
 	};
@@ -38,15 +34,12 @@ class MySphere extends CGFobject
 
 		var halfStacks = this.stacks / 2;
 
-		var texScaleS = 2 * Math.PI * this.radius / this.fS;
-		var texScaleT = Math.PI * this.radius / this.fT; 
-
 		for (var i = - halfStacks; i < halfStacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(	Math.cos(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(hAngle * j) * Math.cos(vAngle * i) * this.radius,
 									Math.sin(vAngle * i) * this.radius);
-				this.texCoords.push(texScaleS * (1 - j / this.slices), texScaleT * (i + halfStacks) / this.stacks);
+				this.texCoords.push(1 - j / this.slices, (i + halfStacks) / this.stacks);
 				this.normals.push(Math.cos(hAngle * j) * Math.cos(vAngle * i), Math.sin(hAngle * j) * Math.cos(vAngle * i), Math.sin(vAngle * i));
 			}
 		}
@@ -64,22 +57,4 @@ class MySphere extends CGFobject
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
 	};
-
-	/**
-     * Change texture coordinates to new scale factors
-     * @param {Array} scaleFactors 
-     */
-	setScaleFactors(scaleFactors) {
-		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
-			return;
-			
-		var i = 0; 
-		while (i < this.texCoords.size()) {
-			this.textCoords[i++] *= this.fS / scaleFactors[0];
-			this.textCoords[i++] *= this.fT / scaleFactors[1];
-		}
-
-		this.fS = scaleFactors[0];
-		this.fT = scaleFactors[1];
-	}
 };

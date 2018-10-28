@@ -100,7 +100,8 @@ class Data {
 
         // COMPONENTS
         this.components = new Object();     // Format: ID -> { 
-        //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, ... ], 
+        //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, ... ],
+        //                  animation: animationID,
         //                  materials: "inherit" OR [materialID1, materialID2], 
         //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
         //                  components: ["comp1ID", "comp2ID"], primitives: ["primitive1ID", "primitive2ID"]
@@ -117,6 +118,8 @@ class Data {
      * @param {any} scene 
      */
     setupGraph(scene) {
+        // TODO Setup textures and animations (textures will be constructed here instead)
+
         // Setup components
         for (var compID in this.components) {
             if (!this.components.hasOwnProperty(compID)) continue;
@@ -221,19 +224,14 @@ class Data {
                         break;
                     case "cylinder":
                         this.components[compID].activePrimitives.push(new MyCylinder(scene, primitive.base, primitive.top, primitive.height, 
-                                                                                primitive.slices, primitive.stacks,
-                                                                                this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1)
+                                                                                primitive.slices, primitive.stacks)
                         );
                         break;
                     case "sphere":
-                        this.components[compID].activePrimitives.push(new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks,
-                                                                            this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1)
-                        );
+                        this.components[compID].activePrimitives.push(new MySphere(scene, primitive.radius, primitive.slices, primitive.stacks));
                         break;
                     case "torus":
-                        this.components[compID].activePrimitives.push(new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops,
-                                                                            this.components[compID].texLengthS || 1, this.components[compID].texLengthT || 1)
-                        );
+                        this.components[compID].activePrimitives.push(new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops));
                         break;
                 }
             }
@@ -305,8 +303,13 @@ class Data {
             currAppearance.apply();
             
             if (!component.isTexScaleSet) {
-                for (var primI in component.activePrimitives)
-                    component.activePrimitives[primI].setScaleFactors(parentScaleFactors);
+                for (var primI in component.activePrimitives) {
+                    var primitive = component.activePrimitives[primI];
+
+                    if (primitive instanceof MyTriangle || primitive instanceof MyRectangle)
+                        primitive.setScaleFactors(parentScaleFactors);
+                }
+                
                 component.isTexScaleSet = true;
             }
 

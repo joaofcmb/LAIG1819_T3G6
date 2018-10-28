@@ -11,11 +11,9 @@ class MyCylinder extends CGFobject
 	 * @param {number} top 
 	 * @param {number} height 
 	 * @param {number} slices 
-	 * @param {number} stacks 
-	 * @param {number} fS 
-	 * @param {number} fT 
+	 * @param {number} stacks
 	 */
-	constructor(scene, base, top, height, slices, stacks, fS, fT) 
+	constructor(scene, base, top, height, slices, stacks) 
 	{
 		super(scene);
 
@@ -25,10 +23,8 @@ class MyCylinder extends CGFobject
 		this.slices = slices;
 		this.stacks = stacks;
 
-		this.fS = fS; this.fT = fT;
-
-		this.baseCircle = new MyCircle(scene, base, slices, fS, fT);
-		this.topCircle = new MyCircle(scene, top, slices, fS, fT);
+		this.baseCircle = new MyCircle(scene, base, slices);
+		this.topCircle = new MyCircle(scene, top, slices);
 
 		this.initBuffers();
 	};
@@ -43,9 +39,6 @@ class MyCylinder extends CGFobject
 		var angle = 2* Math.PI / this.slices;
 		var dR = (this.top - this.base) / this.stacks;
 
-		var texScaleS = 2 * Math.PI * this.base / this.fS; // Linear scale using the base perimeter as reference 
-		var texScaleT = Math.sqrt(Math.pow(this.base - this.top, 2) + this.height * this.height) / this.fT; 
-
 		var zN = (this.base - this.top) / this.height;
 		var nCoef = 1 / Math.sqrt(1 + zN * zN); // Coeficient to normalize the normal
 		zN *= nCoef;
@@ -53,13 +46,12 @@ class MyCylinder extends CGFobject
 		for (var i = 0; i < this.stacks + 1; i++) {
 			for (var j = 0; j < this.slices + 1; j++) {
 				this.vertices.push(Math.cos(angle * j) * (this.base + i * dR), Math.sin(angle * j) * (this.base + i * dR), this.height * i/this.stacks);
-				this.texCoords.push(texScaleS * (1 - j/this.slices), texScaleT * i/this.stacks);
+				this.texCoords.push(1 - j/this.slices, i / this.stacks);
 				this.normals.push(nCoef * Math.cos(angle * j), nCoef * Math.sin(angle * j), zN);
 			}
 		}
 
 		// DRAW INDICES ------------
-
 		this.indices = [];
 		
 		for (var j = 0; j < this.stacks; j++) {
@@ -87,25 +79,4 @@ class MyCylinder extends CGFobject
 		this.scene.translate(0, 0, this.height); 
 		this.topCircle.display();
 	};
-
-	/**
-     * Change texture coordinates to new scale factors
-     * @param {Array} scaleFactors 
-     */
-	setScaleFactors(scaleFactors) {
-		if(this.scaleFactors == undefined || this.scaleFactors.length == 0)
-			return;
-
-		this,this.baseCircle.setScaleFactors(scaleFactors);
-		this,this.topCircle.setScaleFactors(scaleFactors);
-
-		var i = 0; 
-		while (i < this.texCoords.size()) {
-			this.textCoords[i++] *= this.fS / scaleFactors[0];
-			this.textCoords[i++] *= this.fT / scaleFactors[1];
-		}
-
-		this.fS = scaleFactors[0];
-		this.fT = scaleFactors[1];
-	}
 };

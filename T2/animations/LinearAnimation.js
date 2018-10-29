@@ -28,7 +28,7 @@ class LinearAnimation extends Animation {
     }
     
     update(deltaTime) {
-        // TODO stop animation after reaching the end
+        if (this.accDistance >= this.totalDistance)     return;
 
         // Add the current delta distance to the accumulated distance and check if there's a change in segment
         this.accDistance += this.totalDistance * deltaTime / this.span;
@@ -38,14 +38,22 @@ class LinearAnimation extends Animation {
             segmentI++;
         }
 
+
         // Knowing the current segment, get translation vector to the start of that segment plus the remaining accumulated distance in that segment's direction
-        var direction = this.segmentDirections[segmentI];
+        var animTranslationVector = vec3.copy(this.controlPoints[segmentI]);
 
-        var segmentAcc = vec3.create();
-        vec3.scale(segmentAcc, direction, this.accDistance);
+        var direction;
+        if (segmentI > this.segmentDirections.length) {
+            direction = this.segmentDirections[segmentI - 1];    
+        }
+        else {
+            direction = this.segmentDirections[segmentI];
 
-        var animTranslationVector = vec3.create();
-        vec3.add(animTranslationVector, this.controlPoints[segmentI], segmentAcc);
+            segmentAcc = vec3.create();
+            vec3.scale(segmentAcc, direction, this.accDistance);
+            
+            vec3.add(animTranslationVector, animTranslationVector, segmentAcc);
+        }
 
         // Calculate current object orientation then apply it with the translation to the transformation matrix
         var horizontalAngle = Math.atan(direction[2] / direction[0]);

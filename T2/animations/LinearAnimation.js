@@ -22,27 +22,32 @@ class LinearAnimation extends Animation {
             this.segmentDistances.push(distance);
             this.totalDistance += distance;
         }
+
+        this.segmentI = 0;
+        this.accDistance = 0;
     }
     
     update(deltaTime) {
-        var segmentI = 0;
-        var deltaDistance = this.totalDistance * deltaTime / this.span;
+        // TODO stop animation after reaching the end
 
-        while (deltaDistance >= this.segmentDistances[segmentI]) {
-            deltaDistance -= this.segmentDistances[segmentI];
+        // Add the current delta distance to the accumulated distance and check if there's a change in segment
+        this.accDistance += this.totalDistance * deltaTime / this.span;
+
+        while (this.accDistance >= this.segmentDistances[segmentI]) {
+            this.accDistance -= this.segmentDistances[segmentI];
             segmentI++;
         }
-        
+
+        // Knowing the current segment, get translation vector to the start of that segment plus the remaining accumulated distance in that segment's direction
         var direction = this.segmentDirections[segmentI];
 
-        // Knowing the current segment, get translation vector starting on the start of that segment, adding the remaining delta direction
-        var segmentDelta = vec3.create();
-        vec3.scale(segmentDelta, direction, deltaDistance);
+        var segmentAcc = vec3.create();
+        vec3.scale(segmentAcc, direction, this.accDistance);
 
         var animTranslationVector = vec3.create();
-        vec3.add(animTranslationVector, this.controlPoints[segmentI], segmentDelta);
+        vec3.add(animTranslationVector, this.controlPoints[segmentI], segmentAcc);
 
-        // Calculate current object orientation
+        // Calculate current object orientation then apply it with the translation to the transformation matrix
         var horizontalAngle = Math.atan(direction[2] / direction[0]);
         var verticalAngle = Math.atan(direction[1] / Math.sqrt(direction[0] * direction[0] + direction[2] * direction[2]));
 

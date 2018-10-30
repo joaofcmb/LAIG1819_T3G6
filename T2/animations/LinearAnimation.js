@@ -37,20 +37,18 @@ class LinearAnimation extends Animation {
             segmentI++;
         }
 
-
         // Knowing the current segment, get translation vector to the start of that segment plus the remaining accumulated distance in that segment's direction
-        var animTranslationVector = vec3.copy(this.controlPoints[segmentI]);
+        var animTranslationVector = vec3.copy(this.controlPoints[this.segmentI]);
 
-        var direction, remainingDeltaTime;
-        if (segmentI > this.segmentDirections.length) { // delta surpasses animation end, calculate remainingDelta and use last segment's direction as orientation ref
-            remainingDeltaTime = this.accDistance * this.span / this.totalDistance;
-            direction = this.segmentDirections[segmentI - 1];  
-        }
-        else {
-            remainingDeltaTime = 0;
-            direction = this.segmentDirections[segmentI];
+        // Retrieves the direction relative to the active segment
+        var direction = this.segmentI > this.segmentDirections.length ? this.segmentDirections[this.segmentI - 1] : this.segmentDirections[this.segmentI];
+        
+        // Delta surpasses animation end, calculate remainingDelta and use last segment's direction as orientation ref
+        var remainingDeltaTime = this.segmentI > this.segmentDirections.length ? this.accDistance * this.span / this.totalDistance : 0;
 
-            segmentAcc = vec3.create();
+        // Adds to animTranslationVector, if necessary, the accumulated distance to be translated
+        if (this.segmentI <= this.segmentDirections.length) {
+            var segmentAcc = vec3.create();
             vec3.scale(segmentAcc, direction, this.accDistance);
             
             vec3.add(animTranslationVector, animTranslationVector, segmentAcc);

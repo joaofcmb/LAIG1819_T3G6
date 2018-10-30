@@ -72,9 +72,12 @@
 
     <animations>
 
-        <linear id="linearAnimID" span="1000">
-            <controlpoint xx="1.0" yy="1.0" zz="1.0" />
-            <controlpoint xx="1.0" yy="1.5" zz="2.0" />
+        <linear id="linearAnimID" span="4000">
+            <controlpoint xx="0.0" yy="0.5" zz="-1.0" />
+            <controlpoint xx="-1.0" yy="1.0" zz="0.0" />
+            <controlpoint xx="0.0" yy="1.5" zz="1.0" />
+            <controlpoint xx="1.0" yy="2.0" zz="0.0" />
+            <controlpoint xx="0.0" yy="2.5" zz="-1.0" />
         </linear>
 
         <circular id="circularAnimID" span="1000" center="1.0 1.0 1.0" radius="1.0" startang="0" rotang="60" />
@@ -83,8 +86,8 @@
 
     <primitives>
 
-        <primitive id="ball">
-            <sphere radius="0.5" slices="60" stacks="60" />
+        <primitive id="testPrimitive">
+            <cylinder base="0.5" top="0.2" height="1.0" slices="20" stacks="20" />
         </primitive >
 
     </primitives >
@@ -106,7 +109,7 @@
             <texture id="ball" length_s="1.0" length_t="1.0"/>
 
             <children>
-                <primitiveref id="ball" />
+                <primitiveref id="testPrimitive" />
             </children>
         </component>
 

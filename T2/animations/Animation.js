@@ -8,9 +8,9 @@ class Animation {
     }
 
     /**
-     * Called from the scene to update the current Transformation Matrix, indicating the time passed since the last update.
+     * Called from the scene to update the current Transformation Matrix.
      * 
-     * @param {number} deltaTime 
+     * @param {number} deltaTime Time since last update in microseconds.
      * 
      * @returns {number} Returns 0 unless the end of the animation is reach. In that case, it returns the reminder of the available deltaTime.
      */

@@ -27,6 +27,8 @@ class Scene extends CGFscene {
     init(application) {
         super.init(application);
 
+        this.setUpdatePeriod(1000/60);
+
         this.sceneInited = false;
         this.initCameras();
         this.enableTextures(true);
@@ -163,11 +165,13 @@ class Scene extends CGFscene {
                 var remainingDeltaTime = this.deltaTime;
 
                 while (remainingDeltaTime > 0 && component.activeAnimationIndex < component.activeAnimations.length) {
-                    remainingDeltaTime = component.activeAnimations[activeAnimationIndex].update(remainingDeltaTime);
+                    remainingDeltaTime = component.activeAnimations[component.activeAnimationIndex].update(remainingDeltaTime);
 
                     if (remainingDeltaTime > 0)
-                        component.activeAnimationIndex++;
+                        component.activeAnimationIndex++;  
                 }
+
+                component.activeAnimationIndex %= component.activeAnimations.length;
             }
         }
     }

@@ -32,9 +32,9 @@ class LinearAnimation extends Animation {
         // Add the current delta distance to the accumulated distance and check if there's a change in segment
         this.accDistance += this.totalDistance * deltaTime / this.span;
 
-        while (this.accDistance >= this.segmentDistances[segmentI]) {
-            this.accDistance -= this.segmentDistances[segmentI];
-            segmentI++;
+        while (this.accDistance >= this.segmentDistances[this.segmentI]) {
+            this.accDistance -= this.segmentDistances[this.segmentI];
+            this.segmentI++;
         }
 
         // Knowing the current segment, get translation vector to the start of that segment plus the remaining accumulated distance in that segment's direction

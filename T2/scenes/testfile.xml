@@ -77,7 +77,7 @@
             <controlpoint xx="1.0" yy="1.5" zz="2.0" />
         </linear>
 
-        <circular id="circularAnimID" span="1000" center="1.0 1.0 1.0" radius="1.0" startang="0" rotang="60" />
+        <circular id="circularAnimID" span="100000" center="0.0 0.0 0.0" radius="5.0" startang="0" rotang="360" />
 
     </animations>
 

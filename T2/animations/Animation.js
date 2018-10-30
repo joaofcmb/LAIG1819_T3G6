@@ -19,6 +19,6 @@ class Animation {
     }
 
     apply() {
-        this.scene.multMatrix(animTransform);
+        this.scene.multMatrix(this.animTransform);
     }
 }

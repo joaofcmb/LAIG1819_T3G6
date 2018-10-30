@@ -65,8 +65,8 @@ class Scene extends CGFscene {
         if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
             this.camera = new CGFcamera(Math.PI * cam.angle / 180, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
         else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
-            this.camera = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), 
-                                             vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
+            this.camera = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ),
+                vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
 
         this.interface.setActiveCamera(this.camera);
     }
@@ -147,22 +147,27 @@ class Scene extends CGFscene {
         this.sceneInited = true;
     }
 
+    /**
+     * Function responsible for updating animations
+     * @param {number} currTime 
+     */
     update(currTime) {
         this.lastTime = this.lastTime || 0;
-		this.deltaTime = currTime - this.lastTime;
+        this.deltaTime = currTime - this.lastTime;
         this.lastTime = currTime;
-        
+
         // Update each animation (Not extracted to Data to avoid further overhead)
         for (var compID in this.data.components) {
-            if (!this.data.components.hasOwnProperty(compID)) continue;
-            component = this.data.components[compID];
+            if (this.data.components.hasOwnProperty(compID)) {
+                var component = this.data.components[compID];
+                var remainingDeltaTime = this.deltaTime;
 
-            var remainingDeltaTime = this.deltaTime;
+                while (remainingDeltaTime > 0 && component.activeAnimationIndex < component.activeAnimations.length) {
+                    remainingDeltaTime = component.activeAnimations[activeAnimationIndex].update(remainingDeltaTime);
 
-            while (remainingDeltaTime > 0 && component.activeAnimationIndex < component.activeAnimations.length) {
-                remainingDeltaTime = component.activeAnimations[activeAnimationIndex].update(remainingDeltaTime);
-
-                if (remainingDeltaTime > 0) component.activeAnimationIndex++;
+                    if (remainingDeltaTime > 0)
+                        component.activeAnimationIndex++;
+                }
             }
         }
     }
@@ -174,14 +179,14 @@ class Scene extends CGFscene {
         for (var key in this.data.components) {
             if (this.data.components.hasOwnProperty(key)) {
                 var activeMaterials = this.data.components[key].activeMaterials;
-                
+
                 for (var i = 0; i < activeMaterials.length; i++) {
                     if (this.data.components[key].activeMaterial == activeMaterials[i]) {
                         if ((i + 1) == activeMaterials.length)
                             this.data.components[key].activeMaterial = activeMaterials[0];
-                        else 
+                        else
                             this.data.components[key].activeMaterial = activeMaterials[i + 1];
-                         
+
                         break;
                     }
                 }

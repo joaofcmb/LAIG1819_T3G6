@@ -757,7 +757,7 @@ class Parser {
                 animation.type = "linear";
                 this.data.animations[animationID] = animation;
             }
-            else if (children[i].nodeName == "circular") {
+            else {
                 animation.center = this.reader.getVector3(children[i], "center", false);
                 if (animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
                     return "<center> values on circular animation with [id = " + animationID + "] are not properly defined";
@@ -776,9 +776,6 @@ class Parser {
 
                 animation.type = "circular";
                 this.data.animations[animationID] = animation;
-            }
-            else {
-                return "Invalid animation type. Must be either <linear> or <circular>";
             }
         }
 

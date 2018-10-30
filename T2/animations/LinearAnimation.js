@@ -57,7 +57,7 @@ class LinearAnimation extends Animation {
         // Calculate current object orientation then apply it with the translation to the transformation matrix
         var horizontalAngle = Math.atan(direction[2] / direction[0]);
 
-        mat4.fromRotation(this.animTransform, horizontalAngle, vec3.fromValues(0, 1, 0));
+        mat4.fromRotation(this.animTransform, Math.PI / 2 + horizontalAngle, vec3.fromValues(0, 1, 0));
         mat4.translate(this.animTransform, this.animTransform, animTranslationVector);
 
         return remainingDeltaTime;

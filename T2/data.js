@@ -326,9 +326,9 @@ class Data {
                 
                 component.isTexScaleSet = true;
             }
-
-            if (component.activeAnimationIndex < component.activeAnimations) {
-                component.activeAnimations[activeAnimationIndex].apply();
+            
+            if (component.activeAnimationIndex < component.activeAnimations.length) {  
+               component.activeAnimations[component.activeAnimationIndex].apply();
             }
 
             for (var primI in component.activePrimitives)

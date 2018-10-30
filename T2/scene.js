@@ -27,8 +27,6 @@ class Scene extends CGFscene {
     init(application) {
         super.init(application);
 
-        this.setUpdatePeriod(1000/60);
-
         this.sceneInited = false;
         this.initCameras();
         this.enableTextures(true);
@@ -38,7 +36,7 @@ class Scene extends CGFscene {
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
 
-        this.setUpdatePeriod(100);
+        this.setUpdatePeriod(1000/60);
         this.axis = new CGFaxis(this);
     }
 

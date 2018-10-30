@@ -69,7 +69,7 @@
         </transformation>
 
     </transformations>
-    
+
     <animations>
 
         <linear id="linearAnimID" span="1000">
@@ -93,6 +93,11 @@
 
         <component id="poolRoot">
             <transformation></transformation>
+
+            <animations>
+                <animationref id="linearAnimID" />
+                <!-- <animationref id="circularAnimID" /> -->
+            </animations>
 
             <materials>
                 <material id="inherit" />
@@ -130,7 +135,7 @@
 
     ###############################
      ______________________
-    | P.1                  |  -> D = Sumatorio: di  (i=1; i=n)  d_deltaT = (D * delta_t) / T
+    | P.1                  |  -> D = Sumatorio: di (i=1; i=n)  d_deltaT = (D * delta_t) / T
     |  \        P.3        |  
     |   \       / \        |  
     | d1 \  d2 /   \  d3   |

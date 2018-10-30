@@ -725,7 +725,7 @@ class Parser {
 
             animation.controlPoints = [];
             animation.span = this.reader.getFloat(children[i], "span");
-            if(animation.span == null || isNaN(animation.span))
+            if (animation.span == null || isNaN(animation.span))
                 return "<span> value on animation with [id = " + animationID + "] is not properly defined";
 
             if (children[i].nodeName == "linear") {
@@ -740,40 +740,40 @@ class Parser {
                         this.onXMLMinorError("<" + linearChildren[j].nodeName + "> block on linear animation with [id = " + animationID + "] was not properly written. Do you mean <controlpoint> ?");
 
                     var x = this.reader.getFloat(linearChildren[j], "xx");
-                    if(x == null || isNaN(x))
+                    if (x == null || isNaN(x))
                         return "<xx> value on linear animation with [id = " + animationID + "] is not properly defined";
 
                     var y = this.reader.getFloat(linearChildren[j], "yy");
-                    if(y == null || isNaN(y))
+                    if (y == null || isNaN(y))
                         return "<yy> value on linear animation with [id = " + animationID + "] is not properly defined";
 
                     var z = this.reader.getFloat(linearChildren[j], "zz");
-                    if(z == null || isNaN(z))
+                    if (z == null || isNaN(z))
                         return "<zz> value on linear animation with [id = " + animationID + "] is not properly defined";
 
                     animation.controlPoints.push(vec3.fromValues(x, y, z));
                 }
-
-                this.data.linearAnimations.animationID = animation;
+                
+                this.data.linearAnimations[animationID] = animation;
             }
             else {
                 animation.center = this.reader.getVector3(children[i], "center", false);
-                if(animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
+                if (animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
                     return "<center> values on circular animation with [id = " + animationID + "] are not properly defined";
 
                 animation.radius = this.reader.getFloat(children[i], "radius");
-                if(animation.radius == null || isNaN(animation.radius))
+                if (animation.radius == null || isNaN(animation.radius))
                     return "<radius> value on circular animation with [id = " + animationID + "] is not properly defined";
-                
+
                 animation.startang = this.reader.getFloat(children[i], "startang");
-                if(animation.startang == null || isNaN(animation.startang))
+                if (animation.startang == null || isNaN(animation.startang))
                     return "<startang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
                 animation.rotang = this.reader.getFloat(children[i], "rotang");
-                if(animation.rotang == null || isNaN(animation.rotang))
+                if (animation.rotang == null || isNaN(animation.rotang))
                     return "<rotang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
-                this.data.circularAnimations.animationID = animation;
+                this.data.circularAnimations[animationID] = animation;
             }
         }
 
@@ -896,7 +896,8 @@ class Parser {
                 return "<component> block on <components> is not properly defined."
             else if (componentID == this.data.root)
                 flag = true;
-            else if ((error = this.validateComponentsInfo(componentChildren)) != null)
+
+            if ((error = this.validateComponentsInfo(componentChildren)) != null)
                 return error;
 
             for (var j = 0; j < componentChildren.length; j++) {
@@ -912,6 +913,12 @@ class Parser {
                         break;
                     case "texture":
                         if ((error = this.parseComponentTextures(componentChildren[j], componentID)) != null)
+                            return error;
+                        break;
+                    case "animations":
+                        if(j > 0 && componentChildren[j-1].nodeName != "transformation")
+                            return "Block <animations> on components must be declared immediately after <transformation> block.";
+                        else if ((error = this.parseComponentAnimations(componentChildren[j], componentID)) != null)
                             return error;
                         break;
                     case "children":
@@ -1074,6 +1081,36 @@ class Parser {
     }
 
     /**
+     * 
+     * @param {any} node 
+     * @param {number} componentID 
+     */
+    parseComponentAnimations(node, componentID) {
+        var animationsArray = [];
+        var nodeChildren = node.children;
+
+        for (var i = 0; i < nodeChildren.length; i++) {
+            if(nodeChildren[i].nodeName != "animationref")
+                this.onXMLMinorError("Invalid children on <animations> block in component with [id = " + componentID +  "]. Do you mean <animationref> ?");
+
+            var animationID = this.reader.getString(nodeChildren[i], "id");
+
+            var linearAnimation = this.data.linearAnimations[animationID];
+            var circularAnimation = this.data.circularAnimations[animationID];
+
+            if (animationID == null || animationID == "")
+                return "<component> with [id = " + componentID + "] has an animation reference not properly defined.";
+            else if (linearAnimation == null && circularAnimation == null)
+                return "<component> with [id = " + componentID + "] is referencing a non existent animation <" + animationID + ">.";
+            else
+                animationsArray.push(animationID);
+        }
+
+        this.data.components[componentID].animations = animationsArray;
+    }
+
+
+    /**
      * Parses children block on <components>.
      * 
      * @param {number} componentsID 
@@ -1107,7 +1144,7 @@ class Parser {
                 if (flag)
                     componentsArray.push(nodeChildrenID);
                 else
-                    return "<component with> [id = " + componentID + "] has the following tag <componentref> referencing a non existent component <" + nodeChildrenID + ">.";
+                    return "<component> with [id = " + componentID + "] has the following tag <componentref> referencing a non existent component <" + nodeChildrenID + ">.";
 
             }
             else if (nodeChildren[i].nodeName == "primitiveref") {
@@ -1133,7 +1170,8 @@ class Parser {
      * @param {any} componentChildren 
      */
     validateComponentsInfo(componentChildren) {
-        var neededElements = [0, 0, 0, 0]
+
+        var neededElements = [0, 0, 0, 0];
 
         for (var j = 0; j < componentChildren.length; j++) {
             if (componentChildren[j].nodeName == "transformation")
@@ -1144,13 +1182,13 @@ class Parser {
                 neededElements[2] = 1;
             else if (componentChildren[j].nodeName == "children")
                 neededElements[3] = 1;
-            else
+            else if(componentChildren[j].nodeName != "animations")
                 return "Invalid children on <components>: " + componentChildren[j].nodeName + ".";
         }
 
         for (var j = 0; j < neededElements.length; j++) {
             if (neededElements[j] == 0)
-                return "<components> does not contain all needed elements. It must contain: <transformation>, <materials>, <texture>, <children> blocks.";
+                return "<components> does not contain all needed elements. It must contain: <transformation>, <materials>, <texture>, <children> blocks. Block <animations> is optional.";
         }
     }
 

@@ -101,7 +101,7 @@ class Data {
         // COMPONENTS
         this.components = new Object();     // Format: ID -> { 
         //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, ... ],
-        //                  animation: animationID,
+        //                  animations: [animationID, ...]
         //                  materials: "inherit" OR [materialID1, materialID2], 
         //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
         //                  components: ["comp1ID", "comp2ID"], primitives: ["primitive1ID", "primitive2ID"]

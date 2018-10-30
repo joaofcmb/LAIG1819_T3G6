@@ -1,7 +1,6 @@
 /**
  * Circular Animation class
  */
-
 class CircularAnimation extends Animation {
     constructor(scene, span, center, radius, startAng, rotAng) {
         super(scene);

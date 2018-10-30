@@ -1081,6 +1081,7 @@ class Parser {
     }
 
     /**
+     * Parses animations block on <components>.
      * 
      * @param {any} node 
      * @param {number} componentID 

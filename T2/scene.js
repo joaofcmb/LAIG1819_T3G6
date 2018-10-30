@@ -38,6 +38,7 @@ class Scene extends CGFscene {
         this.gl.enable(this.gl.CULL_FACE);
         this.gl.depthFunc(this.gl.LEQUAL);
 
+        this.setUpdatePeriod(100);
         this.axis = new CGFaxis(this);
     }
 
@@ -163,7 +164,7 @@ class Scene extends CGFscene {
             if (this.data.components.hasOwnProperty(compID)) {
                 var component = this.data.components[compID];
                 var remainingDeltaTime = this.deltaTime;
-
+                
                 while (remainingDeltaTime > 0 && component.activeAnimationIndex < component.activeAnimations.length) {
                     remainingDeltaTime = component.activeAnimations[component.activeAnimationIndex].update(remainingDeltaTime);
 

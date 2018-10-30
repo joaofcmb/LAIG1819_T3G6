@@ -37,7 +37,7 @@ class CircularAnimation extends Animation {
         // Calculate current object orientation (Assuming front of object is on the positive Z axis) then apply it with the translation to the transformation matrix
         mat4.fromRotation(this.animTransform, Math.PI / 2 + this.currAng, vec3.fromValues(0, 1, 0));
         mat4.translate(this.animTransform, this.animTransform, animTranslationVector);
-
+        
         return remainingDeltaTime;
     }
 }

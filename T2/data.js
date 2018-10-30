@@ -90,22 +90,20 @@ class Data {
         this.scaleDefault = { x: 1.0, y: 1.0, z: 1.0 };
 
         // ANIMATIONS
-        this.linearAnimations = new Object();   // Format e.g: ID -> {span: 1000, controlPoints: [{x: 0, y: 0, z: 0}, {x: 1, y: 0, z: 1}]}
-        this.circularAnimations = new Object(); // Format e.g: ID -> {span: 1000, center: {x: 0, y: 0, z: 0}, radius: 1, startAng: 0, rotAng: 90}
-
         this.animations = new Object();     // Contains all animations after being instantiated
-
+                                            // Format e.g: ID -> {type: linear, span: 1000, controlPoints: [{x: 0, y: 0, z: 0}, {x: 1, y: 0, z: 1}]}
+                                            // Format e.g: ID -> {type: circular, span: 1000, center: {x: 0, y: 0, z: 0}, radius: 1, startAng: 0, rotAng: 90}
         // PRIMITIVES
         this.primitives = new Object();     // Format e.g: ID -> {type: rectangle, x1: -0.5, y1: -0.5, x2: 0.5, y2: 0.5}
 
         // COMPONENTS
         this.components = new Object();     // Format: ID -> { 
-        //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, ... ],
-        //                  animations: [animationID, ...]
-        //                  materials: "inherit" OR [materialID1, materialID2], 
-        //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
-        //                  components: ["comp1ID", "comp2ID"], primitives: ["primitive1ID", "primitive2ID"]
-        //               }
+                                            //                  transforms: "transformID" OR [ {type: "rotate", axis 'x', angle: 0.0}, ... ],
+                                            //                  animations: [animationID, ...]
+                                            //                  materials: "inherit" OR [materialID1, materialID2], 
+                                            //                  textureID: "inherit" OR "texID", texLengthS: "1.0", texLengthT: "1.0",
+                                            //                  components: ["comp1ID", "comp2ID"], primitives: ["primitive1ID", "primitive2ID"]
+                                            //               }
     }
     
     /**
@@ -118,8 +116,6 @@ class Data {
      * @param {any} scene 
      */
     setupGraph(scene) {
-        // TODO Setup textures and animations (textures will be constructed here instead)
-
         // Setup components
         for (var compID in this.components) {
             if (!this.components.hasOwnProperty(compID)) continue;
@@ -158,6 +154,24 @@ class Data {
                 }
             }
             this.components[compID].transformMatrix = scene.getMatrix();
+
+            // Animations init
+            this.components[compID].activeAnimations = [];
+            this.components[compID].activeAnimationIndex = 0;
+
+            for (var animationIndex in this.components[compID].animations) {
+                var animation = this.animations[this.components[compID].animations[animationIndex]];
+
+                switch (animation.type) {
+                    case "linear":
+                        this.components[compID].activeAnimations.push(new LinearAnimation(scene, animation.span, animation.controlPoints));
+                        break;
+                    case "circular":
+                        this.components[compID].activeAnimations.push(new CircularAnimation(scene, animation.span, animation.center, animation.radius, 
+                                                                                        animation.startAng, animation.rotAng));
+                        break;
+                }
+            }
 
             //  Material init
             this.defaultAppearance = new CGFappearance(scene);
@@ -311,6 +325,10 @@ class Data {
                 }
                 
                 component.isTexScaleSet = true;
+            }
+
+            if (component.activeAnimationIndex < component.activeAnimations) {
+                component.activeAnimations[activeAnimationIndex].apply();
             }
 
             for (var primI in component.activePrimitives)

@@ -1,5 +1,5 @@
 <yas>
-    <scene root="poolRoot" axis_length="1"/>
+    <scene root="root" axis_length="1"/>
 
     <views default="DefaultCam">
 
@@ -26,7 +26,7 @@
     </lights>
 
     <textures>
-        <texture id="grass" file="./scenes/images/grass.jpg" />
+        <texture id="ball" file="./scenes/images/ball.jpg" />
     </textures>
 
     <materials>
@@ -91,7 +91,7 @@
 
     <components>
 
-        <component id="poolRoot">
+        <component id="root">
             <transformation></transformation>
 
             <animations>
@@ -103,7 +103,7 @@
                 <material id="inherit" />
             </materials>
 
-            <texture id="none" />
+            <texture id="ball" length_s="1.0" length_t="1.0"/>
 
             <children>
                 <primitiveref id="ball" />

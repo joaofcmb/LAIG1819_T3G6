@@ -706,7 +706,7 @@ class Parser {
 
         var children = animations.children;
         if (children.length == 0)
-            return
+            return;
 
         for (var i = 0; i < children.length; i++) {
             if (children[i].nodeName != "linear" && children[i].nodeName != "circular")
@@ -732,7 +732,7 @@ class Parser {
                 var linearChildren = children[i].children;
 
                 if (linearChildren.length < 2)
-                    return "Linear animation with [id = " + animationID + "] must have at least 2 children."
+                    return "Linear animation with [id = " + animationID + "] must have at least 2 control points."
 
                 for (var j = 0; j < linearChildren.length; j++) {
 
@@ -754,9 +754,10 @@ class Parser {
                     animation.controlPoints.push(vec3.fromValues(x, y, z));
                 }
                 
-                this.data.linearAnimations[animationID] = animation;
+                animation.type = "linear";
+                this.data.animations[animationID] = animation;
             }
-            else {
+            else if (children[i].nodeName == "circular") {
                 animation.center = this.reader.getVector3(children[i], "center", false);
                 if (animation.center == null || isNaN(animation.center[0]) || isNaN(animation.center[1]) || isNaN(animation.center[2]))
                     return "<center> values on circular animation with [id = " + animationID + "] are not properly defined";
@@ -773,7 +774,11 @@ class Parser {
                 if (animation.rotang == null || isNaN(animation.rotang))
                     return "<rotang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
-                this.data.circularAnimations[animationID] = animation;
+                animation.type = "circular";
+                this.data.animations[animationID] = animation;
+            }
+            else {
+                return "Invalid animation type. Must be either <linear> or <circular>";
             }
         }
 
@@ -916,7 +921,7 @@ class Parser {
                             return error;
                         break;
                     case "animations":
-                        if(j > 0 && componentChildren[j-1].nodeName != "transformation")
+                        if (j > 0 && componentChildren[j-1].nodeName != "transformation")
                             return "Block <animations> on components must be declared immediately after <transformation> block.";
                         else if ((error = this.parseComponentAnimations(componentChildren[j], componentID)) != null)
                             return error;
@@ -1091,17 +1096,16 @@ class Parser {
         var nodeChildren = node.children;
 
         for (var i = 0; i < nodeChildren.length; i++) {
-            if(nodeChildren[i].nodeName != "animationref")
+            if (nodeChildren[i].nodeName != "animationref")
                 this.onXMLMinorError("Invalid children on <animations> block in component with [id = " + componentID +  "]. Do you mean <animationref> ?");
 
             var animationID = this.reader.getString(nodeChildren[i], "id");
 
-            var linearAnimation = this.data.linearAnimations[animationID];
-            var circularAnimation = this.data.circularAnimations[animationID];
+            var animation = this.data.animations[animationID];
 
             if (animationID == null || animationID == "")
                 return "<component> with [id = " + componentID + "] has an animation reference not properly defined.";
-            else if (linearAnimation == null && circularAnimation == null)
+            else if (animation == null)
                 return "<component> with [id = " + componentID + "] is referencing a non existent animation <" + animationID + ">.";
             else
                 animationsArray.push(animationID);

@@ -170,7 +170,7 @@ class Scene extends CGFscene {
                         component.activeAnimationIndex++;  
                 }
 
-                component.activeAnimationIndex %= component.activeAnimations.length;
+                component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
             }
         }
     }

@@ -766,12 +766,12 @@ class Parser {
                 if (animation.radius == null || isNaN(animation.radius))
                     return "<radius> value on circular animation with [id = " + animationID + "] is not properly defined";
 
-                animation.startang = this.reader.getFloat(children[i], "startang");
-                if (animation.startang == null || isNaN(animation.startang))
+                animation.startAng = this.reader.getFloat(children[i], "startang");
+                if (animation.startAng == null || isNaN(animation.startAng))
                     return "<startang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
-                animation.rotang = this.reader.getFloat(children[i], "rotang");
-                if (animation.rotang == null || isNaN(animation.rotang))
+                animation.rotAng = this.reader.getFloat(children[i], "rotang");
+                if (animation.rotAng == null || isNaN(animation.rotAng))
                     return "<rotang> value on circular animation with [id = " + animationID + "] is not properly defined";
 
                 animation.type = "circular";

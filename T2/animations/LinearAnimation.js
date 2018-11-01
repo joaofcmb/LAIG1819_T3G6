@@ -60,7 +60,7 @@ class LinearAnimation extends Animation {
         }
 
         // Calculate current object orientation then apply it with the translation to the transformation matrix
-        var horizontalAngle = -Math.sign(direction[2]) * Math.acos(direction[0]);
+        var horizontalAngle = direction[2] != 0 ? -Math.sign(direction[2]) * Math.acos(direction[0]) : Math.acos(direction[0]);
 
         mat4.identity(this.animTransform);
         mat4.translate(this.animTransform, this.animTransform, animTranslationVector);

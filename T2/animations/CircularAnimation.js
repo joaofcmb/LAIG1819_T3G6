@@ -22,7 +22,7 @@ class CircularAnimation extends Animation {
 
         this.currAng += this.rotAng * deltaTime / this.span;
 
-        // Check if delta surpassed the end of the animation and calculate the remaining delta
+        // Check if delta surpassed the end of the animation and calculate the remainder
         var remainingDeltaTime = 0;
         
         if (this.currAng > this.endAng) {
@@ -31,12 +31,15 @@ class CircularAnimation extends Animation {
         }
 
         // Calculate Translation Vector (Center + rotationTranslation)
-        var animTranslationVector = vec3.copy(this.center);
-        vec3.add(animTranslationVector, animTranslationVector, vec3.fromValues(this.radius * Math.cos(this.currAng), 0, this.radius * Math.sin(this.currAng)));
+        var animTranslationVector = vec3.create()
+        vec3.copy(animTranslationVector, this.center);
+
+        vec3.add(animTranslationVector, animTranslationVector, vec3.fromValues(this.radius * Math.cos(this.currAng), 0, -this.radius * Math.sin(this.currAng)));
 
         // Calculate current object orientation (Assuming front of object is on the positive Z axis) then apply it with the translation to the transformation matrix
-        mat4.fromRotation(this.animTransform, Math.PI / 2 + this.currAng, vec3.fromValues(0, 1, 0));
+        mat4.identity(this.animTransform);
         mat4.translate(this.animTransform, this.animTransform, animTranslationVector);
+        mat4.rotateY(this.animTransform, this.animTransform, Math.PI + this.currAng);
         
         return remainingDeltaTime;
     }

@@ -161,6 +161,7 @@ class Scene extends CGFscene {
         for (var compID in this.data.components) {
             if (this.data.components.hasOwnProperty(compID)) {
                 var component = this.data.components[compID];
+
                 var remainingDeltaTime = this.deltaTime;
                 
                 while (remainingDeltaTime > 0 && component.activeAnimationIndex < component.activeAnimations.length) {
@@ -170,7 +171,8 @@ class Scene extends CGFscene {
                         component.activeAnimationIndex++;  
                 }
 
-                component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
+                if (component.activeAnimations.length > 0)
+                    component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
             }
         }
     }

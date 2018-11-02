@@ -753,7 +753,7 @@ class Parser {
 
                     animation.controlPoints.push(vec3.fromValues(x, y, z));
                 }
-                
+
                 animation.type = "linear";
                 this.data.animations[animationID] = animation;
             }
@@ -803,41 +803,90 @@ class Parser {
             return error;
 
         for (var i = 0; i < children.length; i++) {
-            var primitveChildren = children[i].children;
+            var primitiveChildren = children[i].children;
 
-            if (primitveChildren.length != 1)
-                return "There must exist only one tag per primitive. Available tags: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
+            if (primitiveChildren.length != 1)
+                return "There must exist only one tag per primitive. Available tags: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>."
 
             var primitive = new Object();
-            primitive.type = primitveChildren[0].nodeName;
+            primitive.type = primitiveChildren[0].nodeName;
 
             var primitiveID = this.reader.getString(children[i], "id");
             if (primitiveID == null || primitiveID == "")
                 return "<primitive> block on <primitives> is not properly defined."
 
-            if (primitveChildren[0].nodeName == "rectangle") {
-                primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1");
-                primitive.x2 = this.reader.getFloat(primitveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitveChildren[0], "y2");
+            switch (primitiveChildren[0].nodeName) {
+                case "rectangle":
+                    primitive.x1 = this.reader.getFloat(primitiveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitiveChildren[0], "y1");
+                    primitive.x2 = this.reader.getFloat(primitiveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitiveChildren[0], "y2");
+                    break;
+                case "triangle":
+                    primitive.x1 = this.reader.getFloat(primitiveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitiveChildren[0], "y1"); primitive.z1 = this.reader.getFloat(primitiveChildren[0], "z1");
+                    primitive.x2 = this.reader.getFloat(primitiveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitiveChildren[0], "y2"); primitive.z2 = this.reader.getFloat(primitiveChildren[0], "z2");
+                    primitive.x3 = this.reader.getFloat(primitiveChildren[0], "x3"); primitive.y3 = this.reader.getFloat(primitiveChildren[0], "y3"); primitive.z3 = this.reader.getFloat(primitiveChildren[0], "z3");
+                    break;
+                case "cylinder":
+                    primitive.base = this.reader.getFloat(primitiveChildren[0], "base"); primitive.top = this.reader.getFloat(primitiveChildren[0], "top"); primitive.height = this.reader.getFloat(primitiveChildren[0], "height");
+                    primitive.slices = this.reader.getInteger(primitiveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitiveChildren[0], "stacks");
+                    break;
+                case "sphere":
+                    primitive.radius = this.reader.getFloat(primitiveChildren[0], "radius");
+                    primitive.slices = this.reader.getInteger(primitiveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitiveChildren[0], "stacks");
+                    break;
+                case "torus":
+                    primitive.inner = this.reader.getFloat(primitiveChildren[0], "inner"); primitive.outer = this.reader.getFloat(primitiveChildren[0], "outer");
+                    primitive.slices = this.reader.getInteger(primitiveChildren[0], "slices"); primitive.loops = this.reader.getInteger(primitiveChildren[0], "loops");
+                    break;
+                case "plane":
+                    primitive.npartsU = this.reader.getInteger(primitiveChildren[0], "npartsU");
+                    primitive.npartsV = this.reader.getInteger(primitiveChildren[0], "npartsV");
+                    break;
+                case "patch":
+                    primitive.npointsU = this.reader.getInteger(primitiveChildren[0], "npointsU");
+                    primitive.npointsV = this.reader.getInteger(primitiveChildren[0], "npointsV");
+                    primitive.npartsU = this.reader.getInteger(primitiveChildren[0], "npartsU");
+                    primitive.npartsV = this.reader.getInteger(primitiveChildren[0], "npartsV");
+
+                    var totalPoints = primitive.npointsU * primitive.npointsV;
+                    var controlPoints = primitiveChildren[0].children;
+
+                    if(totalPoints != controlPoints.length)
+                        return "Primitive with [id = " + primitiveID + "] is not properly defined. It has " + controlPoints.length + " and should have " + totalPoints + ".";
+
+                    primitive.controlPoints = [];
+
+                    for(var j = 0; j < controlPoints.length; j += 0) {
+                        var upoints = [];
+                        var npointsV =  primitive.npointsV;
+
+                        while(npointsV > 0) {
+                            var x = this.reader.getFloat(controlPoints[j], "xx");
+                            if(x == null || isNaN(x))
+                                return "<xx> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
+
+                            var y = this.reader.getFloat(controlPoints[j], "yy");
+                            if(y == null || isNaN(y))
+                                return "<yy> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
+
+                            var z = this.reader.getFloat(controlPoints[j], "zz");
+                            if(z == null || isNaN(z))
+                                return "<zz> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
+                            
+                            upoints.push([x,y,z,1]);
+
+                            j++;
+                            npointsV--;
+                        }
+
+                        primitive.controlPoints.push(upoints);
+                    }
+                    break;
+                case "cylinder2":
+                    break;
+                default:
+                    return "Primitive <" + primitiveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>."
+
             }
-            else if (primitveChildren[0].nodeName == "triangle") {
-                primitive.x1 = this.reader.getFloat(primitveChildren[0], "x1"); primitive.y1 = this.reader.getFloat(primitveChildren[0], "y1"); primitive.z1 = this.reader.getFloat(primitveChildren[0], "z1");
-                primitive.x2 = this.reader.getFloat(primitveChildren[0], "x2"); primitive.y2 = this.reader.getFloat(primitveChildren[0], "y2"); primitive.z2 = this.reader.getFloat(primitveChildren[0], "z2");
-                primitive.x3 = this.reader.getFloat(primitveChildren[0], "x3"); primitive.y3 = this.reader.getFloat(primitveChildren[0], "y3"); primitive.z3 = this.reader.getFloat(primitveChildren[0], "z3");
-            }
-            else if (primitveChildren[0].nodeName == "cylinder") {
-                primitive.base = this.reader.getFloat(primitveChildren[0], "base"); primitive.top = this.reader.getFloat(primitveChildren[0], "top"); primitive.height = this.reader.getFloat(primitveChildren[0], "height");
-                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitveChildren[0], "stacks");
-            }
-            else if (primitveChildren[0].nodeName == "sphere") {
-                primitive.radius = this.reader.getFloat(primitveChildren[0], "radius");
-                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitveChildren[0], "stacks");
-            }
-            else if (primitveChildren[0].nodeName == "torus") {
-                primitive.inner = this.reader.getFloat(primitveChildren[0], "inner"); primitive.outer = this.reader.getFloat(primitveChildren[0], "outer");
-                primitive.slices = this.reader.getInteger(primitveChildren[0], "slices"); primitive.loops = this.reader.getInteger(primitveChildren[0], "loops");
-            }
-            else
-                return "Primitive <" + primitveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>."
 
             this.data.primitives[primitiveID] = primitive;
         }
@@ -856,7 +905,7 @@ class Parser {
             if (this.data.primitives.hasOwnProperty(firstKey)) {
                 for (var secondKey in this.data.primitives[firstKey]) {
                     if (this.data.primitives[firstKey].hasOwnProperty(secondKey)) {
-                        if (secondKey != "type" && (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
+                        if (secondKey != "type" && secondKey != "controlPoints" && (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
                             return "Primitive with [id = " + firstKey + "] is not valid due to <" + secondKey + "> value on " + this.data.primitives[firstKey].type + ".";
                         }
                     }
@@ -918,7 +967,7 @@ class Parser {
                             return error;
                         break;
                     case "animations":
-                        if (j > 0 && componentChildren[j-1].nodeName != "transformation")
+                        if (j > 0 && componentChildren[j - 1].nodeName != "transformation")
                             return "Block <animations> on components must be declared immediately after <transformation> block.";
                         else if ((error = this.parseComponentAnimations(componentChildren[j], componentID)) != null)
                             return error;
@@ -1094,7 +1143,7 @@ class Parser {
 
         for (var i = 0; i < nodeChildren.length; i++) {
             if (nodeChildren[i].nodeName != "animationref")
-                this.onXMLMinorError("Invalid children on <animations> block in component with [id = " + componentID +  "]. Do you mean <animationref> ?");
+                this.onXMLMinorError("Invalid children on <animations> block in component with [id = " + componentID + "]. Do you mean <animationref> ?");
 
             var animationID = this.reader.getString(nodeChildren[i], "id");
 
@@ -1184,7 +1233,7 @@ class Parser {
                 neededElements[2] = 1;
             else if (componentChildren[j].nodeName == "children")
                 neededElements[3] = 1;
-            else if(componentChildren[j].nodeName != "animations")
+            else if (componentChildren[j].nodeName != "animations")
                 return "Invalid children on <components>: " + componentChildren[j].nodeName + ".";
         }
 

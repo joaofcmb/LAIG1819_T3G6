@@ -247,6 +247,14 @@ class Data {
                     case "torus":
                         this.components[compID].activePrimitives.push(new MyTorus(scene, primitive.inner, primitive.outer, primitive.slices, primitive.loops));
                         break;
+                    case "plane": 
+                        this.components[compID].activePrimitives.push(new Plane(scene, primitive.npartsU, primitive.npartsV));
+                        break;
+                    case "patch": 
+                        this.components[compID].activePrimitives.push(new Patch(scene, primitive.npointsU - 1, primitive.npointsV - 1, primitive.npartsU, primitive.npartsV, primitive.controlPoints));
+                        break;
+                    case "cylinder2":
+                        break;
                 }
             }
         }

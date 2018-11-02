@@ -26,7 +26,7 @@
     </lights>
 
     <textures>
-        <texture id="ball" file="./scenes/images/ball.jpg" />
+        <texture id="nurb" file="./scenes/images/nurb.jpg" />
     </textures>
 
     <materials>
@@ -87,8 +87,23 @@
 
     <primitives>
 
-        <primitive id="testPrimitive">
+        <primitive id="test">
             <cylinder base="0.5" top="0.2" height="1.0" slices="20" stacks="20" />
+        </primitive >
+
+        <primitive id="plane">
+            <plane npartsU="15" npartsV="15" />
+        </primitive >
+
+        <primitive id="patch">
+            <patch npointsU="3" npointsV="2" npartsU="20" npartsV="20">
+                <controlpoint xx="-1.5" yy="-1.5" zz="0.0" />
+                <controlpoint xx="-1.5" yy="1.5" zz="0.0" />
+                <controlpoint xx="0.0" yy="-1.5" zz="3.0" />
+                <controlpoint xx="0.0" yy="1.5" zz="3.0" />
+                <controlpoint xx="1.5" yy="-1.5" zz="0.0" />
+                <controlpoint xx="1.5" yy="1.5" zz="0.0" />
+            </patch>
         </primitive >
 
     </primitives >
@@ -98,75 +113,24 @@
         <component id="root">
             <transformation></transformation>
 
-            <animations>
+            <!-- <animations>
                 <animationref id="circularAnimID" />
                 <animationref id="linearAnimID" />
                 <animationref id="circularAnimID" />
-            </animations>
+            </animations> -->
 
             <materials>
                 <material id="inherit" />
             </materials>
 
-            <texture id="ball" length_s="1.0" length_t="1.0"/>
+            <texture id="nurb" length_s="1.0" length_t="1.0"/>
 
             <children>
-                <primitiveref id="testPrimitive" />
+                <!-- <primitiveref id="plane" /> -->
+                <primitiveref id="patch" />
             </children>
         </component>
 
     </components>
 
 </yas>
-
-<!-- 
-
-    T = 10 000 ms
-
-    delta_T = null.
-    last_T = null.
-
-    update(t) {
-
-        if(last_t != null) {
-
-            delta_t = t - last_t;
-            animate(delta_t);
-        
-        }
-        else {
-            last_t = t;
-        }
-
-    ###############################
-     ______________________
-    | P.1                  |  -> D = Sumatorio: di (i=1; i=n)  d_deltaT = (D * delta_t) / T
-    |  \        P.3        |  
-    |   \       / \        |  
-    | d1 \  d2 /   \  d3   |
-    |     \   /     \      |
-    |      \ /       \     |
-    |      P.2       P.4   |
-    |______________________|
-
-    ###############################
-
-    Init: 
-        segmento = 1;
-        d_animado = 0;
-
-    ###############################
-    
-    d_deltaT = (D * delta_t) / T;
-
-    d_animado += d_deltaT;
-
-    if(d_animado >= d_segmento) {
-
-        d_animado -= d_segmento;
-        segmento++;
-
-    }
-
-    ###############################
- -->

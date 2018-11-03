@@ -254,6 +254,18 @@ class Data {
                         this.components[compID].activePrimitives.push(new Patch(scene, primitive.npointsU - 1, primitive.npointsV - 1, primitive.npartsU, primitive.npartsV, primitive.controlPoints));
                         break;
                     case "cylinder2":
+                    this.components[compID].activePrimitives.push(new Cylinder2(scene, primitive.base, primitive.top, primitive.height, 
+                                                                                    primitive.slices, primitive.stacks)
+                        );
+                        break;
+                    case "vehicle":
+                        // TODO - Develop vehicle class 
+                        break;
+                    case "terrain":
+                        // TODO - Develop terrain class
+                        break;
+                    case "water":
+                        // TODO - Develop water class
                         break;
                 }
             }

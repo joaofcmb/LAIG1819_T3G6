@@ -106,6 +106,18 @@
             </patch>
         </primitive >
 
+        <primitive id="cylinderNurb">
+            <cylinder2 base="0.5" top="0.2" height="1.0" slices="20" stacks="20" />
+        </primitive >
+
+        <primitive id="terrain">
+            <terrain idtexture="nurb" idheightmap="nurb" parts="5" heightscale="1" />
+        </primitive >
+
+        <primitive id="water">
+            <water idtexture="nurb" idwavemap="nurb" parts="5" heightscale="1" texscale="1" />
+        </primitive >
+
     </primitives >
 
     <components>
@@ -126,8 +138,10 @@
             <texture id="nurb" length_s="1.0" length_t="1.0"/>
 
             <children>
+                <!-- <primitiveref id="test" /> -->
                 <!-- <primitiveref id="plane" /> -->
-                <primitiveref id="patch" />
+                <!-- <primitiveref id="patch" /> -->
+                <primitiveref id="cylinderNurb" />
             </children>
         </component>
 

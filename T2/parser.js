@@ -826,6 +826,7 @@ class Parser {
                     primitive.x3 = this.reader.getFloat(primitiveChildren[0], "x3"); primitive.y3 = this.reader.getFloat(primitiveChildren[0], "y3"); primitive.z3 = this.reader.getFloat(primitiveChildren[0], "z3");
                     break;
                 case "cylinder":
+                case "cylinder2":
                     primitive.base = this.reader.getFloat(primitiveChildren[0], "base"); primitive.top = this.reader.getFloat(primitiveChildren[0], "top"); primitive.height = this.reader.getFloat(primitiveChildren[0], "height");
                     primitive.slices = this.reader.getInteger(primitiveChildren[0], "slices"); primitive.stacks = this.reader.getInteger(primitiveChildren[0], "stacks");
                     break;
@@ -850,29 +851,29 @@ class Parser {
                     var totalPoints = primitive.npointsU * primitive.npointsV;
                     var controlPoints = primitiveChildren[0].children;
 
-                    if(totalPoints != controlPoints.length)
+                    if (totalPoints != controlPoints.length)
                         return "Primitive with [id = " + primitiveID + "] is not properly defined. It has " + controlPoints.length + " and should have " + totalPoints + ".";
 
                     primitive.controlPoints = [];
 
-                    for(var j = 0; j < controlPoints.length; j += 0) {
+                    for (var j = 0; j < controlPoints.length; j += 0) {
                         var upoints = [];
-                        var npointsV =  primitive.npointsV;
+                        var npointsV = primitive.npointsV;
 
-                        while(npointsV > 0) {
+                        while (npointsV > 0) {
                             var x = this.reader.getFloat(controlPoints[j], "xx");
-                            if(x == null || isNaN(x))
+                            if (x == null || isNaN(x))
                                 return "<xx> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
 
                             var y = this.reader.getFloat(controlPoints[j], "yy");
-                            if(y == null || isNaN(y))
+                            if (y == null || isNaN(y))
                                 return "<yy> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
 
                             var z = this.reader.getFloat(controlPoints[j], "zz");
-                            if(z == null || isNaN(z))
+                            if (z == null || isNaN(z))
                                 return "<zz> value on controlpoint of primitive with [id = " + primitiveID + "] is not properly defined";
-                            
-                            upoints.push([x,y,z,1]);
+
+                            upoints.push([x, y, z, 1]);
 
                             j++;
                             npointsV--;
@@ -881,7 +882,44 @@ class Parser {
                         primitive.controlPoints.push(upoints);
                     }
                     break;
-                case "cylinder2":
+                case "terrain":
+                case "water":
+                    var idtexture = this.reader.getString(primitiveChildren[0], "idtexture");
+                    if (this.data.textures[idtexture] == null)
+                        return "<idtexture> on primitive with [id = " + primitiveID + "] is referencing a non existent texture.";
+
+                    primitive.idtexture = idtexture;
+
+                    if (primitiveChildren[0].nodeName == "terrain") {
+                        var idheightmap = this.reader.getString(primitiveChildren[0], "idheightmap");
+                        if (this.data.textures[idheightmap] == null)
+                            return "<idheightmap> on primitive with [id = " + primitiveID + "] is referencing a non existent texture.";
+
+                        primitive.idheightmap = idheightmap;
+                    }
+                    else {
+                        var idwavemap = this.reader.getString(primitiveChildren[0], "idwavemap");
+                        if (this.data.textures[idwavemap] == null)
+                            return "<idwavemap> on primitive with [id = " + primitiveID + "] is referencing a non existent texture.";
+
+                        primitive.idwavemap = idwavemap;
+                    }
+
+                    primitive.parts = this.reader.getInteger(primitiveChildren[0], "parts");
+                    if (primitive.parts == null || isNaN(primitive.parts))
+                        return "Primitive with [id = " + primitiveID + "] has an invalid value on <parts>.";
+
+                    primitive.heightscale = this.reader.getFloat(primitiveChildren[0], "heightscale");
+                    if (primitive.heightscale == null || isNaN(primitive.heightscale))
+                        return "Primitive with [id = " + primitiveID + "] has an invalid value on <heightscale>.";
+
+                    if (primitiveChildren[0].nodeName == "water") {
+                        primitive.texscale = this.reader.getFloat(primitiveChildren[0], "texscale");
+                        if (primitive.texscale == null || isNaN(primitive.texscale))
+                            return "Primitive with [id = " + primitiveID + "] has an invalid value on <texscale>.";
+                    }
+                    break;
+                case "vehicle":
                     break;
                 default:
                     return "Primitive <" + primitiveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>."
@@ -905,7 +943,11 @@ class Parser {
             if (this.data.primitives.hasOwnProperty(firstKey)) {
                 for (var secondKey in this.data.primitives[firstKey]) {
                     if (this.data.primitives[firstKey].hasOwnProperty(secondKey)) {
-                        if (secondKey != "type" && secondKey != "controlPoints" && (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
+                        if (secondKey != "type" &&
+                            secondKey != "controlPoints" &&
+                            this.data.primitives[firstKey].type != "terrain" &&
+                            this.data.primitives[firstKey].type != "water" &&
+                            (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
                             return "Primitive with [id = " + firstKey + "] is not valid due to <" + secondKey + "> value on " + this.data.primitives[firstKey].type + ".";
                         }
                     }

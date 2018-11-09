@@ -262,7 +262,10 @@ class Data {
                         // TODO - Develop vehicle class 
                         break;
                     case "terrain":
-                        // TODO - Develop terrain class
+                        this.components[compID].activePrimitives.push(new Terrain(  scene,
+                                                                                    new CGFtexture(scene, this.textures[primitive.idtexture]),
+                                                                                    new CGFtexture(scene, this.textures[primitive.idheightmap]),
+                                                                                    primitive.parts, primitive.heightscale));
                         break;
                     case "water":
                         // TODO - Develop water class

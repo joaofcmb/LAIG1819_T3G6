@@ -27,6 +27,7 @@
 
     <textures>
         <texture id="nurb" file="./scenes/images/nurb.jpg" />
+        <texture id="heightmap" file="./scenes/images/heightmap.png" />
     </textures>
 
     <materials>
@@ -107,11 +108,11 @@
         </primitive >
 
         <primitive id="cylinderNurb">
-            <cylinder2 base="0.5" top="0.2" height="1.0" slices="20" stacks="20" />
+            <cylinder2 base="0.5" top="0.5" height="1.0" slices="20" stacks="20" />
         </primitive >
 
         <primitive id="terrain">
-            <terrain idtexture="nurb" idheightmap="nurb" parts="5" heightscale="1" />
+            <terrain idtexture="nurb" idheightmap="heightmap" parts="10" heightscale="1" />
         </primitive >
 
         <primitive id="water">
@@ -141,7 +142,8 @@
                 <!-- <primitiveref id="test" /> -->
                 <!-- <primitiveref id="plane" /> -->
                 <!-- <primitiveref id="patch" /> -->
-                <primitiveref id="cylinderNurb" />
+                <!-- <primitiveref id="cylinderNurb" /> -->
+                <primitiveref id="terrain" />
             </children>
         </component>
 

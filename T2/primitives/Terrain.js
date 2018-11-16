@@ -5,7 +5,12 @@ class Terrain extends CGFobject {
 
     /**
      * Terrain constructor.
-     *
+     * 
+     * @param {any} scene 
+     * @param {CGFtexture} texture 
+     * @param {CGFtexture} heightMap 
+     * @param {number} parts 
+     * @param {number} heightScale 
      */
     constructor(scene, texture, heightMap, parts, heightScale) {
         super(scene);

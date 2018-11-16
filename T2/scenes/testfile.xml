@@ -28,8 +28,11 @@
     <textures>
         <texture id="gtav-color" file="./scenes/images/gtav-color.png" />
         <texture id="gtav-height" file="./scenes/images/gtav-height.png" />
+        <texture id="wave-color" file="./scenes/images/wave-color.jpg" />
+        <texture id="ocean-height" file="./scenes/images/ocean-height.png" />
         <texture id="nurb" file="./scenes/images/nurb.jpg" />
         <texture id="heightmap" file="./scenes/images/heightmap.jpg" />
+        
     </textures>
 
     <materials>
@@ -118,7 +121,7 @@
         </primitive >
 
         <primitive id="water">
-            <water idtexture="nurb" idwavemap="heightmap" parts="10" heightscale="2" texscale="1" />
+            <water idtexture="wave-color" idwavemap="ocean-height" parts="250" heightscale="1" texscale="4" />
         </primitive >
 
     </primitives >
@@ -127,7 +130,7 @@
 
         <component id="root">
             <transformation>
-                <scale x="100" y="100" z="100" />
+               <!--  <scale x="100" y="100" z="100" /> -->
             </transformation>
 
             <!-- <animations>
@@ -147,8 +150,8 @@
                 <!-- <primitiveref id="plane" /> -->
                 <!-- <primitiveref id="patch" /> -->
                 <!-- <primitiveref id="cylinderNurb" /> -->
-                <primitiveref id="terrain" />
-                <!-- <primitiveref id="water" /> -->
+                <!-- <primitiveref id="terrain" /> -->
+                <primitiveref id="water" />
             </children>
         </component>
 

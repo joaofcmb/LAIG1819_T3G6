@@ -175,6 +175,13 @@ class Scene extends CGFscene {
                     component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
             }
         }
+
+        // Wave animation
+        var timeFactor = Math.sin(currTime*0.001)*0.05; //TODO - improve
+
+        for(var i = 0; i < this.data.waterPrimitives.length; i++) {
+            this.data.waterPrimitives[i].setTimeFactor(timeFactor);
+        }
     }
 
     /**

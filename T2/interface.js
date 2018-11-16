@@ -81,7 +81,7 @@ class Interface extends CGFinterface {
 
         this.gui.add(this, 'Views', this.views);
         
-        this.scene.lock["Lock Views"] = true;
+        this.scene.lock["Lock Views"] = false;
         this.gui.add(this.scene.lock, 'Lock Views');
     }
 

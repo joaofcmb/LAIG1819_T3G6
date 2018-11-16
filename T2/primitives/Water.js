@@ -1,26 +1,26 @@
 /**
- * Terrain class
+ * Water class
  */
 class Terrain extends CGFobject {
 
     /**
-     * Terrain constructor.
+     * Water constructor.
      *
      */
-    constructor(scene, texture, heightMap, parts, heightScale) {
+    constructor(scene, texture, waveMap, parts, heightScale, texScale) {
         super(scene);
 
         this.texture = texture;
-        this.heightMap = heightMap;
+        this.waveMap = waveMap;
 
         this.plane = new Plane(scene, parts, parts);
-        this.terrainShader = new CGFshader(this.scene.gl, "./shaders/Terrain.vert", "./shaders/Terrain.frag");
+        this.waterShader = new CGFshader(this.scene.gl, "./shaders/Water.vert", "./shaders/Water.frag");
 
-        this.terrainShader.setUniformsValues({normScale: heightScale, uSamplerHeight: 1});
+        this.waterShader.setUniformsValues({normScale: heightScale, uSamplerHeight: 1});
     };
     
     /**
-	 * Terrain display function
+	 * Water display function
 	 */
     display() {    
         this.scene.setActiveShader(this.terrainShader);

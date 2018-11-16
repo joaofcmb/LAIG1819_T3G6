@@ -268,7 +268,10 @@ class Data {
                                                                                     primitive.parts, primitive.heightscale));
                         break;
                     case "water":
-                        // TODO - Develop water class
+                        this.components[compID].activePrimitives.push(new Terrain(  scene,
+                                                                                    new CGFtexture(scene, this.textures[primitive.idtexture]),
+                                                                                    new CGFtexture(scene, this.textures[primitive.idwavemap]),
+                                                                                    primitive.parts, primitive.heightscale, primitive.texscale));
                         break;
                 }
             }

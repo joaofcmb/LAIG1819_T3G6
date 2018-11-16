@@ -1,6 +1,0 @@
-/**
-*  TerrainVertex class
-*/
-void main() {
-    
-}

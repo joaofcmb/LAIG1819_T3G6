@@ -26,7 +26,7 @@
     </lights>
 
     <textures>
-        <texture id="gtav-color" file="./scenes/images/gtav-color.jpg" />
+        <texture id="gtav-color" file="./scenes/images/gtav-color.png" />
         <texture id="gtav-height" file="./scenes/images/gtav-height.png" />
         <texture id="nurb" file="./scenes/images/nurb.jpg" />
         <texture id="heightmap" file="./scenes/images/heightmap.jpg" />
@@ -114,7 +114,7 @@
         </primitive >
 
         <primitive id="terrain">
-            <terrain idtexture="gtav-color" idheightmap="gtav-height" parts="200" heightscale="1" />
+            <terrain idtexture="gtav-color" idheightmap="gtav-height" parts="250" heightscale="0.1" />
         </primitive >
 
         <primitive id="water">
@@ -126,7 +126,9 @@
     <components>
 
         <component id="root">
-            <transformation></transformation>
+            <transformation>
+                <scale x="100" y="100" z="100" />
+            </transformation>
 
             <!-- <animations>
                 <animationref id="circularAnimID" />

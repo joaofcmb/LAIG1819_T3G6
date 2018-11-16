@@ -25,9 +25,6 @@ struct materialProperties {
     float shininess;
 };
 
-/* #define NUMBER_OF_LIGHTS 8
-uniform lightProperties uLight[NUMBER_OF_LIGHTS]; */
-
 varying vec4 coords;
 varying vec4 normal;
 
@@ -55,10 +52,10 @@ void main() {
 
     // Step 5 & 6 //
     vec4 color = texture2D(uSampler, vTextureCoord);
-    vec4 filter = texture2D(uSamplerHeight, vec2(0.0, 0.1) + vTextureCoord);
+    //vec4 filter = texture2D(uSamplerHeight, vec2(0.0, 0.1) + vTextureCoord);
 
-    if(filter.b > 0.5)
-        color = vec4(0.52, 0.18, 0.11, 1.0);
+    //if(filter.b > 0.5)
+      //  color = vec4(0.52, 0.18, 0.11, 1.0);
     
     gl_FragColor = color;
     

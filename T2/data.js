@@ -268,7 +268,7 @@ class Data {
                                                                                     primitive.parts, primitive.heightscale));
                         break;
                     case "water":
-                        this.components[compID].activePrimitives.push(new Terrain(  scene,
+                        this.components[compID].activePrimitives.push(new Water(  scene,
                                                                                     new CGFtexture(scene, this.textures[primitive.idtexture]),
                                                                                     new CGFtexture(scene, this.textures[primitive.idwavemap]),
                                                                                     primitive.parts, primitive.heightscale, primitive.texscale));

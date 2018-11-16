@@ -26,6 +26,8 @@
     </lights>
 
     <textures>
+        <texture id="gtav-color" file="./scenes/images/gtav-color.jpg" />
+        <texture id="gtav-height" file="./scenes/images/gtav-height.png" />
         <texture id="nurb" file="./scenes/images/nurb.jpg" />
         <texture id="heightmap" file="./scenes/images/heightmap.jpg" />
     </textures>
@@ -112,7 +114,7 @@
         </primitive >
 
         <primitive id="terrain">
-            <terrain idtexture="nurb" idheightmap="heightmap" parts="100" heightscale="2" />
+            <terrain idtexture="gtav-color" idheightmap="gtav-height" parts="200" heightscale="1" />
         </primitive >
 
         <primitive id="water">

@@ -121,7 +121,7 @@
         </primitive >
 
         <primitive id="water">
-            <water idtexture="wave-color" idwavemap="ocean-height" parts="250" heightscale="1" texscale="100" />
+            <water idtexture="wave-color" idwavemap="ocean-height" parts="250" heightscale="1" texscale="200" />
         </primitive >
 
     </primitives >

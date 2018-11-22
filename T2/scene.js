@@ -177,7 +177,7 @@ class Scene extends CGFscene {
         }
 
         // Wave animation
-        var timeFactor = Math.sin(currTime*0.001)*0.05; //TODO - improve
+        var timeFactor = Math.sin(currTime * 0.001) * 0.3;
 
         for(var i = 0; i < this.data.waterPrimitives.length; i++) {
             this.data.waterPrimitives[i].setTimeFactor(timeFactor);

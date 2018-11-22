@@ -15,9 +15,9 @@ varying vec2 vTextureCoord;
 void main() {
     vTextureCoord = aTextureCoord;
 
-    vec4 color = texture2D(uSamplerHeight, vTextureCoord);
+    vec4 hColor = texture2D(uSamplerHeight, vTextureCoord);
 
-    vec3 offset = aVertexNormal*normScale*((color.r + color.g + color.b) / 3.0);
+    vec3 offset = aVertexNormal*normScale*((hColor.r + hColor.g + hColor.b) / 3.0);
 
     gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + offset, 1.0);
 }

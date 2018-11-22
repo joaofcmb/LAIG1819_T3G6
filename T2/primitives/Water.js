@@ -31,7 +31,7 @@ class Water extends CGFobject {
      * @param {number} timeFactor 
      */
     setTimeFactor(timeFactor) {
-        var texIncrement = this.waterShader.getUniformValue("texIncrement") + 0.002;
+        var texIncrement = this.waterShader.getUniformValue("texIncrement") + 0.03;
         this.waterShader.setUniformsValues({timeFactor: timeFactor, texIncrement: texIncrement});
     }
     

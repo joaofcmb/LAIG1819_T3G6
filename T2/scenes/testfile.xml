@@ -13,6 +13,11 @@
             <to x="-37" y="1.5" z="-11.5" />
         </perspective>
 
+        <perspective id="MountainView" near="0.1" far="500.0" angle="60">
+            <from x="18" y="2" z="12" />
+            <to x="-10" y="4" z="-30" />
+        </perspective>
+
     </views>
 
     <ambient>
@@ -79,24 +84,35 @@
     </transformations>
 
     <animations>
-        <linear id="zancudo_runway_idle" span="25000">
+        <linear id="zancudo_runway_idle" span="10000">
             <controlpoint xx="-40" yy="1.5" zz="-11" />
             <controlpoint xx="-41" yy="1.5" zz="-11.5" />
         </linear>
 
-        <linear id="zancudo_runway_throttle" span="2000">
+        <linear id="zancudo_runway_throttle" span="1750">
             <controlpoint xx="-41" yy="1.5" zz="-11.5" />
             <controlpoint xx="-49.66" yy="1.5" zz="-15.5" />
         </linear>
 
         
-        <linear id="zancudo_runway_takeoff" span="3500">
+        <linear id="zancudo_runway_takeoff" span="3000">
             <controlpoint xx="-49.66" yy="1.5" zz="-15.5" />
             <controlpoint xx="-69" yy="5" zz="-25.5" />
         </linear>
 
-        <circular id="zancudo_takeoff_turnaround" span="2000" center="-71.5 5 -21.17" radius="5" startang="60" rotang="210" />
+        <circular id="zancudo_takeoff_turnaround" span="1750" center="-74 5 -16.84" radius="10" startang="60" rotang="210" />
 
+        <linear id="zancudo_to_airfield" span="4000">
+            <controlpoint xx="-74" yy="5" zz="-6.84" />
+            <controlpoint xx="-35.2" yy="5" zz="-6.84" />
+        </linear>
+
+        <circular id="airfield_approach" span="1000" center="-35.2 5 -70.52" radius="63.68" startang="270" rotang="15" />
+
+        <linear id="airfield_descent" span="4000">
+            <controlpoint xx="-18.7" yy="5" zz="-9.01" />
+            <controlpoint xx="13.7" yy="1.5" zz="-15.7" />
+        </linear>
     </animations>
 
     <primitives>
@@ -144,6 +160,9 @@
                 <animationref id="zancudo_runway_throttle" />
                 <animationref id="zancudo_runway_takeoff" />
                 <animationref id="zancudo_takeoff_turnaround" />
+                <animationref id="zancudo_to_airfield" />
+                <animationref id="airfield_approach" />
+                <animationref id="airfield_descent" />
             </animations>
 
             <materials>

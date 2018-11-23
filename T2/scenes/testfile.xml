@@ -1,11 +1,16 @@
 <yas>
-    <scene root="root" axis_length="1"/>
+    <scene root="root" axis_length="150"/>
 
     <views default="DefaultCam">
 
         <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
-            <from x="5.0" y="5.0" z="5.0" />
-            <to x="0.0" y="0.0" z="0.0" />
+            <from x="0" y="160" z="0" />
+            <to x="0" y="0" z="-0.01" />
+        </perspective>
+
+        <perspective id="FortZancudo" near="0.1" far="500.0" angle="60">
+            <from x="-25" y="3" z="-10" />
+            <to x="-37" y="1.5" z="-11.5" />
         </perspective>
 
     </views>
@@ -75,17 +80,23 @@
     </transformations>
 
     <animations>
-
-        <linear id="linearAnimID" span="4000">
-            <controlpoint xx="0.0" yy="0.5" zz="-1.0" />
-            <controlpoint xx="-1.0" yy="0.5" zz="-1.0" />
-            <controlpoint xx="-1.0" yy="1.0" zz="0.0" />
-            <controlpoint xx="0.0" yy="1.5" zz="1.0" />
-            <controlpoint xx="1.0" yy="2.0" zz="0.0" />
-            <controlpoint xx="0.0" yy="2.5" zz="-1.0" />
+        <linear id="zancudo_runway_idle" span="25000">
+            <controlpoint xx="-40" yy="1.5" zz="-11" />
+            <controlpoint xx="-41" yy="1.5" zz="-11.5" />
         </linear>
 
-        <circular id="circularAnimID" span="3000" center="0.0 0.5 0.0" radius="1" startang="0" rotang="450" />
+        <linear id="zancudo_runway_throttle" span="2000">
+            <controlpoint xx="-41" yy="1.5" zz="-11.5" />
+            <controlpoint xx="-49.66" yy="1.5" zz="-15.5" />
+        </linear>
+
+        
+        <linear id="zancudo_runway_takeoff" span="3500">
+            <controlpoint xx="-49.66" yy="1.5" zz="-15.5" />
+            <controlpoint xx="-69" yy="5" zz="-25.5" />
+        </linear>
+
+        <circular id="zancudo_takeoff_turnaround" span="2000" center="-71.5 5 -21.17" radius="5" startang="60" rotang="210" />
 
     </animations>
 
@@ -129,6 +140,28 @@
     </primitives >
 
     <components>
+        <component id="vehicle">
+            <transformation>
+            </transformation>
+
+            <animations>
+                <animationref id="zancudo_runway_idle" />
+                <animationref id="zancudo_runway_throttle" />
+                <animationref id="zancudo_runway_takeoff" />
+                <animationref id="zancudo_takeoff_turnaround" />
+            </animations>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="cylinderNurb" />
+            </children>
+        </component>
+
         <component id="root">
             <transformation>
                 <!-- <scale x="100" y="100" z="100" /> -->
@@ -153,9 +186,9 @@
                 <!-- <primitiveref id="patch" /> -->
                 <!-- <primitiveref id="cylinderNurb" /> -->
                 <!-- <primitiveref id="terrain" /> -->
-                <!-- <componentref id="terrain"/> -->
-                <!-- <componentref id="water" /> -->
-                <primitiveref id="vehicle"/>
+                <componentref id="terrain"/>
+                <componentref id="water" />
+                <componentref id="vehicle" />
             </children>
         </component>
 
@@ -177,7 +210,7 @@
 
         <component id="water">
             <transformation>
-                <translate x="0" y=".1" z="0" />
+                <translate x="0" y=".15" z="0" />
                 <scale x="100" y="1" z="100" />
             </transformation>
 

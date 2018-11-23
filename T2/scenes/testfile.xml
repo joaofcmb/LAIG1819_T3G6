@@ -36,6 +36,7 @@
     </lights>
 
     <textures>
+        <texture id="nurb" file="./scenes/images/nurb.jpg" />
         <texture id="gtav-color" file="./scenes/images/gtav-color-4K.png" />
         <texture id="gtav-height" file="./scenes/images/gtav-height-mod.png" />
         <texture id="wave-color" file="./scenes/images/wave-color.jpg" />
@@ -148,6 +149,10 @@
             <water idtexture="wave-color" idwavemap="ocean-height" parts="250" heightscale=".4" texscale="50" />
         </primitive >
 
+        <primitive id="vehicle">
+            <vehicle />
+        </primitive >
+
     </primitives >
 
     <components>
@@ -191,6 +196,7 @@
                 <material id="inherit" />
             </materials>
 
+            <!-- <texture id="nurb" length_s="1.0" length_t="1.0"/> -->
             <texture id="none"/>
 
             <children>
@@ -205,7 +211,7 @@
             </children>
         </component>
 
-        <component id="terrain">
+        <!-- <component id="terrain">
             <transformation>
                 <scale x="100" y="100" z="100" />
             </transformation>
@@ -236,7 +242,7 @@
             <children>
                 <primitiveref id="water" />
             </children>
-        </component>
+        </component> -->
     </components>
 
 </yas>

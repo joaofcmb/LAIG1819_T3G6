@@ -26,7 +26,7 @@ void main() {
                  (texture2D(uSamplerHeight, uv3))) * 0.5 - 1.0; */
     vec4 noise = texture2D(uSamplerHeight, vTextureCoord);
 
-    vec3 offset = aVertexNormal*normScale*((noise.r + noise.g + noise.b) / 3.0);
+    vec3 offset = aVertexNormal*normScale*((noise.r + noise.g + noise.b) / 3.0) + vec3(0,0.1,0);
 
     gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition + offset, 1.0);
 }

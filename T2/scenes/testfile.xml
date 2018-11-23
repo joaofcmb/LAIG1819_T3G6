@@ -18,6 +18,11 @@
             <to x="-10" y="4" z="-30" />
         </perspective>
 
+        <perspective id="Airfield" near="0.1" far="500.0" angle="60">
+            <from x="2" y="1.5" z="-10" />
+            <to x="17" y="1.5" z="-16.58" />
+        </perspective>
+
     </views>
 
     <ambient>
@@ -85,7 +90,7 @@
     </transformations>
 
     <animations>
-        <linear id="zancudo_runway_idle" span="10000">
+        <linear id="zancudo_runway_idle" span="20000">
             <controlpoint xx="-40" yy="1.5" zz="-11" />
             <controlpoint xx="-41" yy="1.5" zz="-11.5" />
         </linear>
@@ -113,6 +118,16 @@
         <linear id="airfield_descent" span="4000">
             <controlpoint xx="-18.7" yy="5" zz="-9.01" />
             <controlpoint xx="13.7" yy="1.5" zz="-15.7" />
+        </linear>
+
+        <linear id="airfield_braking" span="1000">
+            <controlpoint xx="13.7" yy="1.5" zz="-15.7" />
+            <controlpoint xx="15" yy="1.5" zz="-16.05" />
+        </linear>
+
+        <linear id="airfield_stopping" span="1000">
+            <controlpoint xx="15" yy="1.5" zz="-16.05" />
+            <controlpoint xx="17" yy="1.5" zz="-16.58" />
         </linear>
     </animations>
 
@@ -168,6 +183,8 @@
                 <animationref id="zancudo_to_airfield" />
                 <animationref id="airfield_approach" />
                 <animationref id="airfield_descent" />
+                <animationref id="airfield_braking" />
+                <animationref id="airfield_stopping" />
             </animations>
 
             <materials>
@@ -177,13 +194,12 @@
             <texture id="none"/>
 
             <children>
-                <primitiveref id="cylinderNurb" />
+                <primitiveref id="vehicle" />
             </children>
         </component>
 
         <component id="root">
             <transformation>
-                <!-- <scale x="100" y="100" z="100" /> -->
             </transformation>
 
             <!-- <animations>
@@ -211,7 +227,7 @@
             </children>
         </component>
 
-        <!-- <component id="terrain">
+        <component id="terrain">
             <transformation>
                 <scale x="100" y="100" z="100" />
             </transformation>
@@ -242,7 +258,7 @@
             <children>
                 <primitiveref id="water" />
             </children>
-        </component> -->
+        </component>
     </components>
 
 </yas>

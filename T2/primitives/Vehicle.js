@@ -119,11 +119,13 @@ class Vehicle extends CGFobject {
 	 * Vehicle display function
 	 */
     display() {
-        this.displayFusilage();
-        this.displayFrontalWings();
-        this.displayBackWings();
-        this.displayFlats();
-
+        this.scene.pushMatrix();
+            this.scene.scale(.01, .01, .01);
+            this.displayFusilage();
+            this.displayFrontalWings();
+            this.displayBackWings();
+            this.displayFlats();
+        this.scene.popMatrix();
     }
 
     displayFusilage() {

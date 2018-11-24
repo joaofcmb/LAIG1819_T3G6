@@ -6,7 +6,8 @@ class Vehicle extends CGFobject {
     /**
      * Vehicle constructor.
      * 
-     * @param {any} scene 
+     * @param {any} scene
+     * @param {any} data 
      */
     constructor(scene, data) {
         super(scene);
@@ -21,6 +22,9 @@ class Vehicle extends CGFobject {
         this.flameTexture = new CGFtexture(scene, this.data.textures["flame"]);
     };
 
+    /**
+     * Builds object parts.
+     */
     buildObject() {
 
         this.nose = new Patch(
@@ -135,6 +139,12 @@ class Vehicle extends CGFobject {
         );
     }
 
+    /**
+     * Auxilary function to produce circle nurb.
+     * 
+     * @param {Array} center 
+     * @param {Number} radius 
+     */
     circleVertexes(center, radius) {
         return [
             [center[0] + radius, center[1] + 0, center[2], 1],
@@ -151,16 +161,24 @@ class Vehicle extends CGFobject {
 	 * Vehicle display function
 	 */
     display() {
-        this.fusilageTexture.bind(0);
+        this.scene.pushMatrix();
+            this.scene.scale(.02, .02, .02);           
+            
+            this.fusilageTexture.bind(0);
 
-        this.displayFusilage();
-        this.displayFrontalWings();
-        this.displayBackWings();
-        this.displayFlats();        
-        this.displayMissiles(1, 0);
-        this.displayMissiles(-1, 1.25);
+            this.displayFusilage();
+            this.displayFrontalWings();
+            this.displayBackWings();
+            this.displayFlats();        
+            this.displayMissiles(1, 0);
+            this.displayMissiles(-1, 1.25);
+
+        this.scene.popMatrix();
     }
 
+    /**
+     * Displays fusilage.
+     */
     displayFusilage() {
         this.nose.display();
         this.cockpit.display();
@@ -200,6 +218,9 @@ class Vehicle extends CGFobject {
         this.fusilageTexture.bind(0);
     }
 
+    /**
+     * Displays frontal wings.
+     */
     displayFrontalWings() {
         // Left wing 
         this.scene.pushMatrix();    
@@ -236,6 +257,9 @@ class Vehicle extends CGFobject {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays back wings.
+     */
     displayBackWings() {
         // Left wing 
         this.scene.pushMatrix();    
@@ -290,6 +314,9 @@ class Vehicle extends CGFobject {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays flats.
+     */
     displayFlats() {
         // Left Flat
         this.scene.pushMatrix();            
@@ -327,6 +354,12 @@ class Vehicle extends CGFobject {
 
     }
 
+    /**
+     * Displays missiles.
+     * 
+     * @param {Number} translateFactor 
+     * @param {Number} offset 
+     */
     displayMissiles(translateFactor, offset) {
         this.steelTexture.bind(0);
 

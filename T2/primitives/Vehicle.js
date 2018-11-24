@@ -162,7 +162,7 @@ class Vehicle extends CGFobject {
 	 */
     display() {
         this.scene.pushMatrix();
-            this.scene.scale(.02, .02, .02);           
+            this.scene.scale(.05, .05, .05);           
             
             this.fusilageTexture.bind(0);
 

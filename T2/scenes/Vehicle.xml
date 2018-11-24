@@ -3,7 +3,7 @@
 
     <views default="DefaultCam">
         <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
-            <from x="-3.5" y="2.5" z="3.5" />
+            <from x="-7.5" y="5.5" z="7.5" />
             <to x="0" y="0" z="-0.01" />
         </perspective>
     </views>

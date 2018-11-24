@@ -2,6 +2,14 @@
  * Linear Animation class
  */
 class LinearAnimation extends Animation {
+    
+    /**
+     * Linear Animation constructor. 
+     * 
+     * @param {any} scene 
+     * @param {Number} span 
+     * @param {Array} controlPoints 
+     */
     constructor(scene, span, controlPoints) {
         super(scene);
 
@@ -27,6 +35,11 @@ class LinearAnimation extends Animation {
         this.accDistance = 0;
     }
     
+    /**
+     * Updates animation.
+     * 
+     * @param {Number} deltaTime 
+     */
     update(deltaTime) {
         if (this.segmentI >= this.segmentDistances.length)     return deltaTime;
 

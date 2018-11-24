@@ -29,9 +29,9 @@ class CircularAnimation extends Animation {
     }
     
     /**
-     * Updates animation.
+     * Updates the animation's transformation matrix.
      * 
-     * @param {number} deltaTime 
+     * @param {number} deltaTime
      */
     update(deltaTime) {
         if (this.currAng >= this.endAng)     return deltaTime;

@@ -20,7 +20,7 @@ class Patch extends CGFobject {
     };
     
     /**
-	 * Patch display function
+	 * Displays the patch on the scene.
 	 */
     display() {    
 		this.nurbsObject.display();

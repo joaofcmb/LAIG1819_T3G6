@@ -37,7 +37,7 @@ class Cylinder2 extends CGFobject {
     };
     
     /**
-	 * Cylinder2 display function
+	 * Displays the Cylinder on the scene.
 	 */
     display() {   
         this.nurbsObject.display();

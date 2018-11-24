@@ -36,7 +36,7 @@ class LinearAnimation extends Animation {
     }
     
     /**
-     * Updates animation.
+     * Updates the animation's transfromation matrix.
      * 
      * @param {Number} deltaTime 
      */

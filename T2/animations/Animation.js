@@ -1,14 +1,26 @@
 /**
- * Animation class
+ * Abstract animation class
+ * 
+ * Describes the functionality shared by all animation types, describing therefore its interface.
  */
 class Animation {
+    /**
+     * Sets up the necessary elements for the functionality meant to be extended by the particular animation classes.
+     * 
+     * Should only be called by its children.
+     * 
+     * @param {any} scene
+     */
+
     constructor(scene) {
         this.scene = scene;
         this.animTransform = mat4.create();
     }
 
     /**
-     * Called from the scene to update the current Transformation Matrix.
+     * Updates the animation's transformation matrix.
+     * 
+     * This particular functionality must be implemented by each animation.
      * 
      * @param {number} deltaTime Time since last update in microseconds.
      * 
@@ -18,6 +30,9 @@ class Animation {
         throw new Error('Attempt to call abstract class (Animation -> update())');
     }
 
+    /**
+     * Applies the current transformation matrix to the scene.
+     */
     apply() {
         this.scene.multMatrix(this.animTransform);
     }

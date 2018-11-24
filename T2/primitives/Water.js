@@ -26,9 +26,9 @@ class Water extends CGFobject {
     };  
 
     /**
-     * Updates uniform time factor
+     * Updates the time factor and texture increment used by the shaders to animate the water.
      * 
-     * @param {number} timeFactor 
+     * @param {number} timeFactor
      */
     setTimeFactor(timeFactor) {
         var texIncrement = this.waterShader.getUniformValue("texIncrement") + 0.01;
@@ -36,7 +36,7 @@ class Water extends CGFobject {
     }
     
     /**
-	 * Water display function
+	 * Displays the water on the scene.
 	 */
     display() {    
         this.scene.setActiveShader(this.waterShader);

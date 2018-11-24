@@ -158,7 +158,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-	 * Vehicle display function
+	 * Displayes the vehicle on the scene
 	 */
     display() {
         this.scene.pushMatrix();
@@ -177,7 +177,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-     * Displays fusilage.
+     * Displays the fusilage.
      */
     displayFusilage() {
         this.nose.display();
@@ -219,7 +219,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-     * Displays frontal wings.
+     * Displays the frontal wings.
      */
     displayFrontalWings() {
         // Left wing 
@@ -258,7 +258,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-     * Displays back wings.
+     * Displays the back wings.
      */
     displayBackWings() {
         // Left wing 
@@ -315,7 +315,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-     * Displays flats.
+     * Displays the flats.
      */
     displayFlats() {
         // Left Flat
@@ -355,7 +355,7 @@ class Vehicle extends CGFobject {
     }
 
     /**
-     * Displays missiles.
+     * Displays the missiles.
      * 
      * @param {Number} translateFactor 
      * @param {Number} offset 

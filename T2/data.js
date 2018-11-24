@@ -260,7 +260,7 @@ class Data {
                         );
                         break;
                     case "vehicle":
-                        this.components[compID].activePrimitives.push(new Vehicle(scene));
+                        this.components[compID].activePrimitives.push(new Vehicle(scene, this));
                         break;
                     case "terrain":
                         this.components[compID].activePrimitives.push(new Terrain(  scene,

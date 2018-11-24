@@ -8,11 +8,17 @@ class Vehicle extends CGFobject {
      * 
      * @param {any} scene 
      */
-    constructor(scene) {
+    constructor(scene, data) {
         super(scene);
 
+        this.data = data;
         this.new = new Cylinder2(this.scene, 10, 10, 10, 20, 20);
         this.buildObject();
+
+        this.fusilageTexture = new CGFtexture(scene, this.data.textures["camo"]);
+        this.glassTexture = new CGFtexture(scene, this.data.textures["glass"]);
+        this.steelTexture = new CGFtexture(scene, this.data.textures["steel"]);
+        this.flameTexture = new CGFtexture(scene, this.data.textures["flame"]);
     };
 
     buildObject() {
@@ -24,11 +30,18 @@ class Vehicle extends CGFobject {
             this.circleVertexes([0, 0, 10], 1.5)
         ]);
 
-        this.pilot = new Patch(
+        this.cockpit = new Patch(
             this.scene, 2, 6, 20, 20, [
             this.circleVertexes([0, 0, 10], 1.5),
             this.circleVertexes([0, 1, 6], 2.5),
             this.circleVertexes([0, 0.5, 4], 2)
+        ]);
+
+        this.cockpitGlass = new Patch(
+            this.scene, 2, 6, 20, 20, [
+            this.circleVertexes([0, 0, 10], 1.5),
+            this.circleVertexes([0, 1.2, 6], 2.5),
+            this.circleVertexes([0, 0.52, 4], 2)
         ]);
 
         this.base = new Cylinder2(
@@ -40,11 +53,14 @@ class Vehicle extends CGFobject {
             20
         );
 
+        this.baseCover = new MyCircle(this.scene, 1, 100);
+
         this.tail = new Patch(
-            this.scene, 3, 6, 20, 20, [
+            this.scene, 4, 6, 20, 20, [
             this.circleVertexes([0, 0.5, 4], 2),
             this.circleVertexes([0, 0.25, 2], 1.75),
             this.circleVertexes([0, 0.25, 0], 1.75),
+            this.circleVertexes([0, 0.25, -4], 1.75),
             this.circleVertexes([0, 0.25, -8], 1.75)
         ]);
 
@@ -53,6 +69,8 @@ class Vehicle extends CGFobject {
             this.circleVertexes([0, 0.25, -8], 1.75),
             this.circleVertexes([0, 0.25, -10], 1.5)
         ]);
+
+        this.burstCover = new MyCircle(this.scene, 1.25, 100);
 
         this.leftWing = new Patch(
             this.scene, 1, 1, 20, 20, [
@@ -101,6 +119,20 @@ class Vehicle extends CGFobject {
                 [1, 0, -1, 1]
             ]
         ]);
+
+        this.missile = new Patch(
+            this.scene, 3, 6, 20, 20, [
+            this.circleVertexes([0, 0, 14], 0.1),
+            this.circleVertexes([0, 0, 10], 2),
+            this.circleVertexes([0, 0, 8], 2),
+            this.circleVertexes([0, 0, 0], 2)
+        ]);
+
+        this.missileFlats = new Plane(
+            this.scene,
+            20,
+            20
+        );
     }
 
     circleVertexes(center, radius) {
@@ -119,24 +151,53 @@ class Vehicle extends CGFobject {
 	 * Vehicle display function
 	 */
     display() {
+        this.fusilageTexture.bind(0);
+
         this.displayFusilage();
         this.displayFrontalWings();
         this.displayBackWings();
-        this.displayFlats();
-
+        this.displayFlats();        
+        this.displayMissiles(1, 0);
+        this.displayMissiles(-1, 1.25);
     }
 
     displayFusilage() {
         this.nose.display();
-        this.pilot.display();
+        this.cockpit.display();
         this.tail.display();
         this.burst.display();
 
         this.scene.pushMatrix();       
-            this.scene.scale(1.1, 0.75, 1.2);  
-            this.scene.translate(0.5, -1.0, -7); 
+            this.scene.scale(0.75, 0.75, 1.2);  
+            this.scene.translate(0.5, -1.0, -7);
             this.base.display();
         this.scene.popMatrix();
+
+        this.scene.pushMatrix();       
+            this.scene.scale(0.75, 0.75, 1.2);  
+            this.scene.translate(0.5, -1.025, -7);
+            this.scene.rotate(Math.PI, 1, 0, 0);  
+            this.baseCover.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();       
+            this.scene.scale(0.75, 0.75, 1.2);  
+            this.scene.translate(0.5, -1.025, 5);
+            this.baseCover.display();
+        this.scene.popMatrix();
+
+        this.flameTexture.bind(0);
+        this.scene.pushMatrix();       
+            this.scene.scale(0.925, 1, 1); 
+            this.scene.translate(0.35, 0.25, -9.75); 
+            this.scene.rotate(Math.PI, 1, 0, 0);  
+            this.burstCover.display();
+        this.scene.popMatrix();
+
+        this.glassTexture.bind(0);
+        this.cockpitGlass.display();
+        
+        this.fusilageTexture.bind(0);
     }
 
     displayFrontalWings() {
@@ -169,7 +230,7 @@ class Vehicle extends CGFobject {
         this.scene.pushMatrix(); 
             this.scene.rotate(Math.PI, 0, 0, 1);   
             this.scene.scale(5, 1, 5);     
-            this.scene.translate(-1, 0, 0); 
+            this.scene.translate(-1.35, 0, 0); 
             this.scene.rotate(-Math.PI/2, 0, 1, 0); 
             this.leftWing.display();
         this.scene.popMatrix();
@@ -264,5 +325,47 @@ class Vehicle extends CGFobject {
             this.leftFlat.display();
         this.scene.popMatrix();
 
+    }
+
+    displayMissiles(translateFactor, offset) {
+        this.steelTexture.bind(0);
+
+        this.scene.pushMatrix();              
+            this.scene.translate(translateFactor*-10.5 + offset, 0, -5.5); 
+            this.scene.scale(0.25, 0.25, 0.5);                         
+            this.missile.display();            
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();            
+            this.scene.translate(translateFactor*-10.5 + offset, 0, -5.5);           
+            this.scene.scale(1, 1, 0.25); 
+            this.scene.rotate(Math.PI/4, 0, 0, 1); 
+            this.missileFlats.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();            
+            this.scene.translate(translateFactor*-10.5 + offset, 0, -5.5); 
+            this.scene.rotate(Math.PI, 0, 0, 1); 
+            this.scene.scale(1, 1, 0.25); 
+            this.scene.rotate(Math.PI/4, 0, 0, 1); 
+            this.missileFlats.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();            
+            this.scene.translate(translateFactor*-10.5 + offset, 0, -5.5); 
+            this.scene.scale(1, 1, 0.25); 
+            this.scene.rotate(- Math.PI/4, 0, 0, 1); 
+            this.missileFlats.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();            
+            this.scene.translate(translateFactor*-10.5 + offset, 0, -5.5); 
+            this.scene.rotate(Math.PI, 0, 0, 1); 
+            this.scene.scale(1, 1, 0.25); 
+            this.scene.rotate(- Math.PI/4, 0, 0, 1); 
+            this.missileFlats.display();
+        this.scene.popMatrix();
+
+        this.fusilageTexture.bind(0);
     }
 }

@@ -120,7 +120,7 @@ class Vehicle extends CGFobject {
 	 */
     display() {
         this.scene.pushMatrix();
-            this.scene.scale(.01, .01, .01);
+            this.scene.scale(.02, .02, .02);
             this.displayFusilage();
             this.displayFrontalWings();
             this.displayBackWings();

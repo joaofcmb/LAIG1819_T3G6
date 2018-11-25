@@ -1,0 +1,74 @@
+<yas>
+    <scene root="root" axis_length="0"/>
+
+    <views default="DefaultCam">
+        <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
+            <from x="-7.5" y="5.5" z="7.5" />
+            <to x="0" y="0" z="-0.01" />
+        </perspective>
+    </views>
+
+    <ambient>
+        <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+        <background r="0.7" g="0.9" b="0.96" a="1.0" />
+    </ambient>
+
+    <lights>
+        <omni id="OmniLight" enabled="1">
+            <location x="-50.0" y="100.0" z="-50.0" w="0.0" />
+            <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
+            <diffuse r="0.8" g="0.8" b="0.8" a="1.0" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+        </omni>
+    </lights>
+
+    <textures>
+        <texture id="camo" file="./scenes/images/camo.jpg" />
+        <texture id="glass" file="./scenes/images/glass.jpg" />
+        <texture id="steel" file="./scenes/images/steel.jpg" />
+        <texture id="flame" file="./scenes/images/flame.jpg" />        
+    </textures>
+
+    <materials>
+        <material id="defaultMaterial" shininess="1.0">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
+            <specular r="0.3" g="0.3" b="0.3" a="1.0" />
+        </material>
+    </materials>
+
+    <transformations>
+        <transformation id="none">
+            <scale x="1" y="1" z="1" />
+        </transformation>
+    </transformations>
+
+    <animations>
+    </animations>
+
+    <primitives>
+        <primitive id="vehicle">
+            <vehicle />
+        </primitive >
+    </primitives >
+
+    <components>
+        <component id="root">
+            <transformation>
+                <scale x="10" y="10" z="10" />
+            </transformation>
+
+            <materials>
+                <material id="inherit" />
+            </materials>
+
+            <texture id="none"/>
+
+            <children>
+                <primitiveref id="vehicle" />
+            </children>
+        </component>
+    </components>
+
+</yas>

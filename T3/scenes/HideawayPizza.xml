@@ -17,7 +17,7 @@
 
     <lights>
         <omni id="OmniLight" enabled="1">
-            <location x="-50.0" y="100.0" z="-50.0" w="0.0" />
+            <location x="0.1" y="5.0" z="0.1" w="0.0" />
             <ambient r="0.4" g="0.4" b="0.4" a="1.0" />
             <diffuse r="0.8" g="0.8" b="0.8" a="1.0" />
             <specular r="0.6" g="0.6" b="0.6" a="1.0" />
@@ -47,6 +47,9 @@
     </animations>
 
     <primitives>
+        <primitive id="cilinder">
+            <cylinder base="1" top="1" height="1" slices="20" stacks="5" />
+        </primitive>
         <primitive id="plane">
             <plane npartsU="20" npartsV="20" />
         </primitive >
@@ -244,9 +247,9 @@
 
                     <children>
                         <componentref id="bar_top" />
-                        <!-- <componentref id="bar_entrance" />
                         <componentref id="bar_sides" />
-                        <componentref id="bar_chairs" /> -->
+                        <componentref id="bar_chairs" />
+                        <!-- <componentref id="bar_entrance" />-->
                     </children>
                 </component>
 
@@ -258,7 +261,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="none"/>
+                        <texture id="camo" length_s="1.0" length_t="1.0"/>
 
                         <children>
                             <componentref id="bar_top_main" />
@@ -276,7 +279,7 @@
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="camo" length_s="1.0" length_t="1.0"/>
+                            <texture id="inherit"/>
 
                             <children>
                                 <primitiveref id="plane" />
@@ -294,12 +297,396 @@
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="camo" length_s="1.0" length_t="1.0"/>
+                            <texture id="inherit"/>
+
+                            <children>
+                                <primitiveref id="plane" />
+                            </children>
+                        </component>
+                    
+                    <component id="bar_sides">
+                        <transformation>
+                        </transformation>
+
+                        <materials>
+                            <material id="inherit" />
+                        </materials>
+
+                        <texture id="camo" length_s="1.0" length_t="1.0"/>
+
+                        <children>
+                            <componentref id="bar_side_main" />
+                            <componentref id="bar_side_aux_front" />
+                            <componentref id="bar_side_aux_back" />
+                        </children>
+                    </component>
+
+                        <component id="bar_side_main">
+                            <transformation>
+                                <translate x="6.25" y="1" z="15" />
+                                <scale x="2" y="1" z="11.25" />
+                                <rotate axis="z" angle="-90" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="inherit"/>
 
                             <children>
                                 <primitiveref id="plane" />
                             </children>
                         </component>
 
+                        <component id="bar_side_aux_front">
+                            <transformation>
+                                <translate x="3.125" y="1" z="26.25" />
+                                <scale x="3.125" y="1" z="3.25" />
+                                <rotate axis="x" angle="90" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="inherit"/>
+
+                            <children>
+                                <primitiveref id="plane" />
+                            </children>
+                        </component>
+
+                        <component id="bar_side_aux_back">
+                            <transformation>
+                                <translate x="5" y="1" z="3.75" />
+                                <scale x="1.25" y="1" z="3.25" />
+                                <rotate axis="x" angle="-90" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="inherit"/>
+
+                            <children>
+                                <primitiveref id="plane" />
+                            </children>
+                        </component>
+
+                    <component id="bar_chairs">
+                        <transformation>
+                            <translate x="7.25" y="0" z="5" />
+                        </transformation>
+
+                        <materials>
+                            <material id="inherit" />
+                        </materials>
+
+                        <texture id="none" />
+
+                        <children>
+                            <componentref id="stool_1" />
+                        </children>
+                    </component>
+
+                        <component id="stool_1">
+                            <transformation>
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_2" />
+                            </children>
+                        </component>
+
+                        <component id="stool_2">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_3" />
+                            </children>
+                        </component>
+
+                        <component id="stool_3">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_4" />
+                            </children>
+                        </component>
+
+                        <component id="stool_4">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_5" />
+                            </children>
+                        </component>
+
+                        <component id="stool_5">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_6" />
+                            </children>
+                        </component>
+
+                        <component id="stool_6">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_7" />
+                            </children>
+                        </component>
+
+                        <component id="stool_7">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_8" />
+                            </children>
+                        </component>
+
+                        <component id="stool_8">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_9" />
+                            </children>
+                        </component>
+
+                        <component id="stool_9">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_10" />
+                            </children>
+                        </component>
+
+                        <component id="stool_10">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                                <componentref id="stool_11" />
+                            </children>
+                        </component>
+
+                        <component id="stool_11">
+                            <transformation>
+                                <translate x="0" y="0" z="2" />
+                            </transformation>
+
+                            <materials>
+                                <material id="inherit" />
+                            </materials>
+
+                            <texture id="none" />
+
+                            <children>
+                                <componentref id="stool" />
+                            </children>
+                        </component>
+
+                            <component id="stool">
+                                <transformation>
+                                </transformation>
+
+                                <materials>
+                                    <material id="inherit" />
+                                </materials>
+
+                                <texture id="none" />
+
+                                <children>
+                                    <componentref id="stool_top" />
+                                    <componentref id="stool_leg_back" />
+                                    <componentref id="stool_leg_right" />
+                                    <componentref id="stool_leg_front" />
+                                    <componentref id="stool_leg_left" />
+                                </children>
+                            </component>
+
+                                <component id="stool_top">
+                                    <transformation>
+                                        <translate x="0" y="1.5" z="0" />
+                                        <scale x=".5" y=".1" z=".5" />
+                                        <rotate axis="x" angle="-90" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="stool_leg_back">
+                                    <transformation>
+                                        <translate x="0" y="1.5" z="-.3" />
+                                        <rotate axis="y" angle="180" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="stool_leg_right">
+                                    <transformation>
+                                        <translate x=".3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="stool_leg_front">
+                                    <transformation>
+                                        <translate x="0" y="1.5" z=".3" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="stool_leg_left">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+                    
     </components>
 </yas>

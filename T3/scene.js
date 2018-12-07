@@ -94,6 +94,8 @@ class Scene extends CGFscene {
             if (this.data.spotLights.hasOwnProperty(key))
                 this.setupLight(index++, this.data.spotLights[key], true);
         }
+
+        console.log(this.lights[0]);
     }
 
     /**
@@ -104,7 +106,6 @@ class Scene extends CGFscene {
      * @param {boolean} isSpot 
      */
     setupLight(index, light, isSpot) {
-
         // Lights are predefined in CGFscene
         this.lights[index].setPosition(light.locationX, light.locationY, light.locationZ, light.locationW);
         this.lights[index].setAmbient(light.ambientR, light.ambientG, light.ambientB, light.ambientA);
@@ -118,8 +119,8 @@ class Scene extends CGFscene {
             this.lights[index].setSpotCutOff(light.angle);
         }
 
-        if (light.enabled) this.lights[index].enable();
-        else this.lights[index].disable();
+        if (light.enabled)  this.lights[index].enable();
+        else                this.lights[index].disable();
 
         this.lights[index].update();
     }
@@ -226,9 +227,6 @@ class Scene extends CGFscene {
 
         this.pushMatrix();
 
-        // Draw axis
-        this.axis.display();
-
         if (this.sceneInited) {
 
             //Handle Views
@@ -251,6 +249,9 @@ class Scene extends CGFscene {
                     i++;
                 }
             }
+
+            // Draw axis
+            this.axis.display();
 
             // Displays the scene
             this.data.displayGraph(this);

@@ -22,6 +22,12 @@
             <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
             <specular r="0.6" g="0.6" b="0.6" a="1.0" />
         </omni>
+        <omni id="BackLeftLight" enabled="1">
+            <location x="0.0" y="5.0" z="0.0" w="1" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+        </omni>
     </lights>
 
     <textures>
@@ -56,6 +62,9 @@
         <primitive id="cube">
             <cube npartsU="20" npartsV="20" />
         </primitive >
+        <primitive id="board">
+            <board />
+        </primitive >
     </primitives >
 
     <components>
@@ -68,12 +77,12 @@
                 <material id="inherit" />
             </materials>
 
-                <texture id="none"/>
+                <texture id="camo" length_s="1.0" length_t="1.0"/>
 
             <children>
                 <!-- <componentref id="outer_structure" />
                 <componentref id="inner_structure" /> -->
-                <primitiveref id="cube" />
+                <primitiveref id="board" />
             </children>
         </component>
 

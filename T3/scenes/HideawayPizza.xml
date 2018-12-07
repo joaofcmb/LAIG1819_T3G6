@@ -4,8 +4,8 @@
     <views default="DefaultCam">
 
         <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
-            <from x="5" y="5" z="5" />
-            <to x="0" y="0" z="0" />
+            <from x="10" y="30" z="15" />
+            <to x="10.05" y="0" z="15" />
         </perspective>
 
     </views>
@@ -71,9 +71,8 @@
                 <texture id="none"/>
 
             <children>
-                <!-- <componentref id="outer_structure" />
-                <componentref id="inner_structure" /> -->
-                <primitiveref id="cube" />
+                <componentref id="outer_structure" />
+                <componentref id="inner_structure" />
             </children>
         </component>
 
@@ -231,8 +230,8 @@
 
                 <children>
                     <componentref id="bar" />
-                   <!--  <componentref id="tables" />
-                    <componentref id="doors" />
+                    <componentref id="tables" />
+                    <!-- <componentref id="doors" />
                     <componentref id="windows" />
                     <componentref id="mural" />
                     <componentref id="jukebox" /> -->
@@ -674,6 +673,136 @@
                                 </component>
 
                                 <component id="stool_leg_left">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                <component id="tables">
+                    <transformation>
+                        <translate x="17.55" y="0" z="4" />
+                    </transformation>
+
+                    <materials>
+                        <material id="inherit" />
+                    </materials>
+
+                    <texture id="none"/>
+
+                    <children>
+                        <componentref id="table" />                        
+                    </children>
+                </component>
+
+                            <component id="table">
+                                <transformation>
+                                </transformation>
+
+                                <materials>
+                                    <material id="inherit" />
+                                </materials>
+
+                                <texture id="none" />
+
+                                <children>
+                                    <componentref id="table_top" />
+                                    <componentref id="table_leg_back" />
+                                    <componentref id="table_leg_right" />
+                                    <componentref id="table_leg_front" />
+                                    <componentref id="table_leg_left" />
+                                </children>
+                            </component>
+
+                                <component id="table_top">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <!-- <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" /> -->
+                                        <scale x="2.75" y=".05" z="1.5" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cube" />
+                                    </children>
+                                </component>
+
+                                <component id="table_leg_back">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="table_leg_right">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="table_leg_front">
+                                    <transformation>
+                                        <translate x="-.3" y="1.5" z="0" />
+                                        <rotate axis="y" angle="-90" />
+                                        <rotate axis="x" angle="80" />
+                                        <scale x=".05" y=".05" z="1.7" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="none" />
+
+                                    <children>
+                                        <primitiveref id="cilinder" />
+                                    </children>
+                                </component>
+
+                                <component id="table_leg_left">
                                     <transformation>
                                         <translate x="-.3" y="1.5" z="0" />
                                         <rotate axis="y" angle="-90" />

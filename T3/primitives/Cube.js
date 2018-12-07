@@ -20,6 +20,26 @@ class Cube extends CGFobject {
      * Displays cube
      */
     display() {
-        this.plane.display();
+        this.scene.pushMatrix();
+            for (var i = 0; i < 4; i++) {
+                this.scene.pushMatrix();
+                    this.scene.rotate(i * Math.PI / 2, 1, 0, 0);
+                    this.scene.translate(0, 1, 0);
+                    this.plane.display();
+                this.scene.popMatrix();
+            }
+
+            this.scene.pushMatrix();
+                this.scene.translate(1, 0, 0);
+                this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+                this.plane.display();
+            this.scene.popMatrix();
+
+            this.scene.pushMatrix();
+                this.scene.translate(-1, 0, 0);
+                this.scene.rotate(Math.PI / 2, 0, 0, 1);
+                this.plane.display();
+            this.scene.popMatrix();
+        this.scene.popMatrix();
     }
 }

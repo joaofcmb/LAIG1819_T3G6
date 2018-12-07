@@ -6,6 +6,7 @@ class Board extends CGFobject {
         super(scene);
 
         this.initComponents();
+        this.initMaterials();
     }
 
     initComponents() {
@@ -13,7 +14,20 @@ class Board extends CGFobject {
         this.board = new Plane(this.scene, 100, 100);
     }
 
-    display() {
+    initMaterials() {
+        this.boardAppearence = new CGFappearence(scene);
+        // Apply board material stuff
+    }
 
+    display() {
+        this.scene.pushMatrix();
+            this.scene.pushMatrix();
+                this.boardFrame.display();
+            this.scene.popMatrix();
+
+            this.scene.pushMatrix();
+                this.board.display();
+            this.scene.popMatrix();
+        this.scene.popMatrix();
     }
 }

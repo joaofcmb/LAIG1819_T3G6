@@ -276,6 +276,11 @@ class Data {
                         this.waterPrimitives.push(water);                                                
                         this.components[compID].activePrimitives.push(water)
                         break;
+                    case "board":
+                        break;
+                    case "cube":
+                        this.components[compID].activePrimitives.push(new Cube(scene, primitive.npartsU, primitive.npartsV));
+                        break;
                 }
             }
         }

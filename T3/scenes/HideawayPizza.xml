@@ -4,8 +4,8 @@
     <views default="DefaultCam">
 
         <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
-            <from x="10" y="30" z="15" />
-            <to x="10.05" y="0" z="15" />
+            <from x="5" y="5" z="5" />
+            <to x="0" y="0" z="0" />
         </perspective>
 
     </views>
@@ -52,6 +52,9 @@
         </primitive>
         <primitive id="plane">
             <plane npartsU="20" npartsV="20" />
+        </primitive>
+        <primitive id="cube">
+            <cube npartsU="20" npartsV="20" />
         </primitive >
     </primitives >
 
@@ -68,8 +71,9 @@
                 <texture id="none"/>
 
             <children>
-                <componentref id="outer_structure" />
-                <componentref id="inner_structure" />
+                <!-- <componentref id="outer_structure" />
+                <componentref id="inner_structure" /> -->
+                <primitiveref id="cube" />
             </children>
         </component>
 

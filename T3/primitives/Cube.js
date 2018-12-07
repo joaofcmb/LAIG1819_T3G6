@@ -16,7 +16,10 @@ class Cube extends CGFobject {
         this.plane = new Plane(scene, npartsU, npartsV);
     }
 
+    /**
+     * Displays cube
+     */
     display() {
-        
+        this.plane.display();
     }
 }

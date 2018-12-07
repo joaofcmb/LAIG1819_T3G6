@@ -921,6 +921,12 @@ class Parser {
                     break;
                 case "vehicle":
                     break;
+                case "board":
+                    break;
+                case "cube":
+                    primitive.npartsU = this.reader.getInteger(primitiveChildren[0], "npartsU");
+                    primitive.npartsV = this.reader.getInteger(primitiveChildren[0], "npartsV");
+                    break;
                 default:
                     return "Primitive <" + primitiveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>."
 

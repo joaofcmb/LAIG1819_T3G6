@@ -1,5 +1,5 @@
 <yas>
-    <scene root="root" axis_length="1"/>
+    <scene root="root" axis_length="2"/>
 
     <views default="DefaultCam">
 

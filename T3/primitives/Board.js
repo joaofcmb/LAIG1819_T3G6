@@ -8,15 +8,17 @@
 class Board extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.game = new Game(scene);
 
         this.initComponents();
         this.initMaterials();
+
+        this.initStack();
     }
 
     initComponents() {
         this.cube = new Cube(this.scene, 100, 100);
         this.board = new Plane(this.scene, 100, 100);
+        this.piece = new MySphere(this.scene, .035, 8, 10);
     }
 
     initMaterials() {
@@ -27,6 +29,34 @@ class Board extends CGFobject {
 
         this.whiteAppearance = new CGFappearance(this.scene);
         this.blackAppearance.setDiffuse(.1, .1, .1, 1);
+    }
+
+    initStack() {
+        this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
+        this.whiteStacks = new Array(5).fill(40);
+        this.blackStacks = new Array(5).fill(40);
+
+        this.whiteStackDisplay = this.stackDisplay(this.whiteStacks);
+        this.blackStackDisplay = this.stackDisplay(this.blackStacks);
+    }
+
+    stackDisplay(stack) {
+        for (var i = 0; i < 5; i++) {
+            this.scene.pushMatrix();
+                this.scene.translate(this.stackTranslate[i][0], 0, this.stackTranslate[i][1]);
+                for (let j = 0; j < stack[i]; j++) {
+                    this.scene.translate(0, .007, 0);
+                    this.pieceDisplay();
+                }
+            this.scene.popMatrix();
+        }
+    }
+
+    pieceDisplay() {
+        this.scene.pushMatrix();
+            this.scene.scale(1, .2, 1);
+            this.piece.display();
+        this.scene.popMatrix();
     }
 
     display() {
@@ -62,7 +92,7 @@ class Board extends CGFobject {
             //  - Stack Pieces
             this.scene.pushMatrix();
                 this.scene.translate(-1.5, .05, .5);
-                this.game.whiteStackDisplay;
+                this.stackDisplay(this.whiteStacks);
             this.scene.popMatrix();
 
             // Black Pieces
@@ -70,46 +100,8 @@ class Board extends CGFobject {
             //  - Stack Pieces
             this.scene.pushMatrix();
                 this.scene.translate(1.5, .05, -.5);
-                this.game.blackStackDisplay;
+                this.stackDisplay(this.blackStacks);
             this.scene.popMatrix();
-        this.scene.popMatrix();
-    }
-}
-
-class Game extends CGFobject {
-    constructor(scene) {
-        super(scene);
-
-        this.piece = new MySphere(this.scene, .035, 8, 10);
-
-        this.initStack();
-    }
-
-    initStack() {
-        this.stackTranslate = [[-.04, -.04], [-.04, .04], [.04, .04], [.04, -.04], [0, 0]];
-        this.whiteStacks = new Array(5).fill(40);
-        this.blackStacks = new Array(5).fill(40);
-
-        this.whiteStackDisplay = this.stackDisplay(this.whiteStacks);
-        this.blackStackDisplay = this.stackDisplay(this.blackStacks);
-    }
-
-    stackDisplay(stack) {
-        for (var i = 0; i < 5; i++) {
-            this.scene.pushMatrix();
-                this.scene.translate(this.stackTranslate[i][0], 0, this.stackTranslate[i][1]);
-                for (let j = 0; j < stack[i]; j++) {
-                    this.scene.translate(0, .007, 0);
-                    this.pieceDisplay();
-                }
-            this.scene.popMatrix();
-        }
-    }
-
-    pieceDisplay() {
-        this.scene.pushMatrix();
-            this.scene.scale(1, .2, 1);
-            this.piece.display();
         this.scene.popMatrix();
     }
 }

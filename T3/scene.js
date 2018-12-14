@@ -17,6 +17,8 @@ class Scene extends CGFscene {
         this.data = data;
         this.lightValues = {};
         this.interface = interf;
+
+        this.setPickEnabled(true);
     }
 
     /**
@@ -94,8 +96,6 @@ class Scene extends CGFscene {
             if (this.data.spotLights.hasOwnProperty(key))
                 this.setupLight(index++, this.data.spotLights[key], true);
         }
-
-        console.log(this.lights[0]);
     }
 
     /**
@@ -212,6 +212,16 @@ class Scene extends CGFscene {
      * Displays the scene.
      */
     display() {
+        if (this.pickMode == false && this.pickResults != null && this.pickResults.length > 0) {
+            if (this.pickResults[0][0] != undefined && this.pickResults[0][1] != undefined) {
+                console.log(this.pickResults);
+                this.pickResults.map(function(pick) {
+                    console.log(pick[1]);
+                });
+                this.pickResults.splice(0);
+            }
+        }
+
         // ---- BEGIN Background, camera and axis setup
 
         // Clear image and depth buffer everytime we update the scene
@@ -228,7 +238,6 @@ class Scene extends CGFscene {
         this.pushMatrix();
 
         if (this.sceneInited) {
-
             //Handle Views
             if (this.lock["Lock Views"])
                 this.updateCameras();

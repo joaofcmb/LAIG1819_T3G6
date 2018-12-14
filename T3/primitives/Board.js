@@ -19,6 +19,8 @@ class Board extends CGFobject {
         this.cube = new Cube(this.scene, 100, 100);
         this.board = new Plane(this.scene, 100, 100);
         this.piece = new MySphere(this.scene, .035, 8, 10);
+
+        this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }
 
     initMaterials() {
@@ -44,7 +46,7 @@ class Board extends CGFobject {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
                 this.scene.translate(this.stackTranslate[i][0], 0, this.stackTranslate[i][1]);
-                for (let j = 0; j < stack[i]; j++) {
+                for (var j = 0; j < stack[i]; j++) {
                     this.scene.translate(0, .007, 0);
                     this.pieceDisplay();
                 }
@@ -59,7 +61,7 @@ class Board extends CGFobject {
         this.scene.popMatrix();
     }
 
-    display() {
+    display() { 
         this.scene.pushMatrix();
             // Bases for the pieces on the side
             this.scene.pushMatrix();
@@ -78,7 +80,7 @@ class Board extends CGFobject {
                 this.scene.scale(1, .05, 1);
                 this.cube.display();
             this.scene.popMatrix();
-
+         
             // Actual Board
             this.boardAppearance.apply();
             this.scene.pushMatrix();
@@ -103,5 +105,20 @@ class Board extends CGFobject {
                 this.stackDisplay(this.blackStacks);
             this.scene.popMatrix();
         this.scene.popMatrix();
+
+        // Ghost objects for selecting board intersections
+        for (var i = 0; i < 13; i++) {
+            for (var j = 0; j < 13; j++) {
+                this.scene.pushMatrix();
+                    this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
+                    this.scene.scale(.07, 1, .07);
+
+                    var id = j * 13 + i;
+                    this.scene.registerForPick(id + 1, this.ghostPick[id]);
+                    this.ghostPick[id].display();
+                this.scene.popMatrix();
+            }
+        }
+        this.scene.clearPickRegistration();
     }
 }

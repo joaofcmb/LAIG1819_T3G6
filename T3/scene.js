@@ -209,19 +209,21 @@ class Scene extends CGFscene {
     }
 
     /**
+     * Returns array of object ids detected by picking
+     */
+    getPicks() {
+        if (this.pickMode == false && this.pickResults != null && this.pickResults.length > 0
+            && this.pickResults[0][0] != undefined && this.pickResults[0][1] != undefined) {
+                return this.pickResults.map((v, i, a) => a[i] = v[1]);
+        }
+
+        return [];
+    }
+
+    /**
      * Displays the scene.
      */
     display() {
-        if (this.pickMode == false && this.pickResults != null && this.pickResults.length > 0) {
-            if (this.pickResults[0][0] != undefined && this.pickResults[0][1] != undefined) {
-                console.log(this.pickResults);
-                this.pickResults.map(function(pick) {
-                    console.log(pick[1]);
-                });
-                this.pickResults.splice(0);
-            }
-        }
-
         // ---- BEGIN Background, camera and axis setup
 
         // Clear image and depth buffer everytime we update the scene

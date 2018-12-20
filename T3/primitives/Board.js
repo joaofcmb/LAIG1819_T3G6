@@ -8,15 +8,18 @@
 class Board extends CGFobject {
     constructor(scene) {
         super(scene);
+        this.picking = true;
 
         this.initComponents();
         this.initMaterials();
-
         this.initStack();
+        this.initAnimations();
+
+        this.ghostShader = new CGFshader(this.scene.gl, "./shaders/Ghost.vert", "./shaders/Ghost.frag");
     }
 
     initComponents() {
-        this.cube = new Cube(this.scene, 100, 100);
+        this.cube = new Cube(this.scene, 30, 30);
         this.board = new Plane(this.scene, 100, 100);
         this.piece = new MySphere(this.scene, .035, 8, 10);
 
@@ -25,6 +28,7 @@ class Board extends CGFobject {
 
     initMaterials() {
         this.boardAppearance = new CGFappearance(this.scene);
+        this.boardAppearance.loadTexture('scenes/images/pente.png');
 
         this.blackAppearance = new CGFappearance(this.scene);
         this.blackAppearance.setDiffuse(1, 1, 1, 1);
@@ -40,6 +44,14 @@ class Board extends CGFobject {
 
         this.whiteStackDisplay = this.stackDisplay(this.whiteStacks);
         this.blackStackDisplay = this.stackDisplay(this.blackStacks);
+    }
+
+    initAnimation() {
+        this.currAnimations = [];
+    }
+    
+    addPiece(cellId) {
+        
     }
 
     stackDisplay(stack) {
@@ -107,18 +119,22 @@ class Board extends CGFobject {
         this.scene.popMatrix();
 
         // Ghost objects for selecting board intersections
-        for (var i = 0; i < 13; i++) {
-            for (var j = 0; j < 13; j++) {
-                this.scene.pushMatrix();
-                    this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
-                    this.scene.scale(.07, 1, .07);
+        if (this.picking) {
+            this.scene.setActiveShader(this.ghostShader);
+            for (var i = 0; i < 13; i++) {
+                for (var j = 0; j < 13; j++) {
+                    this.scene.pushMatrix();
+                        this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
+                        this.scene.scale(.07, 1, .07);
 
-                    var id = j * 13 + i;
-                    this.scene.registerForPick(id + 1, this.ghostPick[id]);
-                    this.ghostPick[id].display();
-                this.scene.popMatrix();
+                        var id = j * 13 + i;
+                        this.scene.registerForPick(id + 1, this.ghostPick[id]);
+                        this.ghostPick[id].display();
+                    this.scene.popMatrix();
+                }
             }
+            this.scene.clearPickRegistration();
+            this.scene.setActiveShader(this.scene.defaultShader);
         }
-        this.scene.clearPickRegistration();
     }
 }

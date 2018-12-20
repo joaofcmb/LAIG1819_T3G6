@@ -277,7 +277,7 @@ class Data {
                         this.components[compID].activePrimitives.push(water)
                         break;
                     case "board":
-                        this.components[compID].activePrimitives.push(new Board(scene));
+                        this.components[compID].activePrimitives.push(new Game(scene));
                         break;
                     case "cube":
                         this.components[compID].activePrimitives.push(new Cube(scene, primitive.npartsU, primitive.npartsV));

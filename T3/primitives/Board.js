@@ -46,7 +46,7 @@ class Board extends CGFobject {
         this.blackStackDisplay = this.stackDisplay(this.blackStacks);
     }
 
-    initAnimation() {
+    initAnimations() {
         this.currAnimations = [];
     }
     

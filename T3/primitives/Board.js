@@ -46,11 +46,14 @@ class Board extends CGFobject {
         this.blackStackDisplay = this.stackDisplay(this.blackStacks);
     }
 
-    initAnimation() {
+    initAnimations() {
         this.currAnimations = [];
     }
     
     addPiece(cellId) {
+        var sourcePos = vec3.fromValues(-1.5 + stackTranslate[0][0], .05 + 40 * .007, .5 + stackTranslate[0][0]);
+        var destPos = vec3.fromValues(-.84 + .14 * i, .052, -.84 + .14 * j);
+
         
     }
 

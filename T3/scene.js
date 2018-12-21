@@ -174,6 +174,9 @@ class Scene extends CGFscene {
 
                 if (component.activeAnimations.length > 0)
                     component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
+                
+                // Game animation
+                
             }
         }
 

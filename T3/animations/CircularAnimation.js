@@ -6,12 +6,12 @@ class CircularAnimation extends Animation {
     /**
      * Circular Animation constructor.
      * 
-     * @param {any} scene 
-     * @param {number} span 
-     * @param {vec3} center 
-     * @param {number} radius 
-     * @param {number} startAng 
-     * @param {number} rotAng 
+     * @param {any} scene
+     * @param {number} span
+     * @param {vec3} center
+     * @param {number} radius
+     * @param {number} startAng
+     * @param {number} rotAng
      */
     constructor(scene, span, center, radius, startAng, rotAng) {
         super(scene);

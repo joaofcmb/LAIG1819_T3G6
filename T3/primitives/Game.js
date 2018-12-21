@@ -24,6 +24,7 @@ class Game extends CGFobject {
      * @param {number} cellId id of the cell where the piece is added to
      */
     addPiece(cellId) {
+        // Validate move on Server
         this.board.addPiece(cellId);
     }
 

@@ -9,6 +9,7 @@ class Game extends CGFobject {
         this.initGame();
 
         this.board = new Board(scene);
+        this.logic = new Logic();
     }
 
     /**

@@ -13,7 +13,11 @@ class Scene extends CGFscene {
      */
     constructor(data, interf) {
         super();
-        this.lock = {};
+        
+        this.Difficulty = {}; this.Difficulty = 'Medium';
+        this.Mode = {}; this.Mode = 'Player vs Player';
+        this.cameraRotation = {};
+
         this.data = data;
         this.lightValues = {};
         this.interface = interf;
@@ -139,6 +143,8 @@ class Scene extends CGFscene {
 
         this.interface.addLightsGroup(this.data);
         this.interface.addViewsGroup(this.data);
+        this.interface.addGameSettings();
+        this.interface.addOptions();
 
         this.updateCameras();
         this.initLights();
@@ -223,6 +229,23 @@ class Scene extends CGFscene {
         return [];
     }
 
+    // TODO - ALL FUNCTIONS - Maybe change functions to GAME class
+    playGame() {
+        console.log("play");
+    }
+
+    undo() {
+        console.log("undo");
+    }
+    
+    exitGame() {
+        console.log("exit");
+    }
+
+    replay() {
+        console.log("replay");
+    }
+
     /**
      * Displays the scene.
      */
@@ -244,8 +267,8 @@ class Scene extends CGFscene {
 
         if (this.sceneInited) {
             //Handle Views
-            if (this.lock["Lock Views"])
-                this.updateCameras();
+            
+            //    this.updateCameras();  //Uncomment to change between views
 
             //Handle Lights
             var i = 0;
@@ -263,7 +286,7 @@ class Scene extends CGFscene {
                     i++;
                 }
             }
-
+            
             // Draw axis
             this.axis.display();
 

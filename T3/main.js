@@ -9,7 +9,7 @@ function getUrlVars() {
       vars[decodeURIComponent(key)] = decodeURIComponent(value);
     });
     return vars;
-}	 
+}	
 
 //Include additional files here
 serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js",  'logic.js',

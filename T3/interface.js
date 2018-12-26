@@ -8,6 +8,9 @@ class Interface extends CGFinterface {
     constructor() {
         super();
 
+        this.difficulty = ['Easy', 'Medium', 'Hard'];
+        this.modes = ['Player vs Player', 'Player vs AI', 'AI vs AI'];
+        
         this.views = [];
         this.Views;
     }
@@ -67,6 +70,9 @@ class Interface extends CGFinterface {
      * @param {array} data 
      */
     addViewsGroup(data) {
+        var views = this.gui.addFolder("Views");
+        //views.open();
+
         for (var key in data.perspectiveCams) {
             if (data.perspectiveCams.hasOwnProperty(key)) {
                 this.views.push(key);
@@ -79,10 +85,7 @@ class Interface extends CGFinterface {
             }
         }
 
-        this.gui.add(this, 'Views', this.views);
-        
-        this.scene.lock["Lock Views"] = false;
-        this.gui.add(this.scene.lock, 'Lock Views');
+        views.add(this, 'Views', this.views);
     }
 
     /**
@@ -91,7 +94,7 @@ class Interface extends CGFinterface {
      */
     addLightsGroup(data) {
         var lights = this.gui.addFolder("Lights");
-        lights.open();
+        //lights.open();
 
         for (var key in data.omniLights) {
             if (data.omniLights.hasOwnProperty(key)) {
@@ -106,5 +109,27 @@ class Interface extends CGFinterface {
                 lights.add(this.scene.lightValues, key);
             }
         }
+    }
+
+    addGameSettings() {
+        var settings = this.gui.addFolder('Game Settings');
+        //settings.open();
+
+        settings.add(this.scene, 'Difficulty', this.difficulty);
+        settings.add(this.scene, 'Mode', this.modes);
+        
+        this.scene.cameraRotation["Camera Rotation"] = false;
+        settings.add(this.scene.cameraRotation, 'Camera Rotation');
+
+    }
+
+    addOptions() {
+        var options = this.gui.addFolder('Main Menu');
+        //options.open();
+
+        options.add(this.scene, 'playGame').name('Play Game');
+        options.add(this.scene, 'undo').name('Undo');
+        options.add(this.scene, 'exitGame').name('Exit Game');
+        options.add(this.scene, 'replay').name('Replay');
     }
 }

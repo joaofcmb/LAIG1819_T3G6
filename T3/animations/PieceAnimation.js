@@ -12,8 +12,8 @@ class PieceAnimation extends Animation {
         deltaVec[1] = 0;
         var d = vec3.length(deltaVec);
 
-        var bigR = (d + Math.sqrt(2) * h) / 2;
-        var smallR = bigR - Math.sqrt(2) * h;
+        var smallR = (d + h - Math.sqrt(2) * h) / 2;
+        var bigR = smallR + Math.sqrt(2) * h;
 
         var spanRatio = 3 * smallR / bigR;
 
@@ -32,8 +32,8 @@ class PieceAnimation extends Animation {
         this.currAnimation = 'first';
         switch(type) {
             case 'add':
-                this.firstAnimation = new CircularAnimation(scene, 1000 * spanRatio, smallCenter, smallR, 180, -135);
-                this.secondAnimation = new CircularAnimation(scene, 1000, bigCenter, bigR, 45, -45);
+                this.firstAnimation = new CircularAnimation(scene, 1000 * spanRatio, smallCenter, smallR, 180, -135, rotAxis);
+                this.secondAnimation = new CircularAnimation(scene, 1000, bigCenter, bigR, 45, -45, rotAxis);
                 break;
         }
     }

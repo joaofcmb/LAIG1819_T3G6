@@ -51,9 +51,8 @@ class Board extends CGFobject {
     }
     
     addPiece(cellId) {
-        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[0][0], .05 + 40 * .007, .5 + this.stackTranslate[0][0]);
-        /* var destPos = vec3.fromValues(-.84 + .14 * (cellId - 1) % 13, .052, -.84 + .14 * (cellId - 1) / 13); */
-        var destPos = vec3.create();
+        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[0][0], .0035 + 39 * .007, .5 + this.stackTranslate[0][0]);
+        var destPos = vec3.fromValues(-.84 + .14 * ((cellId - 1) % 13), .052, -.84 + .14 * Math.floor((cellId - 1) / 13));
 
         this.currAnimations.push(new PieceAnimation(this.scene, sourcePos, destPos, 'add'));        
     }
@@ -61,10 +60,10 @@ class Board extends CGFobject {
     stackDisplay(stack) {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
-                this.scene.translate(this.stackTranslate[i][0], 0, this.stackTranslate[i][1]);
+                this.scene.translate(this.stackTranslate[i][0], .0035, this.stackTranslate[i][1]);
                 for (var j = 0; j < stack[i]; j++) {
-                    this.scene.translate(0, .007, 0);
                     this.pieceDisplay();
+                    this.scene.translate(0, .007, 0);
                 }
             this.scene.popMatrix();
         }

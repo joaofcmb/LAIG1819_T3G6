@@ -32,8 +32,8 @@ class PieceAnimation extends Animation {
         this.currAnimation = 'first';
         switch(type) {
             case 'add':
-                this.firstAnimation = new CircularAnimation(scene, 1000 * spanRatio, smallCenter, smallR, 180, -135, rotAxis);
-                this.secondAnimation = new CircularAnimation(scene, 1000, bigCenter, bigR, 45, -45, rotAxis);
+                this.firstAnimation = new CircularAnimation(scene, 500 * spanRatio, smallCenter, smallR, 180, -135, rotAxis);
+                this.secondAnimation = new CircularAnimation(scene, 500, bigCenter, bigR, 45, -45, rotAxis);
                 break;
         }
     }

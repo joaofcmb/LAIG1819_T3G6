@@ -123,13 +123,13 @@ class Interface extends CGFinterface {
 
     }
 
-    addOptions() {
+    addOptions(game) {
         var options = this.gui.addFolder('Main Menu');
-        //options.open();
+        options.open();
 
-        options.add(this.scene, 'playGame').name('Play Game');
-        options.add(this.scene, 'undo').name('Undo');
-        options.add(this.scene, 'exitGame').name('Exit Game');
-        options.add(this.scene, 'replay').name('Replay');
+        options.add(game, 'playGame').name('Play Game');
+        options.add(game, 'undo').name('Undo');
+        options.add(game, 'exitGame').name('Exit Game');
+        options.add(game, 'replay').name('Replay');
     }
 }

@@ -12,13 +12,13 @@ function getUrlVars() {
 }	
 
 //Include additional files here
-serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js",  'logic.js',
+serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js", './game.js', 'logic.js',
                 './primitives/MyRectangle.js', './primitives/MyTriangle.js', 
                 './primitives/MyCylinder.js', './primitives/MySphere.js', 
                 './primitives/MyCircle.js', './primitives/MyTorus.js',
                 './primitives/Plane.js', './primitives/Patch.js',
                 './primitives/Cylinder2.js', './primitives/Water.js',
-                './primitives/Game.js', './primitives/Board.js', './primitives/Cube.js', 
+                './primitives/Board.js', './primitives/Cube.js', 
                 './animations/Animation.js', './animations/LinearAnimation.js', './animations/CircularAnimation.js',
                 
 main=function()

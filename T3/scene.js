@@ -21,6 +21,7 @@ class Scene extends CGFscene {
         this.data = data;
         this.lightValues = {};
         this.interface = interf;
+        this.game;
 
         this.setPickEnabled(true);
     }
@@ -144,7 +145,6 @@ class Scene extends CGFscene {
         this.interface.addLightsGroup(this.data);
         this.interface.addViewsGroup(this.data);
         this.interface.addGameSettings();
-        this.interface.addOptions();
 
         this.updateCameras();
         this.initLights();
@@ -152,6 +152,7 @@ class Scene extends CGFscene {
         // Load data into the graph
         this.data.setupGraph(this);
 
+        this.interface.addOptions(this.game);
         this.sceneInited = true;
     }
 
@@ -227,23 +228,6 @@ class Scene extends CGFscene {
         }
 
         return [];
-    }
-
-    // TODO - ALL FUNCTIONS - Maybe change functions to GAME class
-    playGame() {
-        console.log("play");
-    }
-
-    undo() {
-        console.log("undo");
-    }
-    
-    exitGame() {
-        console.log("exit");
-    }
-
-    replay() {
-        console.log("replay");
     }
 
     /**

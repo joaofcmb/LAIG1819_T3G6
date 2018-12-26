@@ -1,48 +1,59 @@
-
+/**
+ * 
+ */
 class Logic {
 
-    /**
-     * Default constructor
-     */
-    constructor() {
+    constructor(game) {
+        this.game = game;
+        this.initCMD = "startGame";
+        this.exitCMD = "quit";
     }
 
-    /**
-     * 
-     * @param {*} requestString 
-     * @param {*} onSuccess 
-     * @param {*} onError 
-     * @param {*} port 
-     */
-    getPrologRequest(requestString, onSuccess, onError, port) {
-        var requestPort = port || 8081
+    makePrologRequest(requestString) {
+        var game = this.game;
         var request = new XMLHttpRequest();
-        request.open('GET', 'http://localhost:' + requestPort + '/' + requestString, true);
-    
-        request.onload = onSuccess || function (data) {
-            console.log("Request successful. Reply: " + data.target.response);
+
+        request.open('GET', 'http://localhost:8081/' + requestString, false);
+        request.onload = function(data) {
+            if(data.target.response == "success") {
+                game.state = requestString == "startGame" ? true : game.state;
+                game.state = requestString == "quit" ? false : game.state;
+            }
+            console.log("Request successful.");
         };
-        request.onerror = onError || function () {
+        request.onerror = function () {
+            game.state = false;
             console.log("Error waiting for response");
         };
-    
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         request.send();
     }
-    
-    makeRequest() {
-        // Get Parameter Values
-        var requestString = document.querySelector("#query_field").value;
-    
-        // Make Request
-        getPrologRequest(requestString, handleReply);
-    }
-    
-    //Handle the Reply
-    handleReply(data) {
-        //document.querySelector("#query_result").innerHTML = data.target.response;
-        console.log(data.target.response)
+
+    initGame() {
+        if(!this.game.state) {
+            console.log("Command: Play Game !");
+            this.makePrologRequest(this.initCMD);
+        }
+        else {
+            console.log("Invalid Command: Game In Progress !");
+        }
+            
     }
 
-    
+    exitGame() {
+        if(this.game.state) {
+            console.log("Command: Exit Game !");
+            this.makePrologRequest(this.exitCMD);
+        }
+        else {
+            console.log("Invalid Command: Available Only When A Game Is In Progress !");
+        }
+    }
+
+    gameStep(board, currPlayer, nextPlayer) {
+        //printCommand("Command: Make move !");
+        var gameStep = board + currPlayer + nextPlayer;
+        this.makePrologRequest(gameStep);
+    }
+
 }

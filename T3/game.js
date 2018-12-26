@@ -29,6 +29,10 @@ class Game extends CGFobject {
         this.board.addPiece(cellId);
     }
 
+    update(deltaTime) {
+        this.board.update(deltaTime);
+    }
+
     display() {
         // Detect picking from board
         var pickId = this.scene.getPicks()[0];

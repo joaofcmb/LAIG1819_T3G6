@@ -34,20 +34,20 @@ class CircularAnimation extends Animation {
      * @param {number} deltaTime
      */
     update(deltaTime) {
-        if (this.currAng >= this.endAng)     return deltaTime;
+        if (Math.abs(this.currAng - this.startAng) >= Math.abs(this.rotAng))     return deltaTime;
 
         this.currAng += this.rotAng * deltaTime / this.span;
 
         // Check if delta surpassed the end of the animation and calculate the remainder
         var remainingDeltaTime = 0;
         
-        if (this.currAng > this.endAng) {
+        if (Math.abs(this.currAng - this.startAng) >= Math.abs(this.rotAng)) {
             remainingDeltaTime = (this.currAng - this.endAng) * this.span / this.rotAng;
             this.currAng = this.endAng;
         }
 
         // Calculate Translation Vector (Center + rotationTranslation)
-        var animTranslationVector = vec3.create()
+        var animTranslationVector = vec3.create();
         vec3.copy(animTranslationVector, this.center);
 
         vec3.add(animTranslationVector, animTranslationVector, vec3.fromValues(this.radius * Math.cos(this.currAng), 0, -this.radius * Math.sin(this.currAng)));

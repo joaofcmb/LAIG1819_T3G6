@@ -145,7 +145,8 @@ class Scene extends CGFscene {
 
         // Load data into the graph
         this.data.setupGraph(this);
-
+        this.game = this.data.game;
+        
         this.sceneInited = true;
     }
 
@@ -174,11 +175,11 @@ class Scene extends CGFscene {
 
                 if (component.activeAnimations.length > 0)
                     component.activeAnimationIndex = Math.min(component.activeAnimationIndex, component.activeAnimations.length - 1);
-                
-                // Game animation
-                
             }
         }
+
+        // Game animation
+        if (this.game)  this.game.update(this.deltaTime);
 
         // Wave animation
         var timeFactor = Math.sin(currTime * 0.002) * 0.3;

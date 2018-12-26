@@ -51,10 +51,11 @@ class Board extends CGFobject {
     }
     
     addPiece(cellId) {
-        var sourcePos = vec3.fromValues(-1.5 + stackTranslate[0][0], .05 + 40 * .007, .5 + stackTranslate[0][0]);
-        var destPos = vec3.fromValues(-.84 + .14 * i, .052, -.84 + .14 * j);
+        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[0][0], .05 + 40 * .007, .5 + this.stackTranslate[0][0]);
+        /* var destPos = vec3.fromValues(-.84 + .14 * (cellId - 1) % 13, .052, -.84 + .14 * (cellId - 1) / 13); */
+        var destPos = vec3.create();
 
-        
+        this.currAnimations.push(new PieceAnimation(this.scene, sourcePos, destPos, 'add'));        
     }
 
     stackDisplay(stack) {
@@ -76,7 +77,12 @@ class Board extends CGFobject {
         this.scene.popMatrix();
     }
 
-    display() { 
+    update(deltaTime) {
+        if (this.currAnimations.length > 0)
+            this.currAnimations.forEach((animation) => animation.update(deltaTime));
+    }
+
+    display() {
         this.scene.pushMatrix();
             // Bases for the pieces on the side
             this.scene.pushMatrix();
@@ -120,6 +126,15 @@ class Board extends CGFobject {
                 this.stackDisplay(this.blackStacks);
             this.scene.popMatrix();
         this.scene.popMatrix();
+
+        // Animations
+        this.whiteAppearance.apply();
+        for (var i in this.currAnimations) {
+            this.scene.pushMatrix();
+                this.currAnimations[i].apply();
+                this.pieceDisplay();
+            this.scene.popMatrix();
+        }
 
         // Ghost objects for selecting board intersections
         if (this.picking) {

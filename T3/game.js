@@ -59,8 +59,9 @@ class Game extends CGFobject {
              var cellLine = Math.floor(pickId / 13); 
              var cellColumn = pickId % 13;
              
-             this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
+             var response = this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
  
+            console.log(response);
              this.addPiece(cellLine, cellColumn);
  
          }

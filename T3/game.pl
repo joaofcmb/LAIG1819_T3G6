@@ -269,16 +269,16 @@ setLine(LinNo, MaxLines, NewLine, [H|Told], [H|Tnew]) :-	LinNo < MaxLines,
 
 parse_input(startGame, success).
 parse_input(gameStep(Board, CurrPlayer, NextPlayer, Line, Column), Res):- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),
-																			game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+																			game_over(Board, NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
 parse_input(gameStep(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
 																choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
-																game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+																game_over(Board, NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
 parse_input(quit, success).
 															
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Game State Transitions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Game State Handling and Transition:	game_over/4
+% Game State Handling and Transition:	game_over/5
 % Board State Handling and Transition: 	move/7
 % Game End States:						drawGame/3
 
@@ -307,11 +307,30 @@ move(Board, NewBoard, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenc
 % +NewCurrPlayer:	Internal Representation of the Player going to play the next turn. 
 % +NewNextPlayer:	Internal Representation of the opponent of the Player playing the next turn.
 % +Score:			Score of the game state (Used to evaluate AI movements and end states) Range:[-100, 100].
-game_over(NewBoard, NewCurrPlayer, NewNextPlayer, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
-game_over(NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
-game_over(NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	nextMove(Res, NewBoard, NewNextPlayer, NewCurrPlayer), !.
+game_over(_, _, _, _, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
+game_over(_, NewBoard, _, _, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
+game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 0, Diff), 
+																		write(Diff), nl,
+																		nextMove(Res, NewBoard, NewNextPlayer, NewCurrPlayer), !.
 													
 nextMove([Board, CurrPlayer, NextPlayer], Board, CurrPlayer, NextPlayer).
+
+board_diff([], [], _, _).
+board_diff([H1|T1], [H2|T2], CurrLine, Diff):-  board_diff_line(H1, H2, CurrLine, 0, Diff), 
+												NewCurrLine is CurrLine + 1,
+												board_diff(T1, T2, NewCurrLine, Diff).
+												
+board_diff_line([], [], _, _, []).																															
+board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, Diff):- 	H1 \= H2, % Adicionar ao diff as alteracoes
+																NewCurrCol is CurrCol + 1,
+																board_diff_line(T1, T2, CurrLine, NewCurrCol, Diff).
+board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, Diff):- 	H1 =:= H2, 
+																NewCurrCol is CurrCol + 1,
+																board_diff_line(T1, T2, CurrLine, NewCurrCol, Diff).																							
+																							
+																							
+																
+
 																																
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Sequence and Capture Check %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

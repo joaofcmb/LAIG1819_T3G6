@@ -103,14 +103,14 @@ class Game extends CGFobject {
             var cellLine = Math.floor(pickId / 13); 
             var cellColumn = pickId % 13;
             
-            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, cellLine, cellColumn);
+            this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
 
             this.addPiece(cellLine, cellColumn);
 
         }
         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
             
-            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo);
+            this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo);
         }
 
         // Draw game (board)

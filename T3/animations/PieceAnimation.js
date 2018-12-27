@@ -4,6 +4,7 @@
 class PieceAnimation extends Animation {
     constructor(scene, stackPos, cellPos, type) {
         super(scene);
+        this.type = type;
 
         var deltaVec = vec3.create();
         vec3.subtract(deltaVec, stackPos, cellPos);
@@ -37,7 +38,7 @@ class PieceAnimation extends Animation {
                 break;
             case 'remove':
                 this.firstAnimation = new CircularAnimation(scene, 500, bigCenter, bigR, 0, 45, rotAxis);
-                this.secondAnimation = new CircularAnimation(scene, 500 * spanRation, smallCenter, smallR, 45, 135, rotAxis);
+                this.secondAnimation = new CircularAnimation(scene, 500 * spanRatio, smallCenter, smallR, 45, 135, rotAxis);
                 break;
         }
     }

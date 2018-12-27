@@ -28,7 +28,7 @@ class Board extends CGFobject {
     initBoard() {
         this.model = {'none': 0, 'white': 1, 'black': 2};
 
-        this.boardCells = new Array(13).fill(0).map(() => new Array(13).fill(0));
+        this.boardCells = new Array(13).fill(0).map(() => new Array(13).fill(this.model['none']));
         this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }
 
@@ -56,8 +56,8 @@ class Board extends CGFobject {
     addPiece(cellLine, cellColumn) {
         var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
-        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
+        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], .0535 + (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
+        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .0545, -.84 + .14 * cellColumn);
 
         this.currAnimations.push({
             animation: new PieceAnimation(this.scene, stackPos, cellPos, 'add'), 
@@ -69,13 +69,14 @@ class Board extends CGFobject {
     removePiece(cellLine, cellColumn) {
         var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
 
-        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
+        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], .0535 + (this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
+        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .0545, -.84 + .14 * cellColumn);
+
+        this.boardCells[cellLine][cellColumn] = this.model['none'];
 
         this.currAnimations.push({
             animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'), 
-            line: cellLine, 
-            column: cellColumn
+            stackI: stackI
         });
     }
 
@@ -96,7 +97,7 @@ class Board extends CGFobject {
             for (var j = 0; j < 13; j++) {
                 if (this.boardCells[i][j] == this.model[modelID]) {
                     this.scene.pushMatrix();
-                        this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
+                        this.scene.translate(-.84 + .14 * i, .0545, -.84 + .14 * j);
                         this.pieceDisplay();
                     this.scene.popMatrix();
                 }
@@ -113,10 +114,18 @@ class Board extends CGFobject {
 
     update(deltaTime) {
         for (var i = 0; i < this.currAnimations.length; i++) {
-            // Animation finished, since all animations have the same span it is safe to remove from back
+            // Animation finished, since all animations have the same span it is safe to assume the first animation is to be removed
             if (this.currAnimations[i].animation.update(deltaTime) == deltaTime) {
-                this.boardCells[this.currAnimations[0].line][this.currAnimations[0].column] = 1;
-                this.currAnimations.shift();
+                var fAnim = this.currAnimations.shift();
+
+                switch(fAnim.animation.type) {
+                    case 'add':
+                        this.boardCells[fAnim.line][fAnim.column] = 1;
+                        break;
+                    case 'remove':
+                        this.whiteStacks[fAnim.stackI]++;
+                        break;
+                }
             }
         }
     }

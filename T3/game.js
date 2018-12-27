@@ -39,7 +39,7 @@ class Game extends CGFobject {
         // Initialize game variables
         this.board = new Board(this.scene);
         this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; //this.currPlayer = this.playerOne;
-        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};this.currPlayer = this.playerTwo;
+        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.currPlayer = this.playerTwo;
 
         if(this.gameMode == 'Player vs AI') {
             this.playerTwo['playerID'] = this.difficulty;
@@ -61,7 +61,7 @@ class Game extends CGFobject {
              
              this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
  
-             this.addPiece(cellLine, cellColumn);
+             this.board.addPiece(cellLine, cellColumn);
  
          }
          else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
@@ -100,16 +100,6 @@ class Game extends CGFobject {
         console.log("replay");
     }
     
-    /**
-     * Adds a piece to the board
-     * 
-     * @param {number} cellId id of the cell where the piece is added to
-     */
-    addPiece(cellLine, cellColumn) {
-        // Validate move on Server
-        this.board.addPiece(cellLine, cellColumn); // For now it doesnt differenciate between white and black
-    }
-
     update(deltaTime) {
         this.board.update(deltaTime);
     }

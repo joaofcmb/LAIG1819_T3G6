@@ -18,7 +18,7 @@ class Board extends CGFobject {
         this.ghostShader = new CGFshader(this.scene.gl, "./shaders/Ghost.vert", "./shaders/Ghost.frag");
     }
 
-    initComponents() {
+    initComponents() {        
         this.cube = new Cube(this.scene, 30, 30);
         this.board = new Plane(this.scene, 100, 100);
         this.piece = new MySphere(this.scene, .035, 8, 10);
@@ -48,6 +48,14 @@ class Board extends CGFobject {
 
     initAnimations() {
         this.currAnimations = [];
+    }
+
+    createNewBoard() {
+        this.boardContent = [];
+
+        for(var index = 0; index < 13; index++) {
+            this.boardContent[index] = new Array(13).fill(0);            
+        }
     }
     
     addPiece(cellId) {

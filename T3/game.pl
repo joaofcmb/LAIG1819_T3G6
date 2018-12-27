@@ -268,11 +268,11 @@ setLine(LinNo, MaxLines, NewLine, [H|Told], [H|Tnew]) :-	LinNo < MaxLines,
 % Require your Prolog Files here
 
 parse_input(startGame, success).
-parse_input(gameStep(Board, CurrPlayer, NextPlayer, Line, Column), Res)	:- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),	!,
-																			game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
-parse_input(gameStep(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
-																choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
-																game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+parse_input(gameStepPlayer(Board, CurrPlayer, NextPlayer, Line, Column), Res):- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),	!,
+																					game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+parse_input(gameStepAI(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
+																	choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
+																	game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
 parse_input(quit, success).
 															
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

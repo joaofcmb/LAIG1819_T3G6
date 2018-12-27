@@ -6,8 +6,13 @@ class Game extends CGFobject {
         super(scene);
 
         // True - Playing. False otherwise
-        this.state = false;
+        this.state  = false;
 
+        // Players: white & black. First player: white
+        this.player = 'white';
+
+        this.difficulty = {}; this.difficulty = 'Medium';
+        this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.board = new Board(scene);
         this.logic = new Logic(this);
     }
@@ -17,6 +22,19 @@ class Game extends CGFobject {
      */
     playGame() {
         this.logic.initGame();
+
+        // Initialize game variables
+        this.board.createNewBoard();
+        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0};
+        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
+
+        if(this.gameMode == 'Player vs AI') {
+            this.playerTwo['playerID'] = this.difficulty;
+        }
+        else if(this.gameMode == 'AI vs AI') {
+            this.playerOne['playerID'] = this.difficulty;
+            this.playerTwo['playerID'] = this.difficulty;
+        }        
     }
     
     /**
@@ -52,11 +70,12 @@ class Game extends CGFobject {
     display() {
         // Detect picking from board
         var pickId = this.scene.getPicks()[0];
-        if (pickId) { //this.state && 
+        
+        if (this.state & pickId) {
+            var line = Math.floor(pickId / 13);
+            var column = pickId % 14;
 
-            var Line = Math.floor(pickId / 13);
-            var Column = pickId % 14;
-
+            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, line, column);
             
         }
 

@@ -14,14 +14,11 @@ class Scene extends CGFscene {
     constructor(data, interf) {
         super();
         
-        this.Difficulty = {}; this.Difficulty = 'Medium';
-        this.Mode = {}; this.Mode = 'Player vs Player';
         this.cameraRotation = {};
 
         this.data = data;
         this.lightValues = {};
         this.interface = interf;
-        this.game;
 
         this.setPickEnabled(true);
     }
@@ -144,15 +141,18 @@ class Scene extends CGFscene {
 
         this.interface.addLightsGroup(this.data);
         this.interface.addViewsGroup(this.data);
-        this.interface.addGameSettings();
+    
 
         this.updateCameras();
         this.initLights();
 
         // Load data into the graph
         this.data.setupGraph(this);
+        this.game = this.data.game;
 
+        this.interface.addGameSettings(this.game);
         this.interface.addOptions(this.game);
+        
         this.sceneInited = true;
     }
 

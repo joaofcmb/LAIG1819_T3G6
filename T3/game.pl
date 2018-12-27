@@ -184,7 +184,7 @@ fullBoard([]).
 fullBoard([H|T]):- 	fullLine(H),
 					fullBoard(T).
 fullLine([]).
-fullLine([H|T]):-	H \= '0',
+fullLine([H|T]):-	H \= 0,
 					fullLine(T).
 					
 
@@ -268,11 +268,11 @@ setLine(LinNo, MaxLines, NewLine, [H|Told], [H|Tnew]) :-	LinNo < MaxLines,
 % Require your Prolog Files here
 
 parse_input(startGame, success).
-parse_input(gameStepPlayer(Board, CurrPlayer, NextPlayer, Line, Column), Res):- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),	!,
-																					game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
-parse_input(gameStepAI(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
-																	choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
-																	game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+parse_input(gameStep(Board, CurrPlayer, NextPlayer, Line, Column), Res):- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),
+																			game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+parse_input(gameStep(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
+																choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
+																game_over(NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
 parse_input(quit, success).
 															
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -307,15 +307,12 @@ move(Board, NewBoard, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenc
 % +NewCurrPlayer:	Internal Representation of the Player going to play the next turn. 
 % +NewNextPlayer:	Internal Representation of the opponent of the Player playing the next turn.
 % +Score:			Score of the game state (Used to evaluate AI movements and end states) Range:[-100, 100].
-game_over(NewBoard, NewCurrPlayer, NewNextPlayer, 100, Res) :- 	Res is victory. 	% The player who played the previous turn won the game (NewNextPlayer).
-game_over(NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	fullBoard(NewBoard), Res is draw.
+game_over(NewBoard, NewCurrPlayer, NewNextPlayer, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
+game_over(NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
 game_over(NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	nextMove(Res, NewBoard, NewNextPlayer, NewCurrPlayer), !.
 													
-
-nextMove(Res, Board, CurrPlayer, NextPlayer):-	append(Board, [], L1),
-												append(L1, CurrPlayer, L2),
-												append(L2, NextPlayer, Res).
-													
+nextMove([Board, CurrPlayer, NextPlayer], Board, CurrPlayer, NextPlayer).
+																																
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Sequence and Capture Check %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

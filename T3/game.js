@@ -25,7 +25,7 @@ class Game extends CGFobject {
         this.logic.initGame();
 
         // Initialize game variables
-        this.board.createNewBoard();
+        this.board = new Board(this.scene);
         this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0};
         this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
 

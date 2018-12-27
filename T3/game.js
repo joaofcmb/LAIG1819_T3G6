@@ -71,10 +71,12 @@ class Game extends CGFobject {
     display() {
         // Detect picking from board
         var pickId = this.scene.getPicks()[0];
+        
+        if (pickId-- && this.state) { //this.state & 
             var cellLine = Math.floor(pickId / 13); var cellColumn = pickId % 13;
+            
             this.addPiece(cellLine, cellColumn);
-        if (this.state & pickId) {
-            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, line, column);
+           // this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, cellLine, cellColumn);
         }
 
         // Draw game (board)

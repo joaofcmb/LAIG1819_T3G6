@@ -7,27 +7,39 @@ class Game extends CGFobject {
         super(scene);
 
         // True - Playing. False otherwise
-        this.state  = false;
-
-        // Players: white & black. First player: white
-        this.player = 'white';
+        this.state  = false;    
 
         this.difficulty = {}; this.difficulty = 'Medium';
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.board = new Board(scene);
-        this.logic = new Logic(this);
+        this.logic = new Logic();
     }
 
     /**
      * Initializes game 
      */
     playGame() {
-        this.logic.initGame();
+        // Checks if there is a game in progress
+        if (this.state) {
+            console.log("Invalid Command: Game In Progress !");
+            return;
+        }
+        else {
+            console.log("Command: Play Game !");
+        } 
+        
+        // Send init command 
+        if(this.logic.initGame() != 'success') 
+            return;
+        else {
+            this.state = true;
+            console.log("Request successful.");
+        }
 
         // Initialize game variables
         this.board = new Board(this.scene);
-        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0};
-        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
+        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; //this.currPlayer = this.playerOne;
+        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};this.currPlayer = this.playerTwo;
 
         if(this.gameMode == 'Player vs AI') {
             this.playerTwo['playerID'] = this.difficulty;
@@ -42,7 +54,21 @@ class Game extends CGFobject {
      * Exit's current game by terminating Prolog connection
      */
     exitGame() {
-        this.logic.exitGame();
+        // Checks if there is a game in progress
+        if (!this.state) {
+            console.log("Invalid Command: Available Only When A Game Is In Progress !");
+            return;
+        } else {
+            console.log("Command: Exit Game !");
+        }
+
+        // Sends quit command
+        if(this.logic.exitGame() != 'success') 
+            return;
+        else {
+            this.state = false;
+            console.log("Request successful.");
+        }
     }
 
     // TODO
@@ -72,11 +98,19 @@ class Game extends CGFobject {
         // Detect picking from board
         var pickId = this.scene.getPicks()[0];
         
-        if (pickId-- && this.state) { //this.state & 
-            var cellLine = Math.floor(pickId / 13); var cellColumn = pickId % 13;
+        if (pickId-- && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
+            // Picking variables
+            var cellLine = Math.floor(pickId / 13); 
+            var cellColumn = pickId % 13;
             
+            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, cellLine, cellColumn);
+
             this.addPiece(cellLine, cellColumn);
-           // this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo, cellLine, cellColumn);
+
+        }
+        else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
+            
+            this.logic.gameStep(this.board.boardContent, this.playerOne, this.playerTwo);
         }
 
         // Draw game (board)

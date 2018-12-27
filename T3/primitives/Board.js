@@ -51,7 +51,9 @@ class Board extends CGFobject {
     }
     
     addPiece(cellId) {
-        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[0][0], .0035 + 39 * .007, .5 + this.stackTranslate[0][0]);
+        var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
+
+        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
         var destPos = vec3.fromValues(-.84 + .14 * ((cellId - 1) % 13), .052, -.84 + .14 * Math.floor((cellId - 1) / 13));
 
         this.currAnimations.push(new PieceAnimation(this.scene, sourcePos, destPos, 'add'));        

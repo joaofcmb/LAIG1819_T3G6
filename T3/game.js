@@ -1,6 +1,7 @@
 /**
  * Pente game class
  */
+
 class Game extends CGFobject {
     constructor(scene) {
         super(scene);
@@ -40,9 +41,9 @@ class Game extends CGFobject {
      * 
      * @param {number} cellId id of the cell where the piece is added to
      */
-    addPiece(cellId) {
+    addPiece(cellLine, cellColumn) {
         // Validate move on Server
-        this.board.addPiece(cellId);
+        this.board.addPiece(cellLine, cellColumn); // For now it doesnt differenciate between white and black
     }
 
     update(deltaTime) {
@@ -52,12 +53,9 @@ class Game extends CGFobject {
     display() {
         // Detect picking from board
         var pickId = this.scene.getPicks()[0];
-        if (pickId) { //this.state && 
-
-            var Line = Math.floor(pickId / 13);
-            var Column = pickId % 14;
-
-            
+        if (pickId--) { //this.state &&
+            var cellLine = Math.floor(pickId / 13); var cellColumn = pickId % 13;
+            this.addPiece(cellLine, cellColumn);
         }
 
         // Draw game (board)

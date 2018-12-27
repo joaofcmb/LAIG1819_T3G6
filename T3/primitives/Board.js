@@ -50,20 +50,22 @@ class Board extends CGFobject {
         this.currAnimations = [];
     }
     
-    addPiece(cellId) {
-        var sourcePos = vec3.fromValues(-1.5 + stackTranslate[0][0], .05 + 40 * .007, .5 + stackTranslate[0][0]);
-        var destPos = vec3.fromValues(-.84 + .14 * i, .052, -.84 + .14 * j);
+    addPiece(cellLine, cellColumn) {
+        var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
-        
+        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
+        var destPos = vec3.fromValues(-.84 + .14 * cellColumn, .052, -.84 + .14 * cellLine);
+
+        this.currAnimations.push(new PieceAnimation(this.scene, sourcePos, destPos, 'add'));        
     }
 
     stackDisplay(stack) {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
-                this.scene.translate(this.stackTranslate[i][0], 0, this.stackTranslate[i][1]);
+                this.scene.translate(this.stackTranslate[i][0], .0035, this.stackTranslate[i][1]);
                 for (var j = 0; j < stack[i]; j++) {
-                    this.scene.translate(0, .007, 0);
                     this.pieceDisplay();
+                    this.scene.translate(0, .007, 0);
                 }
             this.scene.popMatrix();
         }
@@ -76,7 +78,16 @@ class Board extends CGFobject {
         this.scene.popMatrix();
     }
 
-    display() { 
+    update(deltaTime) {
+        for (var i = 0; i < this.currAnimations.length; i++) {
+            // Animation finished, since all animations have the same span it is safe to remove from back
+            if (this.currAnimations[i].update(deltaTime) == deltaTime)
+                // YO, OVER HERE BRAH ----> Add piece to board structure
+                this.currAnimations.shift();
+        }
+    }
+
+    display() {
         this.scene.pushMatrix();
             // Bases for the pieces on the side
             this.scene.pushMatrix();
@@ -120,6 +131,15 @@ class Board extends CGFobject {
                 this.stackDisplay(this.blackStacks);
             this.scene.popMatrix();
         this.scene.popMatrix();
+
+        // Animations
+        this.whiteAppearance.apply();
+        for (var i in this.currAnimations) {
+            this.scene.pushMatrix();
+                this.currAnimations[i].apply();
+                this.pieceDisplay();
+            this.scene.popMatrix();
+        }
 
         // Ghost objects for selecting board intersections
         if (this.picking) {

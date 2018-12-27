@@ -56,14 +56,27 @@ class Board extends CGFobject {
     addPiece(cellLine, cellColumn) {
         var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
-        var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var destPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
+        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
+        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
 
         this.currAnimations.push({
-            animation: new PieceAnimation(this.scene, sourcePos, destPos, 'add'), 
+            animation: new PieceAnimation(this.scene, stackPos, cellPos, 'add'), 
             line: cellLine, 
             column: cellColumn
-        });        
+        });
+    }
+
+    removePiece(cellLine, cellColumn) {
+        var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
+
+        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
+        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
+
+        this.currAnimations.push({
+            animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'), 
+            line: cellLine, 
+            column: cellColumn
+        });
     }
 
     stackDisplay(stack) {

@@ -49,17 +49,6 @@ class CircularAnimation extends Animation {
             this.currAng = this.endAng;
         }
 
-        /* // Calculate Translation Vector (Center + rotationTranslation)
-        var animTranslationVector = vec3.create();
-        vec3.copy(animTranslationVector, this.center);
-
-        vec3.add(animTranslationVector, animTranslationVector, vec3.fromValues(this.radius * Math.cos(this.currAng), 0, -this.radius * Math.sin(this.currAng)));
-
-        // Calculate current object orientation (Assuming front of object is on the positive Z axis) then apply it with the translation to the transformation matrix
-        mat4.identity(this.animTransform);
-        mat4.translate(this.animTransform, this.animTransform, animTranslationVector);
-        mat4.rotateY(this.animTransform, this.animTransform, Math.PI + this.currAng); */
-
         mat4.identity(this.animTransform);
         mat4.translate(this.animTransform, this.animTransform, this.center);
         mat4.rotate(this.animTransform, this.animTransform, this.currAng, this.rotAxis);

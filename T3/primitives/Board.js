@@ -11,6 +11,7 @@ class Board extends CGFobject {
         this.picking = true;
 
         this.initComponents();
+        this.initBoard();
         this.initMaterials();
         this.initStack();
         this.initAnimations();
@@ -22,7 +23,12 @@ class Board extends CGFobject {
         this.cube = new Cube(this.scene, 30, 30);
         this.board = new Plane(this.scene, 100, 100);
         this.piece = new MySphere(this.scene, .035, 8, 10);
+    }
 
+    initBoard() {
+        this.model = {'none': 0, 'white': 1, 'black': 2};
+
+        this.boardCells = new Array(13).fill(0).map(() => new Array(13).fill(0));
         this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }
 
@@ -30,10 +36,10 @@ class Board extends CGFobject {
         this.boardAppearance = new CGFappearance(this.scene);
         this.boardAppearance.loadTexture('scenes/images/pente.png');
 
-        this.blackAppearance = new CGFappearance(this.scene);
-        this.blackAppearance.setDiffuse(1, 1, 1, 1);
-
         this.whiteAppearance = new CGFappearance(this.scene);
+        this.whiteAppearance.setDiffuse(.8, .8, .8, 1);
+
+        this.blackAppearance = new CGFappearance(this.scene);
         this.blackAppearance.setDiffuse(.1, .1, .1, 1);
     }
 
@@ -41,30 +47,23 @@ class Board extends CGFobject {
         this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
         this.whiteStacks = new Array(5).fill(40);
         this.blackStacks = new Array(5).fill(40);
-
-        this.whiteStackDisplay = this.stackDisplay(this.whiteStacks);
-        this.blackStackDisplay = this.stackDisplay(this.blackStacks);
     }
 
     initAnimations() {
         this.currAnimations = [];
-    }
-
-    createNewBoard() {
-        this.boardContent = [];
-
-        for(var index = 0; index < 13; index++) {
-            this.boardContent[index] = new Array(13).fill(0);            
-        }
     }
     
     addPiece(cellLine, cellColumn) {
         var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
         var sourcePos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var destPos = vec3.fromValues(-.84 + .14 * cellColumn, .052, -.84 + .14 * cellLine);
+        var destPos = vec3.fromValues(-.84 + .14 * cellLine, .052, -.84 + .14 * cellColumn);
 
-        this.currAnimations.push(new PieceAnimation(this.scene, sourcePos, destPos, 'add'));        
+        this.currAnimations.push({
+            animation: new PieceAnimation(this.scene, sourcePos, destPos, 'add'), 
+            line: cellLine, 
+            column: cellColumn
+        });        
     }
 
     stackDisplay(stack) {
@@ -79,6 +78,19 @@ class Board extends CGFobject {
         }
     }
 
+    cellsDisplay(modelID) {
+        for (var i = 0; i < 13; i++) {
+            for (var j = 0; j < 13; j++) {
+                if (this.boardCells[i][j] == this.model[modelID]) {
+                    this.scene.pushMatrix();
+                        this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
+                        this.pieceDisplay();
+                    this.scene.popMatrix();
+                }
+            }
+        }
+    }
+
     pieceDisplay() {
         this.scene.pushMatrix();
             this.scene.scale(1, .2, 1);
@@ -89,13 +101,15 @@ class Board extends CGFobject {
     update(deltaTime) {
         for (var i = 0; i < this.currAnimations.length; i++) {
             // Animation finished, since all animations have the same span it is safe to remove from back
-            if (this.currAnimations[i].update(deltaTime) == deltaTime)
-                // YO, OVER HERE BRAH ----> Add piece to board structure
+            if (this.currAnimations[i].animation.update(deltaTime) == deltaTime) {
+                this.boardCells[this.currAnimations[0].line][this.currAnimations[0].column] = 1;
                 this.currAnimations.shift();
+            }
         }
     }
 
     display() {
+        // Static Objects
         this.scene.pushMatrix();
             // Bases for the pieces on the side
             this.scene.pushMatrix();
@@ -130,6 +144,8 @@ class Board extends CGFobject {
                 this.scene.translate(-1.5, .05, .5);
                 this.stackDisplay(this.whiteStacks);
             this.scene.popMatrix();
+            // - Board Pieces
+            this.cellsDisplay('white');
 
             // Black Pieces
             this.blackAppearance.apply();
@@ -138,13 +154,15 @@ class Board extends CGFobject {
                 this.scene.translate(1.5, .05, -.5);
                 this.stackDisplay(this.blackStacks);
             this.scene.popMatrix();
+            // - Board Pieces
+            this.cellsDisplay('black');
         this.scene.popMatrix();
 
         // Animations
         this.whiteAppearance.apply();
         for (var i in this.currAnimations) {
             this.scene.pushMatrix();
-                this.currAnimations[i].apply();
+                this.currAnimations[i].animation.apply();
                 this.pieceDisplay();
             this.scene.popMatrix();
         }
@@ -155,7 +173,7 @@ class Board extends CGFobject {
             for (var i = 0; i < 13; i++) {
                 for (var j = 0; j < 13; j++) {
                     this.scene.pushMatrix();
-                        this.scene.translate(-.84 + .14 * i, .052, -.84 + .14 * j);
+                        this.scene.translate(-.84 + .14 * j, .052, -.84 + .14 * i);
                         this.scene.scale(.07, 1, .07);
 
                         var id = j * 13 + i;

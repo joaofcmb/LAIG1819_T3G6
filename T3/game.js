@@ -49,6 +49,26 @@ class Game extends CGFobject {
             this.playerTwo['playerID'] = this.difficulty;
         }        
     }
+
+    gameStep() {
+         // Detect picking from board
+         var pickId = this.scene.getPicks()[0];
+        
+         if (pickId-- && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
+             // Picking variables
+             var cellLine = Math.floor(pickId / 13); 
+             var cellColumn = pickId % 13;
+             
+             this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
+ 
+             this.addPiece(cellLine, cellColumn);
+ 
+         }
+         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
+             
+             this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo);
+         }
+    }
     
     /**
      * Exit's current game by terminating Prolog connection
@@ -95,23 +115,8 @@ class Game extends CGFobject {
     }
 
     display() {
-        // Detect picking from board
-        var pickId = this.scene.getPicks()[0];
-        
-        if (pickId-- && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
-            // Picking variables
-            var cellLine = Math.floor(pickId / 13); 
-            var cellColumn = pickId % 13;
-            
-            this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
-
-            this.addPiece(cellLine, cellColumn);
-
-        }
-        else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
-            
-            this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo);
-        }
+        // Updates game state
+        this.gameStep();
 
         // Draw game (board)
         this.board.display();

@@ -104,7 +104,7 @@ class Board extends CGFobject {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
                 this.scene.translate(this.stackTranslate[i][0], .0035, this.stackTranslate[i][1]);
-                for (var j = 0; j < this.stacks[type].length; j++) {
+                for (var j = 0; j < this.stacks[type][i]; j++) {
                     this.pieceDisplay();
                     this.scene.translate(0, .007, 0);
                 }

@@ -144,7 +144,7 @@ class Board extends CGFobject {
                         this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
                         break;
                     case 'remove':
-                        this.stack[fAnim.stackType][fAnim.stackI]++;
+                        this.stacks[fAnim.stackType][fAnim.stackI]++;
                         break;
                 }
             }

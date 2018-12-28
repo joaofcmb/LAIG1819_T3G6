@@ -38,8 +38,8 @@ class Game extends CGFobject {
 
         // Initialize game variables
         this.board = new Board(this.scene);
-        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; //this.currPlayer = this.playerOne;
-        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.currPlayer = this.playerTwo;
+        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
+        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
 
         if(this.gameMode == 'Player vs AI') {
             this.playerTwo['playerID'] = this.difficulty;
@@ -55,20 +55,55 @@ class Game extends CGFobject {
          var pickId = this.scene.getPicks()[0];
         
          if (pickId-- && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
-             // Picking variables
-             var cellLine = Math.floor(pickId / 13); 
-             var cellColumn = pickId % 13;
-             
-             var response = this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo, cellLine, cellColumn);
- 
-            console.log(response);
-             this.board.addPiece(cellLine, cellColumn);
- 
+            // Picking variables
+            var cellLine = Math.floor(pickId / 13); 
+            var cellColumn = pickId % 13;
+            
+            var response = this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer, 13 - cellColumn, cellLine + 1);
+            this.updatedGameState(response.substring(1, response.length - 1));
+
+            this.board.addPiece(cellLine, cellColumn);
+        
          }
-         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
-             
-             this.logic.gameStep(this.board.boardCells, this.playerOne, this.playerTwo);
+         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {                         
+            
+            // Not done yet //
+            this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer);
          }
+
+    }
+
+    updatedGameState(response) {
+        // Board information
+        var boardDifferences = response.split(",")[0].substring(1, response.split(",")[0].length - 1).split(",");
+        
+        // Updates board internal representation
+        for(var index = 0; index < boardDifferences.length; index++) {
+            var difference = boardDifferences[index].match(/[0-9]+-[0-9]+-[0-9]+/)[0].split("-");
+            var line = Number(difference[0]) - 1;
+            var column = Number(difference[1]) - 1;
+            var element = Number(difference[2]);
+
+            this.board.boardContent[line][column] = element;
+        } 
+
+        // Players information
+        var playerInfo = [response.split(",")[1], response.split(",")[2]];
+        
+        if(this.currPlayer == this.playerOne) {
+            this.playerOne['captures'] = Number(playerInfo[0].split("-")[2]);
+            this.playerOne['currSequence'] = Number(playerInfo[0].split("-")[3]);
+
+            this.currPlayer = this.playerTwo;
+            this.nextPlayer = this.playerOne;
+        }
+        else {
+            this.playerTwo['captures'] = Number(playerInfo[0].split("-")[2]);
+            this.playerTwo['currSequence'] = Number(playerInfo[0].split("-")[3]);
+
+            this.currPlayer = this.playerOne;
+            this.nextPlayer = this.playerTwo;
+        } 
     }
     
     /**

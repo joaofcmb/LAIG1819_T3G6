@@ -309,24 +309,25 @@ move(Board, NewBoard, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenc
 % +Score:			Score of the game state (Used to evaluate AI movements and end states) Range:[-100, 100].
 game_over(_, _, _, _, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
 game_over(_, NewBoard, _, _, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
-game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 0, Diff), 
-																		write(Diff), nl,
-																		nextMove(Res, NewBoard, NewNextPlayer, NewCurrPlayer), !.
+game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff), 
+																		nextMove(Res, Diff, NewNextPlayer, NewCurrPlayer), !.
 													
-nextMove([Board, CurrPlayer, NextPlayer], Board, CurrPlayer, NextPlayer).
+nextMove([Board, CurrPlayerID-CurrPiece-CurrCaptureNo-CurrSequenceNo, NextPlayerID-NextPiece-NextCaptureNo-NextSequenceNo], Board, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenceNo), player(NextPlayerID, NextPiece, NextCaptureNo, NextSequenceNo)).
 
-board_diff([], [], _, _).
-board_diff([H1|T1], [H2|T2], CurrLine, Diff):-  board_diff_line(H1, H2, CurrLine, 0, Diff), 
-												NewCurrLine is CurrLine + 1,
-												board_diff(T1, T2, NewCurrLine, Diff).
+board_diff([], [], _, Diff, Diff).
+board_diff([H1|T1], [H2|T2], CurrLine, TmpDiff, Diff):-  	board_diff_line(H1, H2, CurrLine, 1, [], Tmp), 
+															append(TmpDiff, Tmp, NewTmpDiff),
+															NewCurrLine is CurrLine - 1,
+															board_diff(T1, T2, NewCurrLine, NewTmpDiff, Diff).
 												
-board_diff_line([], [], _, _, []).																															
-board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, Diff):- 	H1 \= H2, % Adicionar ao diff as alteracoes
-																NewCurrCol is CurrCol + 1,
-																board_diff_line(T1, T2, CurrLine, NewCurrCol, Diff).
-board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, Diff):- 	H1 =:= H2, 
-																NewCurrCol is CurrCol + 1,
-																board_diff_line(T1, T2, CurrLine, NewCurrCol, Diff).																							
+board_diff_line([], [], _, _, Diff, Diff).																															
+board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, TmpDiff, Diff):- 	H1 \= H2,
+																		append(TmpDiff, [diff(CurrLine-CurrCol-H2)], NewTmpDiff),
+																		NewCurrCol is CurrCol + 1,
+																		board_diff_line(T1, T2, CurrLine, NewCurrCol, NewTmpDiff, Diff).
+board_diff_line([H1|T1], [H2|T2], CurrLine, CurrCol, TmpDiff, Diff):- 	H1 =:= H2, 
+																		NewCurrCol is CurrCol + 1,
+																		board_diff_line(T1, T2, CurrLine, NewCurrCol, TmpDiff, Diff).																							
 																							
 																							
 																

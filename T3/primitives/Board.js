@@ -28,6 +28,7 @@ class Board extends CGFobject {
     initBoard() {
         this.model = {'none': 0, 'white': 1, 'black': 2};
 
+        this.boardContent = new Array(13).fill(0).map(() => new Array(13).fill(this.model['none']));
         this.boardCells = new Array(13).fill(0).map(() => new Array(13).fill(this.model['none']));
         this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }

@@ -54,12 +54,12 @@ class Game extends CGFobject {
          // Detect picking from board
          var pickId = this.scene.getPicks()[0];
         
-         if (pickId && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
+         if (--pickId && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
             // Picking variables
-            var cellLine = Math.floor(pickId / 13) + 1; 
+            var cellLine = Math.floor(pickId / 13);
             var cellColumn = pickId % 13;
             
-            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, cellLine, cellColumn);
+            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, cellLine + 1, cellColumn + 1);
             this.updatedGameState(response.substring(1, response.length - 1));
          }
          else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {                         

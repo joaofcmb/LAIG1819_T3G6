@@ -59,16 +59,13 @@ class Game extends CGFobject {
             var cellLine = Math.floor(pickId / 13); 
             var cellColumn = pickId % 13;
             
-            var response = this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer, 13 - cellColumn, cellLine + 1);
+            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, 13 - cellColumn, cellLine + 1);
             this.updatedGameState(response.substring(1, response.length - 1));
-
-            this.board.addPiece(cellLine, cellColumn);
-        
          }
          else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {                         
             
             // Not done yet //
-            this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer);
+            //this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer);
          }
 
     }
@@ -80,11 +77,14 @@ class Game extends CGFobject {
         // Updates board internal representation
         for(var index = 0; index < boardDifferences.length; index++) {
             var difference = boardDifferences[index].match(/[0-9]+-[0-9]+-[0-9]+/)[0].split("-");
-            var line = Number(difference[0]) - 1;
-            var column = Number(difference[1]) - 1;
+            var cellLine = Number(difference[0]) - 1;
+            var cellColumn = Number(difference[1]) - 1;
             var element = Number(difference[2]);
 
-            this.board.boardContent[line][column] = element;
+            if(element != 0)
+                this.board.addPiece(cellLine, cellColumn, element);
+            else
+                this.board.removePiece(cellLine, cellColumn);
         } 
 
         // Players information

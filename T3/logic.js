@@ -44,9 +44,9 @@ class Logic {
 
     buildBoardString(board) {
         var string = "[";
-        for (var i = 0; i < board.length; i++) {
+        for (var i = board.length - 1; i >= 0; i--) {
             string += "[" + board[i] + "]";
-            string += i != (board.length - 1) ? "," : "";
+            string += i != 0 ? "," : "";
         }
         return string + "]";
     }

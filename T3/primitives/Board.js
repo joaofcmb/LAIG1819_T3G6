@@ -83,7 +83,7 @@ class Board extends CGFobject {
     removePiece(cellLine, cellColumn) {
         var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
         var stackI = this.stacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
-
+        
         var stackPos = vec3.fromValues(
             this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
             .0535 + (--this.stacks[stackType][stackI] * .007),

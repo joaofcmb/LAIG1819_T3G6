@@ -309,7 +309,8 @@ move(Board, NewBoard, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenc
 % +Score:			Score of the game state (Used to evaluate AI movements and end states) Range:[-100, 100].
 game_over(_, _, _, _, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
 game_over(_, NewBoard, _, _, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
-game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff), 
+game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff),
+																		write(NewBoard), nl,
 																		nextMove(Res, Diff, NewNextPlayer, NewCurrPlayer), !.
 													
 nextMove([Board, CurrPlayerID-CurrPiece-CurrCaptureNo-CurrSequenceNo, NextPlayerID-NextPiece-NextCaptureNo-NextSequenceNo], Board, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenceNo), player(NextPlayerID, NextPiece, NextCaptureNo, NextSequenceNo)).

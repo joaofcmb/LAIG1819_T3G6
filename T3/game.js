@@ -38,8 +38,8 @@ class Game extends CGFobject {
 
         // Initialize game variables
         this.board = new Board(this.scene);
-        this.playerOne = {playerID: 'playerOne', piece: 1, captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
-        this.playerTwo = {playerID: 'playerTwo', piece: 2, captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
+        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
+        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
 
         if(this.gameMode == 'Player vs AI') {
             this.playerTwo['playerID'] = this.difficulty;
@@ -72,8 +72,8 @@ class Game extends CGFobject {
 
     updatedGameState(response) { console.log("RESPONSE: " + response);
         // Board information
-        var boardDifferences = response.split(",")[0].substring(1, response.split(",")[0].length - 1).split(",");
-        
+        var boardDifferences = response.match(/\[.*\]/)[0].substring(1, response.match(/\[.*\]/)[0].length - 1).split(",");
+             
         // Updates board internal representation
         for(var index = 0; index < boardDifferences.length; index++) {
             var difference = boardDifferences[index].match(/[0-9]+-[0-9]+-[0-9]+/)[0].split("-");
@@ -83,12 +83,12 @@ class Game extends CGFobject {
 
             if (element != 0)  
                 this.board.addPiece(cellLine, cellColumn, element);
-            else
-                this.board.removePiece(cellLine, cellColumn);
+            else 
+                this.board.removePiece(cellLine, cellColumn);                
         } 
 
         // Players information
-        var playerInfo = [response.split(",")[1], response.split(",")[2]];
+        var playerInfo = [response.match(/\].*/)[0].split(",")[1], response.match(/\].*/)[0].split(",")[2]];
         
         if(this.currPlayer == this.playerOne) {
             this.playerOne['captures'] = Number(playerInfo[0].split("-")[2]);
@@ -104,6 +104,9 @@ class Game extends CGFobject {
             this.currPlayer = this.playerOne;
             this.nextPlayer = this.playerTwo;
         } 
+
+        /* console.log(this.currPlayer);
+        console.log(this.nextPlayer); */
     }
     
     /**

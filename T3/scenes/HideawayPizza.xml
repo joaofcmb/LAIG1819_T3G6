@@ -16,11 +16,17 @@
     </ambient>
 
     <lights>
-        <omni id="OmniLight" enabled="1">
-            <location x="10.0" y="6.0" z="15.0" w="1" />
+        <omni id="FrontLight" enabled="1">
+            <location x="10" y="6" z="10" w="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
-            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
+            <specular r="0.2" g="0.2" b="0.2" a="1.0" />
+        </omni>
+        <omni id="BackLight" enabled="1">
+            <location x="10" y="6" z="20" w="1" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
+            <specular r="0.2" g="0.2" b="0.2" a="1.0" />
         </omni>
     </lights>
 
@@ -31,9 +37,9 @@
     <materials>
         <material id="defaultMaterial" shininess="1.0">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-            <diffuse r="0.5" g="0.5" b="0.5" a="1.0" />
-            <specular r="0.3" g="0.3" b="0.3" a="1.0" />
+            <ambient r=".2" g=".2" b=".2" a="1.0" />
+            <diffuse r=".6" g=".6" b=".6" a="1.0" />
+            <specular r="0.2" g="0.2" b="0.2" a="1.0" />
         </material>
     </materials>
 
@@ -65,10 +71,10 @@
             </transformation>
 
             <materials>
-                <material id="inherit" />
+                <material id="defaultMaterial" />
             </materials>
 
-                <texture id="none"/>
+            <texture id="none"/>
 
             <children>
                 <componentref id="outer_structure" />
@@ -819,7 +825,6 @@
                                     <children>
                                         <primitiveref id="cilinder" />
                                     </children>
-                                </component>
-                    
+                                </component>                   
     </components>
 </yas>

@@ -38,8 +38,8 @@ class Game extends CGFobject {
 
         // Initialize game variables
         this.board = new Board(this.scene);
-        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
-        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
+        this.playerOne = {playerID: 'playerOne', piece: 1, captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
+        this.playerTwo = {playerID: 'playerTwo', piece: 2, captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
 
         if(this.gameMode == 'Player vs AI') {
             this.playerTwo['playerID'] = this.difficulty;
@@ -53,13 +53,13 @@ class Game extends CGFobject {
     gameStep() {
          // Detect picking from board
          var pickId = this.scene.getPicks()[0];
-        
-         if (--pickId && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
+
+         if (pickId-- && this.state && (this.currPlayer['playerID'] == 'playerOne' || this.currPlayer['playerID'] == 'playerTwo')) { 
             // Picking variables
-            var cellLine = Math.floor(pickId / 13);
-            var cellColumn = pickId % 13;
+            var cellLine = Math.floor(pickId / 13) + 1;
+            var cellColumn = pickId % 13 + 1;
             
-            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, cellLine + 1, cellColumn + 1);
+            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, cellLine, cellColumn);
             this.updatedGameState(response.substring(1, response.length - 1));
          }
          else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {                         
@@ -70,7 +70,7 @@ class Game extends CGFobject {
 
     }
 
-    updatedGameState(response) {
+    updatedGameState(response) { console.log("RESPONSE: " + response);
         // Board information
         var boardDifferences = response.split(",")[0].substring(1, response.split(",")[0].length - 1).split(",");
         
@@ -81,8 +81,10 @@ class Game extends CGFobject {
             var cellColumn = Number(difference[1]) - 1;
             var element = Number(difference[2]);
 
-            if (element != 0)   this.board.addPiece(cellLine, cellColumn, element);
-            else                this.board.removePiece(cellLine, cellColumn);
+            if (element != 0)  
+                this.board.addPiece(cellLine, cellColumn, element);
+            else
+                this.board.removePiece(cellLine, cellColumn);
         } 
 
         // Players information

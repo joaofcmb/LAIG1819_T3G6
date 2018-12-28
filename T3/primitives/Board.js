@@ -140,6 +140,7 @@ class Board extends CGFobject {
 
                 switch(fAnim.animation.type) {
                     case 'add':
+                        
                         this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
                         break;
                     case 'remove':

@@ -31,7 +31,7 @@
     </lights>
 
     <textures>
-        <texture id="camo" file="./scenes/images/camo.jpg" />
+        <texture id="wood" file="./scenes/images/wood.jpg" />
     </textures>
 
     <materials>
@@ -77,7 +77,7 @@
                 <material id="inherit" />
             </materials>
 
-                <texture id="camo" length_s="1.0" length_t="1.0"/>
+            <texture id="wood" length_s="1.0" length_t="1.0"/>
 
             <children>
                 <!-- <componentref id="outer_structure" />
@@ -274,7 +274,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="camo" length_s="1.0" length_t="1.0"/>
+                        <texture id="wood" length_s="1.0" length_t="1.0"/>
 
                         <children>
                             <componentref id="bar_top_main" />
@@ -325,7 +325,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="camo" length_s="1.0" length_t="1.0"/>
+                        <texture id="wood" length_s="1.0" length_t="1.0"/>
 
                         <children>
                             <componentref id="bar_side_main" />

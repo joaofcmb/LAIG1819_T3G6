@@ -28,7 +28,6 @@ class Board extends CGFobject {
     initBoard() {
         this.model = {'none': 0, 'white': 1, 'black': 2};
 
-        this.boardContent = new Array(13).fill(0).map(() => new Array(13).fill(this.model['none']));
         this.boardCells = new Array(13).fill(0).map(() => new Array(13).fill(this.model['none']));
         this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }
@@ -45,47 +44,67 @@ class Board extends CGFobject {
     }
 
     initStack() {
+        this.stacks = {
+            'white': new Array(5).fill(40), 
+            'black': new Array(5).fill(40)
+        }
+
+        this.stackTypeTranslate = {
+            'white': [-1.5, .5],
+            'black': [1.5, -.5]
+        }
+
         this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
-        this.whiteStacks = new Array(5).fill(40);
-        this.blackStacks = new Array(5).fill(40);
     }
 
     initAnimations() {
         this.currAnimations = [];
     }
     
-    addPiece(cellLine, cellColumn) {
-        var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
+    addPiece(cellLine, cellColumn, element) {
+        var stackType = Object.keys(this.model).find(key => this.model[key] == element);
+        var stackI = this.stacks[stackType].reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
-        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], .0535 + (--this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .0545, -.84 + .14 * cellColumn);
+        var stackPos = vec3.fromValues(
+            this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
+            .0535 + (--this.stacks[stackType][stackI] * .007),
+            this.stackTypeTranslate[stackType][1] + this.stackTranslate[stackI][1]
+        );
+        var cellPos = vec3.fromValues(-.84 + .14 * cellColumn, .0545, .84 - .14 * cellLine);
 
         this.currAnimations.push({
             animation: new PieceAnimation(this.scene, stackPos, cellPos, 'add'), 
+            stackType: stackType,
             line: cellLine, 
             column: cellColumn
         });
     }
 
     removePiece(cellLine, cellColumn) {
-        var stackI = this.whiteStacks.reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
+        var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
+        var stackI = this.stacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
 
-        var stackPos = vec3.fromValues(-1.5 + this.stackTranslate[stackI][0], .0535 + (this.whiteStacks[stackI] * .007), .5 + this.stackTranslate[stackI][1]);
-        var cellPos = vec3.fromValues(-.84 + .14 * cellLine, .0545, -.84 + .14 * cellColumn);
+        var stackPos = vec3.fromValues(
+            this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
+            .0535 + (--this.stacks[stackType][stackI] * .007),
+            this.stackTypeTranslate[stackType][1] + this.stackTranslate[stackI][1]
+        );
+        var cellPos = vec3.fromValues(-.84 + .14 * cellColumn, .0545, .84 - .14 * cellLine);
 
         this.boardCells[cellLine][cellColumn] = this.model['none'];
 
         this.currAnimations.push({
-            animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'), 
+            animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'),
+            stackType: stackType,
             stackI: stackI
         });
     }
 
-    stackDisplay(stack) {
+    stackDisplay(type) {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
                 this.scene.translate(this.stackTranslate[i][0], .0035, this.stackTranslate[i][1]);
-                for (var j = 0; j < stack[i]; j++) {
+                for (var j = 0; j < this.stacks[type].length; j++) {
                     this.pieceDisplay();
                     this.scene.translate(0, .007, 0);
                 }
@@ -93,12 +112,12 @@ class Board extends CGFobject {
         }
     }
 
-    cellsDisplay(modelID) {
+    cellsDisplay(type) {
         for (var i = 0; i < 13; i++) {
             for (var j = 0; j < 13; j++) {
-                if (this.boardCells[i][j] == this.model[modelID]) {
+                if (this.boardCells[i][j] == this.model[type]) {
                     this.scene.pushMatrix();
-                        this.scene.translate(-.84 + .14 * i, .0545, -.84 + .14 * j);
+                        this.scene.translate(-.84 + .14 * j, .0545, .84 - .14 * i);
                         this.pieceDisplay();
                     this.scene.popMatrix();
                 }
@@ -121,10 +140,10 @@ class Board extends CGFobject {
 
                 switch(fAnim.animation.type) {
                     case 'add':
-                        this.boardCells[fAnim.line][fAnim.column] = 1;
+                        this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
                         break;
                     case 'remove':
-                        this.whiteStacks[fAnim.stackI]++;
+                        this.stack[fAnim.stackType][fAnim.stackI]++;
                         break;
                 }
             }
@@ -165,30 +184,35 @@ class Board extends CGFobject {
             //  - Stack Pieces
             this.scene.pushMatrix();
                 this.scene.translate(-1.5, .05, .5);
-                this.stackDisplay(this.whiteStacks);
+                this.stackDisplay('white');
             this.scene.popMatrix();
             // - Board Pieces
             this.cellsDisplay('white');
+            // - Animation Pieces
+            for (var i in this.currAnimations.filter(fAnim => fAnim.stackType == 'white')) {
+                this.scene.pushMatrix();
+                    this.currAnimations[i].animation.apply();
+                    this.pieceDisplay();
+                this.scene.popMatrix();
+            }
 
             // Black Pieces
             this.blackAppearance.apply();
             //  - Stack Pieces
             this.scene.pushMatrix();
                 this.scene.translate(1.5, .05, -.5);
-                this.stackDisplay(this.blackStacks);
+                this.stackDisplay('black');
             this.scene.popMatrix();
             // - Board Pieces
             this.cellsDisplay('black');
+            // - Animation Pieces
+            for (var i in this.currAnimations.filter(fAnim => fAnim.stackType == 'black')) {
+                this.scene.pushMatrix();
+                    this.currAnimations[i].animation.apply();
+                    this.pieceDisplay();
+                this.scene.popMatrix();
+            }
         this.scene.popMatrix();
-
-        // Animations
-        this.whiteAppearance.apply();
-        for (var i in this.currAnimations) {
-            this.scene.pushMatrix();
-                this.currAnimations[i].animation.apply();
-                this.pieceDisplay();
-            this.scene.popMatrix();
-        }
 
         // Ghost objects for selecting board intersections
         if (this.picking) {
@@ -196,7 +220,7 @@ class Board extends CGFobject {
             for (var i = 0; i < 13; i++) {
                 for (var j = 0; j < 13; j++) {
                     this.scene.pushMatrix();
-                        this.scene.translate(-.84 + .14 * j, .052, -.84 + .14 * i);
+                        this.scene.translate(-.84 + .14 * i, .052, .84 - .14 * j);
                         this.scene.scale(.07, 1, .07);
 
                         var id = j * 13 + i;

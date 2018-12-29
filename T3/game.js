@@ -16,6 +16,7 @@ class Game extends CGFobject {
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.board = new Board(scene);
         this.logic = new Logic();
+        this.allMoves = [];
     }
     
     /**
@@ -53,7 +54,13 @@ class Game extends CGFobject {
         else if(this.gameMode == 'AI vs AI') {
             this.currPlayer['playerID'] = this.difficultyConverter[this.difficulty];
             this.nextPlayer['playerID'] = this.difficultyConverter[this.difficulty];
-        }        
+        }      
+        
+        // this.selectedTime = this.time;
+        this.selectedMode = this.gameMode;
+        this.selectedDifficulty = this.difficulty;
+        this.allMoves.push({differences: [], currPlayer: {playerID: this.currPlayer['playerID'], piece: this.currPlayer['piece'], captures: this.currPlayer['captures'], currSequence: this.currPlayer['currSequence']}, 
+                                             nextPlayer: {playerID: this.nextPlayer['playerID'], piece: this.nextPlayer['piece'], captures: this.nextPlayer['captures'], currSequence: this.nextPlayer['currSequence']}});
     }
 
     /**
@@ -91,16 +98,19 @@ class Game extends CGFobject {
     updatedGameState(response) {
         // Board information
         var boardDifferences = response.match(/\[.*\]/)[0].substring(1, response.match(/\[.*\]/)[0].length - 1).split(",");
-             
+        var diff = [];
+
         // Updates board internal representation
         for(var index = 0; index < boardDifferences.length; index++) {
             var difference = boardDifferences[index].match(/[0-9]+-[0-9]+-[0-9]+/)[0].split("-");
             var cellLine = Number(difference[0]) - 1;
             var cellColumn = Number(difference[1]) - 1;
-            var element = Number(difference[2]);
+            var cellelement = Number(difference[2]);
 
-            if (element != 0)  
-                this.board.addPiece(cellLine, cellColumn, element);
+            diff.push({line: cellLine, column: cellColumn, element: cellelement});
+
+            if (cellelement != 0)  
+                this.board.addPiece(cellLine, cellColumn, cellelement);
             else 
                 this.board.removePiece(cellLine, cellColumn);                
         } 
@@ -112,7 +122,7 @@ class Game extends CGFobject {
         this.currPlayer['captures'] = Number(playerInfo.split("-")[0]);
         this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
 
-        this.tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = this.tmpPlayer;
+        var tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = tmpPlayer;
 
         // Check possible winning or draw condition
         var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
@@ -124,6 +134,9 @@ class Game extends CGFobject {
             return this.exitGame();
         }        
 
+        this.allMoves.push({differences: diff,  currPlayer: {playerID: this.currPlayer['playerID'], piece: this.currPlayer['piece'], captures: this.currPlayer['captures'], currSequence: this.currPlayer['currSequence']}, 
+                                                nextPlayer: {playerID: this.nextPlayer['playerID'], piece: this.nextPlayer['piece'], captures: this.nextPlayer['captures'], currSequence: this.nextPlayer['currSequence']}});
+    
         console.log("Request successful.");
     }
     
@@ -148,9 +161,34 @@ class Game extends CGFobject {
         }
     }
 
-    // TODO ----- Replay should be made first in order to store moves and then undo is going back 2 moves.
+    /**
+     * Undos a certain amount of maden moves depending on the selected game mode.
+     */
     undo() {
-        console.log("undo");
+        if(this.selectedMode != 'AI vs AI' && (this.allMoves.length > 1) && ((this.currPlayer['playerID'] == 'playerOne') || (this.currPlayer['playerID'] == 'playerTwo'))) {
+            var currNumUndo = 0;
+            var numberOfUndos = this.selectedMode == 'Player vs Player' ? 1 : 2;
+
+            while(currNumUndo < numberOfUndos) {
+                var lastMove = this.allMoves.pop();
+
+                for(var index = 0; index < lastMove['differences'].length; index++) {
+                    var cellLine = lastMove['differences'][index]['line'];
+                    var cellColumn = lastMove['differences'][index]['column'];
+                    var cellelement = lastMove['differences'][index]['element'];
+                    
+                    if (cellelement != 0)  
+                        this.board.removePiece(cellLine, cellColumn);
+                    else 
+                        this.board.addPiece(cellLine, cellColumn, cellelement);
+
+                    this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
+                    this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
+                }
+
+                currNumUndo++;
+            }
+        }
     }
 
     replay() {

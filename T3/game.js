@@ -9,12 +9,13 @@ class Game extends CGFobject {
         // True - Playing. False otherwise
         this.state  = false;    
 
-        this.difficulty = {}; this.difficulty = 'Medium';
+        this.difficulty = {}; this.difficulty = 'Easy';
+        this.difficultyConverter = {Easy: 'easyAI', Medium: 'mediumAI', Hard: 'hardAI'}
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.board = new Board(scene);
         this.logic = new Logic();
     }
-
+    
     /**
      * Initializes game 
      */
@@ -38,15 +39,15 @@ class Game extends CGFobject {
 
         // Initialize game variables
         this.board = new Board(this.scene);
-        this.playerOne = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; this.currPlayer = this.playerOne;
-        this.playerTwo = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0}; this.nextPlayer = this.playerTwo;
+        this.currPlayer = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; 
+        this.nextPlayer = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
 
-        if(this.gameMode == 'Player vs AI') {
-            this.playerTwo['playerID'] = this.difficulty;
+        if(this.gameMode == 'Player vs AI') {            
+            this.nextPlayer['playerID'] = this.difficultyConverter[this.difficulty];            
         }
         else if(this.gameMode == 'AI vs AI') {
-            this.playerOne['playerID'] = this.difficulty;
-            this.playerTwo['playerID'] = this.difficulty;
+            this.currPlayer['playerID'] = this.difficultyConverter[this.difficulty];
+            this.nextPlayer['playerID'] = this.difficultyConverter[this.difficulty];
         }        
     }
 
@@ -59,18 +60,22 @@ class Game extends CGFobject {
             var cellLine = Math.floor(pickId / 13) + 1;
             var cellColumn = pickId % 13 + 1;
             
+            console.log("Command: Player Move !");
+
             var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer, cellLine, cellColumn);
             this.updatedGameState(response.substring(1, response.length - 1));
          }
-         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {                         
-            
-            // Not done yet //
-            //this.logic.gameStep(this.board.boardContent, this.currPlayer, this.nextPlayer);
+         else if(this.state && (this.currPlayer['playerID'] != 'playerOne') && (this.currPlayer['playerID'] != 'playerTwo')) {            
+            console.log("Command: Player Move !");
+
+            // AI move
+            var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer);
+            this.updatedGameState(response.substring(1, response.length - 1));
          }
 
     }
 
-    updatedGameState(response) { console.log("RESPONSE: " + response);
+    updatedGameState(response) {
         // Board information
         var boardDifferences = response.match(/\[.*\]/)[0].substring(1, response.match(/\[.*\]/)[0].length - 1).split(",");
              
@@ -88,25 +93,30 @@ class Game extends CGFobject {
         } 
 
         // Players information
-        var playerInfo = [response.match(/\].*/)[0].split(",")[1], response.match(/\].*/)[0].split(",")[2]];
+        var playerInfo = response.match(/\].*/)[0].split(",")[1];
         
-        if(this.currPlayer == this.playerOne) {
-            this.playerOne['captures'] = Number(playerInfo[0].split("-")[2]);
-            this.playerOne['currSequence'] = Number(playerInfo[0].split("-")[3]);
+        // Updates player information
+        this.currPlayer['captures'] = Number(playerInfo.split("-")[0]);
+        this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
 
-            this.currPlayer = this.playerTwo;
-            this.nextPlayer = this.playerOne;
-        }
-        else {
-            this.playerTwo['captures'] = Number(playerInfo[0].split("-")[2]);
-            this.playerTwo['currSequence'] = Number(playerInfo[0].split("-")[3]);
+        this.tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = this.tmpPlayer;
+        
+        // Displays player's previous information
+        /* console.log("------ Player Information - BEGIN ------");
+        console.log(this.currPlayer); console.log(this.nextPlayer);
+        console.log("------ Player Information - END   ------"); */
 
-            this.currPlayer = this.playerOne;
-            this.nextPlayer = this.playerTwo;
-        } 
+        // Check possible winning or draw condition
+        var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
+        var gameState = response.match(/\].*/)[0].split(",")[2];
+    
+        if(gameState == '0' || gameState == '1') {
+            console.log("Request successful.");
+            console.log(endGameMessage[gameState]);
+            return this.exitGame();
+        }        
 
-        /* console.log(this.currPlayer);
-        console.log(this.nextPlayer); */
+        console.log("Request successful.");
     }
     
     /**

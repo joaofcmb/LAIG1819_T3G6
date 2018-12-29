@@ -38,7 +38,7 @@ class Logic {
         if(line && column) {
             requestString += ","  + line + "," + column;
         }                                       
-        console.log(requestString);
+        
         return this.makePrologRequest(requestString + ")");
     }
 

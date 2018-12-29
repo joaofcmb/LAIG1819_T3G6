@@ -124,19 +124,19 @@ max(Max, CurrMax, [_|T]) :- max(Max, CurrMax, T).
 
 
 % Initial State of Board:					 
-initialBoard('13x13', [ 	['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-							['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
+initialBoard('13x13', [ 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 						 ]).				 
 
 % Symbol converter
@@ -155,10 +155,10 @@ optionConverter(3,'hardAI').
 % +BoardSize:   Specifies the board size 
 % +NumCaptures: Number of captures needed to be made in order to win the game in the specified board size
 % +NumSequence: Number of pieces in a row needed in order to win the game in the specified board size
-winning_conditions(7 , 5 , 4).
-winning_conditions(9 , 7 , 4).
 winning_conditions(13, 10, 5).
 
+% Board size converter
+boardSizeConverter(13,'13x13').
 
 % Retrieves the dimensions of a rectangular board.
 
@@ -270,9 +270,9 @@ setLine(LinNo, MaxLines, NewLine, [H|Told], [H|Tnew]) :-	LinNo < MaxLines,
 parse_input(startGame, success).
 parse_input(gameStep(Board, CurrPlayer, NextPlayer, Line, Column), Res):- 	move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Line, Column, Score),
 																			game_over(Board, NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
-parse_input(gameStep(Board, CurrPlayer, NextPlayer, _), Res):-	aiDepth(CurrPlayer, Depth),
-																choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
-																game_over(Board, NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
+parse_input(gameStep(Board, CurrPlayer, NextPlayer), Res):-	aiDepth(CurrPlayer, Depth),
+															choose_move(Board, NewBoard, CurrPlayer, NextPlayer, NewCurrPlayer, Depth, Score),
+															game_over(Board, NewBoard, NextPlayer, NewCurrPlayer, Score, Res).
 parse_input(quit, success).
 															
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -307,13 +307,15 @@ move(Board, NewBoard, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenc
 % +NewCurrPlayer:	Internal Representation of the Player going to play the next turn. 
 % +NewNextPlayer:	Internal Representation of the opponent of the Player playing the next turn.
 % +Score:			Score of the game state (Used to evaluate AI movements and end states) Range:[-100, 100].
-game_over(_, _, _, _, 100, Res) :- 	Res is 0. 	% The player who played the previous turn won the game (NewNextPlayer).
-game_over(_, NewBoard, _, _, _, Res) 	:-  fullBoard(NewBoard), Res is 1.
-game_over(Board, NewBoard, NewCurrPlayer, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff),
-																		write(NewBoard), nl,
-																		nextMove(Res, Diff, NewNextPlayer, NewCurrPlayer), !.
+game_over(Board, NewBoard, _, NewNextPlayer, 100, Res)  :- 	board_diff(Board, NewBoard, 13, [], Diff),
+															nextMove(Res, Diff, 0, NewNextPlayer). 	% The player who played the previous turn won the game (NewNextPlayer).
+game_over(Board, NewBoard, _, NewNextPlayer, _, Res) 	:-  fullBoard(NewBoard), 
+															board_diff(Board, NewBoard, 13, [], Diff),
+															nextMove(Res, Diff, 1, NewNextPlayer).
+game_over(Board, NewBoard, _, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff),
+															nextMove(Res, Diff, 2, NewNextPlayer).
 													
-nextMove([Board, CurrPlayerID-CurrPiece-CurrCaptureNo-CurrSequenceNo, NextPlayerID-NextPiece-NextCaptureNo-NextSequenceNo], Board, player(CurrPlayerID, CurrPiece, CurrCaptureNo, CurrSequenceNo), player(NextPlayerID, NextPiece, NextCaptureNo, NextSequenceNo)).
+nextMove([Diff, CurrCaptureNo-CurrSequenceNo, Status], Diff, Status, player(_, _, CurrCaptureNo, CurrSequenceNo)).
 
 board_diff([], [], _, Diff, Diff).
 board_diff([H1|T1], [H2|T2], CurrLine, TmpDiff, Diff):-  	board_diff_line(H1, H2, CurrLine, 1, [], Tmp), 
@@ -493,7 +495,7 @@ choose_move(Board, BestBoard, CurrPlayer, NextPlayer, BestCurrPlayer, _, Score) 
 choose_move(Board, BestBoard, CurrPlayer, NextPlayer, BestCurrPlayer, Depth, Score) :- 	choose_move(Board, BestBoard, CurrPlayer, NextPlayer, BestCurrPlayer, Depth, _, -100, 100), % Initial values of Alpha and Beta
 																						length(Board, Size),
 																						value(Size, BestCurrPlayer, NextPlayer, Score).
-choose_move(Board, BestBoard, CurrPlayer, NextPlayer, BestCurrPlayer, Depth, Score, Alpha, Beta) :-	valid_moves(Board, MoveList),
+choose_move(Board, BestBoard, CurrPlayer, NextPlayer, BestCurrPlayer, Depth, Score, Alpha, Beta) :-	valid_moves(Board, MoveList), 
 																									minimax(Board, BestBoard, MoveList, CurrPlayer, NextPlayer, BestCurrPlayer, Depth, Score, Alpha, Beta).
 
 																		
@@ -511,7 +513,7 @@ valid_moves(_, [], 0, _, _).
 valid_moves(Board, MoveList, LineSize, ColSize, 0) :- 	DecLine is LineSize - 1,
 														valid_moves(Board, MoveList, DecLine, ColSize, ColSize), !.
 
-valid_moves(Board, [move(LineSize, ColNum) | MoveList], LineSize, ColSize, ColNum) :- 	getPiece(LineSize, ColNum, Board, '0'),
+valid_moves(Board, [move(LineSize, ColNum) | MoveList], LineSize, ColSize, ColNum) :- 	getPiece(LineSize, ColNum, Board, 0),
 																						!,
 																						DecColNum is ColNum - 1,
 																						valid_moves(Board, MoveList, LineSize, ColSize, DecColNum).
@@ -598,7 +600,7 @@ compareMoves(_, _, _, NewBoard2, NewCurrPlayer2, NewScore2, NewBoard2, NewCurrPl
 % -Score:			Score attributed to the game state in the interval [-100, 100], where a maximal score represents a better state for the current player.	
 value(Size, _, _, NextCaptureNo, NextSequenceNo, -100) :-	winning_conditions(Size, WinCaptureNo, WinSequenceNo),
 															(NextCaptureNo >= WinCaptureNo ; NextSequenceNo >= WinSequenceNo). % Must come first, otherwise AI may think it won when progressing through the tree when it lost before.
-value(Size, CurrCaptureNo, CurrSequenceNo, _, _, 100)	 :-	winning_conditions(Size, WinCaptureNo, WinSequenceNo),
+value(Size, CurrCaptureNo, CurrSequenceNo, _, _, 100)  :-	winning_conditions(Size, WinCaptureNo, WinSequenceNo), 
 															(CurrCaptureNo >= WinCaptureNo ; CurrSequenceNo >= WinSequenceNo).
 value(_, CurrCaptureNo, CurrSequenceNo, NextCaptureNo, NextSequenceNo, Score) 	:-	Score = CurrCaptureNo - NextCaptureNo + CurrSequenceNo - NextSequenceNo .
 

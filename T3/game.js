@@ -181,18 +181,36 @@ class Game extends CGFobject {
                         this.board.removePiece(cellLine, cellColumn);
                     else 
                         this.board.addPiece(cellLine, cellColumn, cellelement);
-
-                    this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
-                    this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
                 }
+
+                this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
+                this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
 
                 currNumUndo++;
             }
         }
     }
 
+    /**
+     * Shows all the moves performed so far
+     */
     replay() {
-        console.log("replay");
+        // Resets board state
+        this.board = new Board(this.scene);
+
+        //Shows all moves
+        for(var i = 1; i < this.allMoves.length; i++) {
+            for(var j = 0; j < this.allMoves[i]['differences'].length; j++) {
+                var cellLine = this.allMoves[i]['differences'][j]['line'];
+                var cellColumn = this.allMoves[i]['differences'][j]['column'];
+                var cellelement = this.allMoves[i]['differences'][j]['element'];
+                
+                if (cellelement != 0)  
+                    this.board.addPiece(cellLine, cellColumn, cellelement);
+                else 
+                    this.board.removePiece(cellLine, cellColumn);
+            }
+        }
     }
     
     update(deltaTime) {

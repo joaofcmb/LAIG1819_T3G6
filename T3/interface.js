@@ -129,7 +129,7 @@ class Interface extends CGFinterface {
 
         options.add(game, 'playGame').name('Play Game');
         options.add(game, 'undo').name('Undo');
-        options.add(game, 'exitGame').name('Exit Game');
         options.add(game, 'replay').name('Replay');
+        options.add(game, 'exitGame').name('Exit Game');
     }
 }

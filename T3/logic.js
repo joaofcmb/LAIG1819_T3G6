@@ -33,14 +33,14 @@ class Logic {
      * Establishes connection with the server.
      */
     initGame() {
-        return this.makePrologRequest(this.initCMD);
+        return this.makePrologRequest(this.initCMD) == 'success';
     }
 
     /**
      * Terminates connection with the server.
      */
     exitGame() {
-        return this.makePrologRequest(this.exitCMD);
+        return this.makePrologRequest(this.exitCMD) == 'success';
     }
 
     /**

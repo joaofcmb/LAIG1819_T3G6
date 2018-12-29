@@ -8,7 +8,7 @@
 class Board extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.picking = true;
+        this.picking = false;
 
         this.initComponents();
         this.initBoard();
@@ -149,6 +149,8 @@ class Board extends CGFobject {
                 }
             }
         }
+
+        return this.currAnimations.length;
     }
 
     display() {

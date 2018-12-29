@@ -239,11 +239,31 @@
                     <componentref id="tables" />
                     <!-- <componentref id="doors" /> -->
                     <!-- <componentref id="windows" /> -->
-                    <!-- <componentref id="mural" /> -->
+                    <componentref id="mural" />
                     <!-- <componentref id="jukebox" /> -->
                 </children>
             </component>
-            
+                
+                
+
+                <component id="mural">
+                    <transformation>
+                        <translate x="19.9" y="4.5" z="15" />
+                        <scale x="1" y="2" z="8.75" />
+                        <rotate axis="z" angle="90" />
+                    </transformation>
+
+                    <materials>
+                        <material id="inherit" />
+                    </materials>
+
+                    <texture id="camo" length_s="1.0" length_t="1.0" />
+
+                    <children>
+                        <primitiveref id="plane" />
+                    </children>
+                </component>
+
                 <component id="bar">
                     <transformation>
                     </transformation>
@@ -256,10 +276,10 @@
 
                     <children>
                         <componentref id="bar_top" />
-                        <componentref id="bar_sides" />
-                        <componentref id="bar_chairs" />
+                        <componentref id="bar_sides" />                        
                         <componentref id="bar_entrance" />
                         <componentref id="bar_background" />
+                        <componentref id="bar_chairs" />
                     </children>
                 </component>
 
@@ -485,13 +505,13 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="none" />
+                        <texture id="camo" length_s="1.0" length_t="1.0" />
 
                         <children>
                             <primitiveref id="plane" />
                         </children>
                     </component>
-
+    
                     <component id="bar_chairs">
                         <transformation>
                             <translate x="7.25" y="0" z="5" />

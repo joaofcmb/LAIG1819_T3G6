@@ -118,7 +118,6 @@ class Game extends CGFobject {
             var cellLine = Number(difference[0]) - 1;
             var cellColumn = Number(difference[1]) - 1;
             var element = Number(difference[2]);
-
             if (element != 0)  
                 this.board.addPiece(cellLine, cellColumn, element);
             else 

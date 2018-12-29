@@ -1,23 +1,25 @@
 /**
  * Pente game class
  */
-
 class Game extends CGFobject {
+    
+    /**
+     * Game class constructor.
+     * 
+     * @param {Object} scene 
+     */
     constructor(scene) {
         super(scene);
 
-        // True - Playing. False otherwise
-        this.state  = false;    
-
+        this.state  = false;  // True - Playing. False otherwise  
         this.difficulty = {}; this.difficulty = 'Easy';
-        this.difficultyConverter = {Easy: 'easyAI', Medium: 'mediumAI', Hard: 'hardAI'}
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.board = new Board(scene);
         this.logic = new Logic();
     }
     
     /**
-     * Initializes game 
+     * Initializes game.
      */
     playGame() {
         // Checks if there is a game in progress
@@ -42,6 +44,9 @@ class Game extends CGFobject {
         this.currPlayer = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; 
         this.nextPlayer = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
 
+        // Updates player info depending on the game mode selected
+        this.difficultyConverter = {Easy: 'easyAI', Medium: 'mediumAI', Hard: 'hardAI'}
+
         if(this.gameMode == 'Player vs AI') {            
             this.nextPlayer['playerID'] = this.difficultyConverter[this.difficulty];            
         }
@@ -51,6 +56,9 @@ class Game extends CGFobject {
         }        
     }
 
+    /**
+     * Executes a move made by the player/AI.
+     */
     gameStep() {
          // Detect picking from board
          var pickId = this.scene.getPicks()[0];
@@ -75,6 +83,11 @@ class Game extends CGFobject {
 
     }
 
+    /**
+     * Updates game state, both board internal representation and player information.
+     * 
+     * @param {String} response 
+     */
     updatedGameState(response) {
         // Board information
         var boardDifferences = response.match(/\[.*\]/)[0].substring(1, response.match(/\[.*\]/)[0].length - 1).split(",");
@@ -100,11 +113,6 @@ class Game extends CGFobject {
         this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
 
         this.tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = this.tmpPlayer;
-        
-        // Displays player's previous information
-        /* console.log("------ Player Information - BEGIN ------");
-        console.log(this.currPlayer); console.log(this.nextPlayer);
-        console.log("------ Player Information - END   ------"); */
 
         // Check possible winning or draw condition
         var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
@@ -120,7 +128,7 @@ class Game extends CGFobject {
     }
     
     /**
-     * Exit's current game by terminating Prolog connection
+     * Exit's current game by terminating Prolog connection.
      */
     exitGame() {
         // Checks if there is a game in progress
@@ -140,7 +148,7 @@ class Game extends CGFobject {
         }
     }
 
-    // TODO
+    // TODO ----- Replay should be made first in order to store moves and then undo is going back 2 moves.
     undo() {
         console.log("undo");
     }

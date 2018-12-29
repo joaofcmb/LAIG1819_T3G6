@@ -11,7 +11,8 @@ class Game extends CGFobject {
     constructor(scene) {
         super(scene);
 
-        this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIMATION: 4};
+        // Game States
+        this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIM_START: 4, ANIM_APPLY: 5};
         this.state = this.gameStates.IDLE;
 
         this.difficulty = {}; this.difficulty = 'Easy';
@@ -34,8 +35,6 @@ class Game extends CGFobject {
         console.log("Game Start successful.");
 
         // Initialize game variables
-        this.board = new Board(this.scene);
-
         this.humanPlayers = ['playerOne', 'playerTwo'];
         this.currPlayer = {playerID: 'playerOne', piece: '1', captures: 0, currSequence: 0}; 
         this.nextPlayer = {playerID: 'playerTwo', piece: '2', captures: 0, currSequence: 0};
@@ -52,7 +51,8 @@ class Game extends CGFobject {
         }
 
         this.endGame = false;
-        this.state = this.gameStates.ANIMATION;
+        this.board.reset();
+        this.state = this.gameStates.ANIM_START;
     }
 
     /**
@@ -95,7 +95,7 @@ class Game extends CGFobject {
             this.updatedGameState(response.substring(1, response.length - 1));
          }
          else {
-            console.log("Command: Player Move !");
+            console.log("Command: AI Move !");
 
             // AI move
             var response = this.logic.gameStep(this.board.boardCells, this.currPlayer, this.nextPlayer);
@@ -147,6 +147,23 @@ class Game extends CGFobject {
         console.log("Request successful.");
     }
 
+
+    updateAnimations(deltaTime) {
+        if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
+            if (this.endGame){
+                this.state = this.gameStates.IDLE;
+                return
+            } 
+
+            if (this.humanPlayers.includes(this.currPlayer['playerID'])) {
+                this.state = this.gameStates.PICKING;
+                this.board.picking = true;
+            }
+            else {
+                this.state = this.gameStates.TURN;
+            }
+        }
+    }
     
     update(deltaTime) {
         // Updates game state
@@ -160,23 +177,14 @@ class Game extends CGFobject {
                 break;
             case this.gameStates.TURN:
                 this.gameStep(this.pickId);
-                this.state = this.gameStates.ANIMATION;
+                this.state = this.gameStates.ANIM_START;
                 break;
-            case this.gameStates.ANIMATION:
-                if (!this.board.update(deltaTime)) {
-                    if (this.gameEnd){
-                        this.state = this.gameStates.IDLE;
-                        break;
-                    } 
-
-                    if (this.humanPlayers.includes(this.currPlayer['playerID'])) {
-                        this.state = this.gameStates.PICKING;
-                        this.board.picking = true;
-                    }
-                    else {
-                        this.state = this.gameStates.TURN;
-                    }
-                }
+            case this.gameStates.ANIM_START:
+                // This state resets the time for the animations
+                this.state = this.gameStates.ANIM_APPLY;
+                break;
+            case this.gameStates.ANIM_APPLY:
+                this.updateAnimations(deltaTime);
                 break;
         }
     }

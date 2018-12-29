@@ -44,8 +44,12 @@ class Board extends CGFobject {
     }
 
     initStack() {
-        this.stacks = {
-            'white': new Array(5).fill(40), 
+        this.viewStacks = {
+            'white': new Array(5).fill(40),
+            'black': new Array(5).fill(40)
+        }
+        this.modelStacks = {
+            'white': new Array(5).fill(40),
             'black': new Array(5).fill(40)
         }
 
@@ -63,11 +67,11 @@ class Board extends CGFobject {
     
     addPiece(cellLine, cellColumn, element) {
         var stackType = Object.keys(this.model).find(key => this.model[key] == element);
-        var stackI = this.stacks[stackType].reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
+        var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
 
         var stackPos = vec3.fromValues(
             this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
-            .0535 + (--this.stacks[stackType][stackI] * .007),
+            .0535 + (--this.modelStacks[stackType][stackI] * .007),
             this.stackTypeTranslate[stackType][1] + this.stackTranslate[stackI][1]
         );
         var cellPos = vec3.fromValues(-.84 + .14 * cellColumn, .0545, .84 - .14 * cellLine);
@@ -75,36 +79,45 @@ class Board extends CGFobject {
         this.currAnimations.push({
             animation: new PieceAnimation(this.scene, stackPos, cellPos, 'add'), 
             stackType: stackType,
-            line: cellLine, 
+            line: cellLine,
             column: cellColumn
         });
+
+        --this.viewStacks[stackType][stackI];
     }
 
     removePiece(cellLine, cellColumn) {
         var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
-        var stackI = this.stacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
+        var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
         
         var stackPos = vec3.fromValues(
             this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
-            .0535 + (--this.stacks[stackType][stackI] * .007),
+            .0535 + (this.modelStacks[stackType][stackI]++ * .007),
             this.stackTypeTranslate[stackType][1] + this.stackTranslate[stackI][1]
         );
         var cellPos = vec3.fromValues(-.84 + .14 * cellColumn, .0545, .84 - .14 * cellLine);
-
-        this.boardCells[cellLine][cellColumn] = this.model['none'];
 
         this.currAnimations.push({
             animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'),
             stackType: stackType,
             stackI: stackI
         });
+
+        this.boardCells[cellLine][cellColumn] = this.model['none'];
+    }
+
+    reset() {
+        for (var i = 0; i < 13; i++)
+            for (var j = 0; j < 13; j++)
+                if (this.boardCells[i][j] != this.model['none'])
+                    this.removePiece(i, j);
     }
 
     stackDisplay(type) {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
                 this.scene.translate(this.stackTranslate[i][0], .0035, this.stackTranslate[i][1]);
-                for (var j = 0; j < this.stacks[type][i]; j++) {
+                for (var j = 0; j < this.viewStacks[type][i]; j++) {
                     this.pieceDisplay();
                     this.scene.translate(0, .007, 0);
                 }
@@ -140,11 +153,10 @@ class Board extends CGFobject {
 
                 switch(fAnim.animation.type) {
                     case 'add':
-                        
                         this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
                         break;
                     case 'remove':
-                        this.stacks[fAnim.stackType][fAnim.stackI]++;
+                        this.viewStacks[fAnim.stackType][fAnim.stackI]++;
                         break;
                 }
             }

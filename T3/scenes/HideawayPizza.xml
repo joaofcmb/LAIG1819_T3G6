@@ -39,14 +39,12 @@
         <texture id="wc_man_door" file="./scenes/images/wc_man_door.jpg" />
         <texture id="wc_woman_door" file="./scenes/images/wc_woman_door.jpg" />
         <texture id="wall" file="./scenes/images/wall.jpg" />
-        <texture id="floor" file="./scenes/images/floor.png" />
+        <texture id="floor" file="./scenes/images/floor.jpg" />
         <texture id="table" file="./scenes/images/table.jpg" />
         <texture id="chair" file="./scenes/images/chair.jpg" />
-        <texture id="stool" file="./scenes/images/stool.jpg" />
         <texture id="counter" file="./scenes/images/counter.jpg" />
         <texture id="ceiling" file="./scenes/images/ceiling.jpg" />
         <texture id="lamp" file="./scenes/images/lamp.jpg" />
-        <texture id="inox" file="./scenes/images/inox.jpg" />
     </textures>
 
     <materials>
@@ -74,6 +72,9 @@
         <primitive id="cone">
             <cylinder base="1" top="0.5" height="1" slices="20" stacks="5" />
         </primitive>
+        <primitive id="rectangle">
+            <rectangle x1="-1.0" y1="-1.0" x2="1.0" y2="1.0" />
+        </primitive >
         <primitive id="plane">
             <plane npartsU="20" npartsV="20" />
         </primitive>
@@ -121,16 +122,17 @@
                     <transformation>
                         <translate x="10" y="0" z="15" />
                         <scale x="10" y="1" z="15" />
+                        <rotate axis="x" angle="-90" />
                     </transformation>
 
                     <materials>
                         <material id="inherit" />
                     </materials>
 
-                    <texture id="floor" length_s="1.0" length_t="1.0" />
+                    <texture id="floor" length_s="0.2" length_t="0.2" />
 
                     <children>
-                        <primitiveref id="plane" />
+                        <primitiveref id="rectangle" />
                     </children>
                 </component>
 
@@ -156,17 +158,16 @@
                             <transformation>
                                 <translate x="10" y="3.5" z="0" />
                                 <scale x="10" y="3.5" z="1" />
-                                <rotate axis="x" angle="90" />
                             </transformation>
 
                             <materials>
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="1.0" length_t="2.0"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -174,18 +175,17 @@
                             <transformation>
                                 <translate x="0" y="3.5" z="15" />
                                 <scale x="10" y="3.5" z="15" />
-                                <rotate axis="x" angle="-90" />
-                                <rotate axis="z" angle="-90" />
+                                <rotate axis="y" angle="90" />
                             </transformation>
 
                             <materials>
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="1.0" length_t="2.0"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -193,17 +193,17 @@
                             <transformation>
                                 <translate x="10" y="3.5" z="30" />
                                 <scale x="10" y="3.5" z="1" />
-                                <rotate axis="x" angle="-90" />
+                                <rotate axis="x" angle="180" />
                             </transformation>
 
                             <materials>
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="1.0" length_t="2.0"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -211,18 +211,17 @@
                             <transformation>
                                 <translate x="20" y="3.5" z="15" />
                                 <scale x="10" y="3.5" z="15" />
-                                <rotate axis="x" angle="-90" />
-                                <rotate axis="z" angle="90" />
+                                <rotate axis="y" angle="-90" />                                
                             </transformation>
 
                             <materials>
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="1.0" length_t="2.0"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -230,7 +229,7 @@
                     <transformation>
                         <translate x="10" y="7" z="15" />
                         <scale x="10" y="1" z="15" />
-                        <rotate axis="z" angle="180" />
+                        <rotate axis="x" angle="90" />
                     </transformation>
 
                     <materials>
@@ -240,7 +239,7 @@
                     <texture id="ceiling" length_s="1.0" length_t="1.0" />
 
                     <children>
-                        <primitiveref id="plane" />
+                        <primitiveref id="rectangle" />
                     </children>
                 </component>
             
@@ -358,7 +357,7 @@
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inox" length_s="1.0" length_t="1.0" />
+                            <texture id="table" length_s="1.0" length_t="1.0" />
 
                             <children>
                                 <primitiveref id="cylinder" />
@@ -566,6 +565,7 @@
                             <transformation>
                                 <translate x="5" y="2" z="15" />
                                 <scale x="1.25" y="1" z="11.25" />
+                                <rotate axis="z" angle="-90" />
                                 <rotate axis="y" angle="-90" />
                             </transformation>
 
@@ -573,10 +573,10 @@
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="0.25" length_t="1.0"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -619,18 +619,18 @@
                             <transformation>
                                 <translate x="6.25" y="1" z="15" />
                                 <scale x="2" y="1" z="11.25" />
-                                <rotate axis="x" angle="90" />
-                                <rotate axis="z" angle="-90" />
+                                <rotate axis="z" angle="90" />
+                                <rotate axis="x" angle="90" />                                
                             </transformation>
 
                             <materials>
                                 <material id="inherit" />
                             </materials>
 
-                            <texture id="inherit"/>
+                            <texture id="inherit" length_s="1.0" length_t="0.25"/>
 
                             <children>
-                                <primitiveref id="plane" />
+                                <primitiveref id="rectangle" />
                             </children>
                         </component>
 
@@ -763,8 +763,10 @@
                         <transformation>
                             <translate x="0.01" y="4.5" z="15" />
                             <scale x="1" y="2.5" z="8.75" />
+                            <rotate axis="x" angle="-90" /> 
+                            <rotate axis="z" angle="90" />
                             <rotate axis="x" angle="90" /> 
-                            <rotate axis="z" angle="-90" />
+                            
                         </transformation>
 
                         <materials>
@@ -774,7 +776,7 @@
                         <texture id="bar_background" length_s="1.0" length_t="1.0" />
 
                         <children>
-                            <primitiveref id="plane" />
+                            <primitiveref id="rectangle" />
                         </children>
                     </component>
     
@@ -987,7 +989,7 @@
                                     <material id="inherit" />
                                 </materials>
 
-                                <texture id="stool" length_s="1.0" length_t="1.0" />
+                                <texture id="chair" length_s="1.0" length_t="1.0" />
 
                                 <children>
                                     <componentref id="stool_top" />

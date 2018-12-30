@@ -89,6 +89,8 @@ class Board extends CGFobject {
     removePiece(cellLine, cellColumn) {
         var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
         var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
+
+        console.log(stackType);
         
         var stackPos = vec3.fromValues(
             this.stackTypeTranslate[stackType][0] + this.stackTranslate[stackI][0],
@@ -109,8 +111,10 @@ class Board extends CGFobject {
     reset() {
         for (var i = 0; i < 13; i++)
             for (var j = 0; j < 13; j++)
-                if (this.boardCells[i][j] != this.model['none'])
+                if (this.boardCells[i][j] != this.model['none']) {
+                    console.log([i, j, this.boardCells[i][j]]);
                     this.removePiece(i, j);
+                }
     }
 
     stackDisplay(type) {
@@ -145,6 +149,25 @@ class Board extends CGFobject {
         this.scene.popMatrix();
     }
 
+    typeDisplay(modelType) {
+        //  - Stack Pieces
+        this.scene.pushMatrix();
+            this.scene.translate(this.stackTypeTranslate[modelType][0], .05, this.stackTypeTranslate[modelType][1]);
+            this.stackDisplay(modelType);
+        this.scene.popMatrix();
+        // - Board Pieces
+        this.cellsDisplay(modelType);
+        // - Animation Pieces
+        for (var i in this.currAnimations) {
+            if (this.currAnimations[i].stackType == modelType) {
+                this.scene.pushMatrix();
+                    this.currAnimations[i].animation.apply();
+                    this.pieceDisplay();
+                this.scene.popMatrix();
+            }
+        }
+    }
+
     update(deltaTime) {
         for (var i = 0; i < this.currAnimations.length; i++) {
             // Animation finished, since all animations have the same span it is safe to assume the first animation is to be removed
@@ -166,7 +189,6 @@ class Board extends CGFobject {
     }
 
     display() {
-        // Static Objects
         this.scene.pushMatrix();
             // Bases for the pieces on the side
             this.scene.pushMatrix();
@@ -196,37 +218,11 @@ class Board extends CGFobject {
 
             // White Pieces
             this.whiteAppearance.apply();
-            //  - Stack Pieces
-            this.scene.pushMatrix();
-                this.scene.translate(-1.5, .05, .5);
-                this.stackDisplay('white');
-            this.scene.popMatrix();
-            // - Board Pieces
-            this.cellsDisplay('white');
-            // - Animation Pieces
-            for (var i in this.currAnimations.filter(fAnim => fAnim.stackType == 'white')) {
-                this.scene.pushMatrix();
-                    this.currAnimations[i].animation.apply();
-                    this.pieceDisplay();
-                this.scene.popMatrix();
-            }
+            this.typeDisplay('white');
 
             // Black Pieces
             this.blackAppearance.apply();
-            //  - Stack Pieces
-            this.scene.pushMatrix();
-                this.scene.translate(1.5, .05, -.5);
-                this.stackDisplay('black');
-            this.scene.popMatrix();
-            // - Board Pieces
-            this.cellsDisplay('black');
-            // - Animation Pieces
-            for (var i in this.currAnimations.filter(fAnim => fAnim.stackType == 'black')) {
-                this.scene.pushMatrix();
-                    this.currAnimations[i].animation.apply();
-                    this.pieceDisplay();
-                this.scene.popMatrix();
-            }
+            this.typeDisplay('black');
         this.scene.popMatrix();
 
         // Ghost objects for selecting board intersections

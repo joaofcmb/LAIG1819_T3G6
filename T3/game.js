@@ -11,7 +11,10 @@ class Game extends CGFobject {
     constructor(scene) {
         super(scene);
 
-        // Game States
+        // Game and Replay States
+        this.eventTypes = {IDLE: 1, GAME: 2, REPLAY: 3};
+        this.event = this.eventTypes.IDLE;
+
         this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIM_START: 4, ANIM_APPLY: 5};
         this.state = this.gameStates.IDLE;
 
@@ -62,6 +65,8 @@ class Game extends CGFobject {
 
         this.endGame = false;
         this.board.reset();
+
+        this.event = this.eventTypes.GAME,
         this.state = this.gameStates.ANIM_START;
     }
 
@@ -77,6 +82,7 @@ class Game extends CGFobject {
         
         console.log("Game Exit successful. Server closed.");
 
+        this.event = this.eventTypes.IDLE;
         this.state = this.gameStates.IDLE;
     }
 
@@ -109,31 +115,29 @@ class Game extends CGFobject {
 
                 currNumUndo++;
             }
+
+            this.board.picking = false;
             this.state = this.gameStates.ANIM_START;
         }
-        else    console.warn("Invalid use of undo (Must be used during your turn)");
+        else    console.warn("Invalid use of undo (Must be used during your turn).");
     }
 
     /**
      * Shows all the moves performed so far
      */
     replay() {
-        // Resets board state
-        this.board = new Board(this.scene);
-
-        //Shows all moves
-        for(var i = 1; i < this.allMoves.length; i++) {
-            for(var j = 0; j < this.allMoves[i]['differences'].length; j++) {
-                var cellLine = this.allMoves[i]['differences'][j]['line'];
-                var cellColumn = this.allMoves[i]['differences'][j]['column'];
-                var cellelement = this.allMoves[i]['differences'][j]['element'];
-                
-                if (cellelement != 0)  
-                    this.board.addPiece(cellLine, cellColumn, cellelement);
-                else 
-                    this.board.removePiece(cellLine, cellColumn);
-            }
+        if (this.event != this.eventTypes.GAME || this.state == this.gameStates.TURN || this.state == this.gameStates.ANIM_APPLY) {
+            console.warn("Invalid use of replay (Must be used during a game without an ongoing turn).");
+            return;
         }
+
+        // Resets board and changes to replay event
+        this.board.reset();
+        this.board.picking = false;
+
+        this.event = this.eventTypes.REPLAY;
+        this.state = this.gameStates.ANIM_START;
+        this.replayMove = 0;
     }
 
     /**
@@ -212,13 +216,41 @@ class Game extends CGFobject {
         console.log("Request successful.");
     }
 
+
+
+    updateGame(deltaTime) {
+        switch (this.state) {
+            case this.gameStates.PICKING:
+                this.pickId = this.scene.getPicks()[0];
+                if (this.pickId--) {
+                    this.state = this.gameStates.TURN;
+                    this.board.picking = false;
+                }
+                break;
+            case this.gameStates.TURN:
+                this.gameStep(this.pickId);
+                this.state = this.gameStates.ANIM_START;
+                break;
+            case this.gameStates.ANIM_START:
+                // Resets the time for the animations
+                this.state = this.gameStates.ANIM_APPLY;
+                break;
+            case this.gameStates.ANIM_APPLY:
+                this.updateAnimations(deltaTime);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * 
      * @param {*} deltaTime 
      */
     updateAnimations(deltaTime) {
         if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
-            if (this.endGame){
+            if (this.endGame) {
+                this.event = this.eventTypes.IDLE;
                 this.state = this.gameStates.IDLE;
                 return
             } 
@@ -232,31 +264,59 @@ class Game extends CGFobject {
             }
         }
     }
+
+    /**
+     * 
+     * @param {*} deltaTime 
+     */
+    updateReplay(deltaTime) {
+        switch (this.state) {
+            case this.gameStates.TURN:
+                for(var j = 0; j < this.allMoves[this.replayMove]['differences'].length; j++) {
+                    var cellLine = this.allMoves[this.replayMove]['differences'][j]['line'];
+                    var cellColumn = this.allMoves[this.replayMove]['differences'][j]['column'];
+                    var cellelement = this.allMoves[this.replayMove]['differences'][j]['element'];
+                    
+                    if (cellelement != 0)   this.board.addPiece(cellLine, cellColumn, cellelement);
+                    else                    this.board.removePiece(cellLine, cellColumn);
+                }
+
+                this.state = this.gameStates.ANIM_START;
+                break;
+            case this.gameStates.ANIM_START:
+                // Resets the time for the animations
+                this.state = this.gameStates.ANIM_APPLY;
+                break;
+            case this.gameStates.ANIM_APPLY:
+                if (!this.board.update(deltaTime)) {
+                    if (++this.replayMove >= this.allMoves.length) {
+                        this.event = this.eventTypes.GAME;
+                        this.updateAnimations();
+                    }
+                    else {
+                        this.state = this.gameStates.TURN;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
     
     /**
      * 
      * @param {*} deltaTime 
      */
     update(deltaTime) {
-        // Updates game state
-        switch(this.state) {
-            case this.gameStates.PICKING:
-                this.pickId = this.scene.getPicks()[0];
-                if (this.pickId--) {
-                    this.state = this.gameStates.TURN;
-                    this.board.picking = false;
-                }
+        switch(this.event) {
+            case this.eventTypes.GAME:
+                // Updates game state
+                this.updateGame(deltaTime);
                 break;
-            case this.gameStates.TURN:
-                this.gameStep(this.pickId);
-                this.state = this.gameStates.ANIM_START;
+            case this.eventTypes.REPLAY:
+                this.updateReplay(deltaTime);
                 break;
-            case this.gameStates.ANIM_START:
-                // This state resets the time for the animations
-                this.state = this.gameStates.ANIM_APPLY;
-                break;
-            case this.gameStates.ANIM_APPLY:
-                this.updateAnimations(deltaTime);
+            default:
                 break;
         }
     }

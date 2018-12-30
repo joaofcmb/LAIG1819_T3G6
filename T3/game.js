@@ -96,11 +96,12 @@ class Game extends CGFobject {
                     var cellLine = lastMove['differences'][index]['line'];
                     var cellColumn = lastMove['differences'][index]['column'];
                     var cellElement = lastMove['differences'][index]['element'];
+                    var previousElement = lastMove['differences'][index]['previousElement'];
                     
                     if (cellElement != 0)  
                         this.board.removePiece(cellLine, cellColumn);
                     else 
-                        this.board.addPiece(cellLine, cellColumn, cellElement);
+                        this.board.addPiece(cellLine, cellColumn, previousElement);
                 }
 
                 this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
@@ -134,7 +135,6 @@ class Game extends CGFobject {
             }
         }
     }
-
 
     /**
      * Executes a move made by the player/AI.
@@ -176,14 +176,14 @@ class Game extends CGFobject {
             var cellColumn = Number(difference[1]) - 1;
             var cellElement = Number(difference[2]);
 
-            diff.push({line: cellLine, column: cellColumn, element: cellElement});
-
+            diff.push({line: cellLine, column: cellColumn, element: cellElement, previousElement: this.board.boardCells[cellLine][cellColumn]});
+            
             if (cellElement != 0)  
                 this.board.addPiece(cellLine, cellColumn, cellElement);
             else 
                 this.board.removePiece(cellLine, cellColumn);                
         } 
-
+        
         // Players information
         var playerInfo = response.match(/\].*/)[0].split(",")[1];
         
@@ -212,9 +212,10 @@ class Game extends CGFobject {
         console.log("Request successful.");
     }
 
-
-
-
+    /**
+     * 
+     * @param {*} deltaTime 
+     */
     updateAnimations(deltaTime) {
         if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
             if (this.endGame){
@@ -232,6 +233,10 @@ class Game extends CGFobject {
         }
     }
     
+    /**
+     * 
+     * @param {*} deltaTime 
+     */
     update(deltaTime) {
         // Updates game state
         switch(this.state) {
@@ -256,6 +261,9 @@ class Game extends CGFobject {
         }
     }
 
+    /**
+     * 
+     */
     display() {
         // Draw game (board)
         this.board.display();

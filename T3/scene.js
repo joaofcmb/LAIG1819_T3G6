@@ -158,7 +158,7 @@ class Scene extends CGFscene {
 
     /**
      * Function responsible for updating animations
-     * @param {number} currTime 
+     * @param {number} currTime
      */
     update(currTime) {
         this.lastTime = this.lastTime || 0;

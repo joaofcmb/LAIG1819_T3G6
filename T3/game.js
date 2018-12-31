@@ -23,6 +23,8 @@ class Game extends CGFobject {
 
         this.board = new Board(scene);
         this.logic = new Logic();
+        this.info = new Info(scene);
+
         this.allMoves = [];
     }
     
@@ -195,12 +197,23 @@ class Game extends CGFobject {
         this.currPlayer['captures'] = Number(playerInfo.split("-")[0]);
         this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
 
+        // In case a capture occurs
+        if(diff.length > 1)
+            this.nextPlayer['currSequence'] -= 2;
+        
         var tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = tmpPlayer;
+
+        // Updates player info on Info class
+        if(this.currPlayer['piece'] == '1') 
+            this.info.updatePlayersInfo(this.currPlayer, this.nextPlayer);
+        else
+            this.info.updatePlayersInfo(this.nextPlayer, this.currPlayer);
 
         // Check possible winning or draw condition
         var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
         var gameState = response.match(/\].*/)[0].split(",")[2];
-    
+        
+        console.log(gameState);
         if (gameState == '0' || gameState == '1') {
             console.log("Request successful.");
             console.log(endGameMessage[gameState]);
@@ -327,5 +340,6 @@ class Game extends CGFobject {
     display() {
         // Draw game (board)
         this.board.display();
+        this.info.display();
     }
 }

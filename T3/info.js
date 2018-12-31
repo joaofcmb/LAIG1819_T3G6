@@ -3,25 +3,47 @@
  */
 class Info extends CGFobject {
 
-    constructor(scene) {
+    /**
+     * Info class constructor.
+     * 
+     * @param {Object} scene 
+     * @param {Number} time 
+     */
+    constructor(scene, time) {
         super(scene);
 
+        this.initInfo(time);
         this.initComponents();
         this.initTextures();
-
     }
 
-    initComponents() {
-        this.cube = new Cube(this.scene, 30, 30); 
-        this.letters = new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2);
-        
+    /**
+     * Initializes class needed variables.
+     * 
+     * @param {Number} time 
+     */
+    initInfo(time) {
         this.playerOneCaptures = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
         this.playerOneSequence = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
 
         this.playerTwoCaptures = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
         this.playerTwoSequence = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
+
+        this.time = time;
+        this.resetTimer();
     }
 
+    /**
+     * Initializes all components that are going to be displayed
+     */
+    initComponents() {
+        this.cube = new Cube(this.scene, 30, 30); 
+        this.infoElement = new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2);
+    }
+
+    /**
+     * Initializes all textures that are going to be displayed
+     */
     initTextures() {
         this.whiteAppearance = new CGFappearance(this.scene);
         this.whiteAppearance.setDiffuse(1, 1, 1, 1);
@@ -35,13 +57,23 @@ class Info extends CGFobject {
         this.letter_S = new CGFappearance(this.scene);
         this.letter_S.loadTexture('scenes/images/letter_S.png');
 
+        this.colon = new CGFappearance(this.scene);
+        this.colon.loadTexture('scenes/images/colon.jpg');
+
         this.numbers = {};
         for(var index = 0; index < 10; index++) {
             var number = new CGFappearance(this.scene);
             number.loadTexture("scenes/images/number_" + index + ".png");
             this.numbers[index] = number;
         }
+    }
 
+    /**
+     * Resets timer to it's default value.
+     */
+    resetTimer() {
+        this.minutes = Math.floor(this.time / 60);
+        this.seconds = Math.round(this.time % 60);
     }
 
     /**
@@ -55,13 +87,87 @@ class Info extends CGFobject {
         this.playerTwoCaptures['number'] = playerTwo['captures']; this.playerTwoSequence['number'] = playerTwo['currSequence'];
     }
 
-    display() {
-
-        this.displayPlayerOne();
-        this.displayPlayerTwo();
+    /**
+     * Updates timer and returns it's state: True if there is no time remaining, false otherwise.
+     */
+    updateTimer() {
+        this.seconds--;
         
+        if(this.minutes > 0 && this.seconds == 0) {
+            this.minutes--; 
+            this.seconds = 60;
+        }
+        else if(this.minutes == 0 && this.seconds == 0) {
+            this.resetTimer();
+            return true;
+        }
+        
+        return false;
     }
 
+    /**
+     * Displays all info associated to the game: player scorer's and timer
+     */
+    display() {
+        this.displayTimer();
+        this.displayPlayerOne();
+        this.displayPlayerTwo();
+    }
+
+    /**
+     * Displays the timer.
+     */
+    displayTimer() {
+        this.scene.pushMatrix();
+            this.scene.translate(-1.5, 0.075, -0.1);
+            this.scene.scale(.15, .15, .35);
+            this.cube.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(-1.3499, 0.075, 0.175);
+            this.scene.scale(.075, .15, .075);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.numbers[Math.floor(this.minutes / 10)].apply();
+            this.infoElement.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(-1.3499, 0.075, 0.025);
+            this.scene.scale(.075, .15, .075);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.numbers[this.minutes % 10].apply();
+            this.infoElement.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(-1.3499, 0.075, -0.1);
+            this.scene.scale(.075, .15, .05);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.colon.apply();
+            this.infoElement.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(-1.3499, 0.075, -0.225);
+            this.scene.scale(.075, .15, .075);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.numbers[Math.floor(this.seconds / 10)].apply();
+            this.infoElement.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(-1.3499, 0.075, -0.375);
+            this.scene.scale(.075, .15, .075);
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
+            this.numbers[this.seconds % 10].apply();
+            this.infoElement.display();
+        this.scene.popMatrix();
+    }
+
+    /**
+     * Displays player one scorer
+     */
     displayPlayerOne() {
         this.whiteAppearance.apply();
         this.scene.pushMatrix();
@@ -75,7 +181,7 @@ class Info extends CGFobject {
                 this.scene.scale(.075, .05, .075);
                 this.scene.rotate(-Math.PI / 2, 1, 0, 0);
                 this.letter_C.apply();
-                this.letters.display();
+                this.infoElement.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
@@ -91,7 +197,7 @@ class Info extends CGFobject {
                 this.scene.scale(.075, .05, .075);
                 this.scene.rotate(-Math.PI / 2, 1, 0, 0);
                 this.letter_S.apply();
-                this.letters.display();
+                this.infoElement.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
@@ -103,6 +209,9 @@ class Info extends CGFobject {
         this.scene.popMatrix();
     }
 
+    /**
+     * Displays player two scorer
+     */
     displayPlayerTwo() {
         this.blackAppearance.apply();
         this.scene.pushMatrix();
@@ -117,7 +226,7 @@ class Info extends CGFobject {
                 this.scene.rotate(-Math.PI, 0, 1, 0);
                 this.scene.rotate(-Math.PI / 2, 1, 0, 0);
                 this.letter_C.apply();
-                this.letters.display();
+                this.infoElement.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
@@ -135,7 +244,7 @@ class Info extends CGFobject {
                 this.scene.rotate(-Math.PI, 0, 1, 0);
                 this.scene.rotate(-Math.PI / 2, 1, 0, 0);
                 this.letter_S.apply();
-                this.letters.display();
+                this.infoElement.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();

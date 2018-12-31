@@ -20,11 +20,13 @@ class Game extends CGFobject {
 
         this.difficulty = {}; this.difficulty = 'Easy';
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
+        this.time       = {}; this.time       = 45;
 
         this.board = new Board(scene);
         this.logic = new Logic();
-        this.info = new Info(scene);
+        this.info = new Info(scene, this.time);
 
+        this.currTime = 0;
         this.allMoves = [];
     }
     
@@ -67,6 +69,9 @@ class Game extends CGFobject {
 
         this.endGame = false;
         this.board.reset();
+
+        this.info.time = this.time;
+        this.info.resetTimer();
 
         this.event = this.eventTypes.GAME,
         this.state = this.gameStates.ANIM_START;
@@ -201,7 +206,8 @@ class Game extends CGFobject {
         if(diff.length > 1)
             this.nextPlayer['currSequence'] -= 2;
         
-        var tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = tmpPlayer;
+        // Switches between players
+        this.switchPlayers();
 
         // Updates player info on Info class
         if(this.currPlayer['piece'] == '1') 
@@ -213,7 +219,6 @@ class Game extends CGFobject {
         var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
         var gameState = response.match(/\].*/)[0].split(",")[2];
         
-        console.log(gameState);
         if (gameState == '0' || gameState == '1') {
             console.log("Request successful.");
             console.log(endGameMessage[gameState]);
@@ -229,18 +234,28 @@ class Game extends CGFobject {
         console.log("Request successful.");
     }
 
-
+    /**
+     * Alternates between players
+     */
+    switchPlayers() {
+        var tmpPlayer = this.currPlayer; 
+        this.currPlayer = this.nextPlayer; 
+        this.nextPlayer = tmpPlayer;
+    }
 
     updateGame(deltaTime) {
         switch (this.state) {
             case this.gameStates.PICKING:
+                // Updates move remaining time
+                this.updateInfoTimer(deltaTime);
+
                 this.pickId = this.scene.getPicks()[0];
                 if (this.pickId--) {
                     this.state = this.gameStates.TURN;
                     this.board.picking = false;
                 }
                 break;
-            case this.gameStates.TURN:
+            case this.gameStates.TURN: 
                 this.gameStep(this.pickId);
                 this.state = this.gameStates.ANIM_START;
                 break;
@@ -256,12 +271,11 @@ class Game extends CGFobject {
         }
     }
 
-    /**
-     * 
-     * @param {*} deltaTime 
-     */
     updateAnimations(deltaTime) {
         if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
+            // Resets timer
+            this.info.resetTimer();
+        
             if (this.endGame) {
                 this.event = this.eventTypes.IDLE;
                 this.state = this.gameStates.IDLE;
@@ -278,10 +292,6 @@ class Game extends CGFobject {
         }
     }
 
-    /**
-     * 
-     * @param {*} deltaTime 
-     */
     updateReplay(deltaTime) {
         switch (this.state) {
             case this.gameStates.TURN:
@@ -315,15 +325,30 @@ class Game extends CGFobject {
                 break;
         }
     }
-    
+
     /**
+     * Updates the timer.
      * 
-     * @param {*} deltaTime 
+     * @param {Number} deltaTime 
      */
+    updateInfoTimer(deltaTime) {
+        // Updates current time
+        this.currTime += deltaTime; 
+        
+        // Determines how much time is passed (1s)
+        if(this.currTime > 1000) {
+            if(this.info.updateTimer()) {
+                this.switchPlayers();
+            }
+            this.currTime = 0;
+        }        
+    }
+    
     update(deltaTime) {
+        
         switch(this.event) {
             case this.eventTypes.GAME:
-                // Updates game state
+                // Updates game state    
                 this.updateGame(deltaTime);
                 break;
             case this.eventTypes.REPLAY:
@@ -335,10 +360,9 @@ class Game extends CGFobject {
     }
 
     /**
-     * 
+     * Displays game.
      */
     display() {
-        // Draw game (board)
         this.board.display();
         this.info.display();
     }

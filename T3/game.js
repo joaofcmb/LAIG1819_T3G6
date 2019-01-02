@@ -8,8 +8,9 @@ class Game extends CGFobject {
      * 
      * @param {Object} scene 
      */
-    constructor(scene) {
+    constructor(scene, whiteCamID) {
         super(scene);
+        this.whiteCamID = whiteCamID;
 
         // Game and Replay States
         this.eventTypes = {IDLE: 1, GAME: 2, REPLAY: 3};
@@ -63,8 +64,14 @@ class Game extends CGFobject {
             nextPlayer: JSON.parse(JSON.stringify(this.nextPlayer))
         });
 
-        this.endGame = false;
+        // Reset board and assign camera
         this.board.reset();
+        this.oldCam = this.scene.interface.Views;
+        this.scene.interface.Views = this.whiteCamID;
+
+
+        // Initialize State Machine
+        this.endGame = false;
 
         this.event = this.eventTypes.GAME,
         this.state = this.gameStates.ANIM_START;
@@ -81,6 +88,8 @@ class Game extends CGFobject {
         }
         
         console.log("Game Exit successful. Server closed.");
+
+        this.scene.interface.Views = this.oldCam;
 
         this.event = this.eventTypes.IDLE;
         this.state = this.gameStates.IDLE;

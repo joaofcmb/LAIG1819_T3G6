@@ -922,13 +922,16 @@ class Parser {
                 case "vehicle":
                     break;
                 case "board":
+                    primitive.whiteCam = this.reader.getString(primitiveChildren[0], "whiteCam");
+                    if (!Object.keys(this.data.orthoCams).concat(Object.keys(this.data.perspectiveCams)).includes(primitive.whiteCam))
+                        return "Camera assigned to board game [id = " + primitiveID + "] does not exist.";
                     break;
                 case "cube":
                     primitive.npartsU = this.reader.getInteger(primitiveChildren[0], "npartsU");
                     primitive.npartsV = this.reader.getInteger(primitiveChildren[0], "npartsV");
                     break;
                 default:
-                    return "Primitive <" + primitiveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>."
+                    return "Primitive <" + primitiveChildren[0].nodeName + "> not valid. Valid primitives: <rectangle>, <triangle>, <cylinder>, <sphere>, <torus>, <plane>, <patch>, <vehicle>, <cylinder2>, <terrain>, <water>, <board>, <cube>."
 
             }
 
@@ -953,6 +956,7 @@ class Parser {
                             secondKey != "controlPoints" &&
                             this.data.primitives[firstKey].type != "terrain" &&
                             this.data.primitives[firstKey].type != "water" &&
+                            this.data.primitives[firstKey].type != "board" &&
                             (this.data.primitives[firstKey][secondKey] == null || isNaN(this.data.primitives[firstKey][secondKey]))) {
                             return "Primitive with [id = " + firstKey + "] is not valid due to <" + secondKey + "> value on " + this.data.primitives[firstKey].type + ".";
                         }

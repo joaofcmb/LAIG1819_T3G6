@@ -13,13 +13,15 @@ class Scene extends CGFscene {
      */
     constructor(data, interf) {
         super();
-        
-        this.cameraRotation = {};
 
         this.data = data;
         this.lightValues = {};
         this.interface = interf;
 
+        this.cameraRotation = {};
+        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(75, 75, 75), vec3.fromValues(0, 0, 0));
+        this.interface.setActiveCamera(this.camera);
+        
         this.setPickEnabled(true);
     }
 
@@ -32,7 +34,6 @@ class Scene extends CGFscene {
         super.init(application);
 
         this.sceneInited = false;
-        this.initCameras();
         this.enableTextures(true);
 
         this.gl.clearDepth(100.0);
@@ -48,10 +49,29 @@ class Scene extends CGFscene {
      * Initializes the scene cameras.
      */
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(75, 75, 75), vec3.fromValues(0, 0, 0));
-        this.interface.setActiveCamera(this.camera);
+        this.oldView = null;
+        this.interface.Views = this.data.defaultCamID;
 
-        this.interface.Views = "";
+        for (var camID in this.data.perspectiveCams) {
+            if (this.data.perspectiveCams.hasOwnProperty(camID)) {
+                var cam = this.data.perspectiveCams[camID];
+                this.data.cameras[camID] = new CGFcamera(Math.PI * cam.angle / 180, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), 
+                                                        vec3.fromValues(cam.toX, cam.toY, cam.toZ));
+            }
+        }
+
+        for (var camID in this.data.orthoCams) {
+            if (this.data.orthoCams.hasOwnProperty(camID)) {
+                var cam = this.data.orthoCams[camID];
+                this.data.cameras[camID] = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, 
+                                                             vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ), 
+                                                             vec3.fromValues(0, 1, 0));
+            }
+        }
+
+        console.log(this.data.cameras)
+        console.log(this.interface.Views)
+        this.updateCameras();
     }
 
     /**
@@ -61,19 +81,12 @@ class Scene extends CGFscene {
         // CFGcamera prototypes:
         // ----------------------> CFGcamera(angle, near, far, from, to)
         // ----------------------> CGFcameraOrtho(left, right, bottom, top, near, far, from, to, up) - UP(0,1,0)
+        if (this.oldView != this.interface.Views) {
+            this.oldView = this.interface.Views;
 
-        if (this.interface.Views == "")
-            this.interface.Views = this.data.defaultCamID;
-
-        var cam = null;
-
-        if ((cam = this.data.perspectiveCams[this.interface.Views]) != null)
-            this.camera = new CGFcamera(Math.PI * cam.angle / 180, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ), vec3.fromValues(cam.toX, cam.toY, cam.toZ));
-        else if ((cam = this.data.orthoCams[this.interface.Views]) != null)
-            this.camera = new CGFcameraOrtho(cam.left, cam.right, cam.bottom, cam.top, cam.near, cam.far, vec3.fromValues(cam.fromX, cam.fromY, cam.fromZ),
-                vec3.fromValues(cam.toX, cam.toY, cam.toZ), vec3.fromValues(0, 1, 0));
-
-        this.interface.setActiveCamera(this.camera);
+            this.camera = this.data.cameras[this.interface.Views];
+            this.interface.setActiveCamera(this.camera);
+        }
     }
 
     /**
@@ -139,12 +152,11 @@ class Scene extends CGFscene {
         this.gl.clearColor(this.data.background.r, this.data.background.g, this.data.background.b, this.data.background.a);
         this.setGlobalAmbientLight(this.data.ambient.r, this.data.ambient.g, this.data.ambient.b, this.data.ambient.a);
 
+        this.initCameras();
+        this.initLights();
+
         this.interface.addLightsGroup(this.data);
         this.interface.addViewsGroup(this.data);
-    
-
-        this.updateCameras();
-        this.initLights();
 
         // Load data into the graph
         this.data.setupGraph(this);
@@ -251,8 +263,7 @@ class Scene extends CGFscene {
 
         if (this.sceneInited) {
             //Handle Views
-            
-            //    this.updateCameras();  //Uncomment to change between views
+            this.updateCameras();
 
             //Handle Lights
             var i = 0;

@@ -21,7 +21,7 @@ class Board extends CGFobject {
 
     initComponents() {        
         this.cube = new Cube(this.scene, 30, 30);
-        this.board = new Plane(this.scene, 100, 100);
+        this.board = new Plane(this.scene, 60, 60);
         this.piece = new MySphere(this.scene, .035, 8, 10);
     }
 

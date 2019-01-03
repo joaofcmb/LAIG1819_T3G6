@@ -314,7 +314,7 @@ game_over(Board, NewBoard, _, NewNextPlayer, _, Res) 	:-  fullBoard(NewBoard),
 															nextMove(Res, Diff, 1, NewNextPlayer).
 game_over(Board, NewBoard, _, NewNextPlayer, _, Res) 	:- 	board_diff(Board, NewBoard, 13, [], Diff),
 															nextMove(Res, Diff, 2, NewNextPlayer).
-													
+														
 nextMove([Diff, CurrCaptureNo-CurrSequenceNo, Status], Diff, Status, player(_, _, CurrCaptureNo, CurrSequenceNo)).
 
 board_diff([], [], _, Diff, Diff).

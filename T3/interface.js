@@ -71,7 +71,7 @@ class Interface extends CGFinterface {
      */
     addViewsGroup(data) {
         var views = this.gui.addFolder("Views");
-        //views.open();
+        views.open();
 
         for (var key in data.perspectiveCams) {
             if (data.perspectiveCams.hasOwnProperty(key)) {
@@ -94,7 +94,7 @@ class Interface extends CGFinterface {
      */
     addLightsGroup(data) {
         var lights = this.gui.addFolder("Lights");
-        //lights.open();
+        lights.open();
 
         for (var key in data.omniLights) {
             if (data.omniLights.hasOwnProperty(key)) {
@@ -111,17 +111,26 @@ class Interface extends CGFinterface {
         }
     }
 
+    /**
+     * Adds a folder containing all game settings.
+     * @param {Object} game 
+     */
     addGameSettings(game) {
         var settings = this.gui.addFolder('Game Settings');
         settings.open();
 
         settings.add(game, 'difficulty', this.difficulty).name('Difficulty');
         settings.add(game, 'gameMode', this.modes).name('Mode');
+        settings.add(game, 'time', 15, 90).name("Timer"); 
         
         this.scene['Camera Rotation'] = true;
         settings.add(this.scene, 'Camera Rotation');
     }
 
+    /**
+     * Adds a folder that corresponds to the game main menu.
+     * @param {Object} game 
+     */
     addOptions(game) {
         var options = this.gui.addFolder('Main Menu');
         options.open();

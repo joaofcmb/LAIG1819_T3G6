@@ -22,12 +22,16 @@ class Game extends CGFobject {
 
         this.difficulty = {}; this.difficulty = 'Easy';
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
+        this.time       = {}; this.time       = 45;
 
         this.cameraOrientation = '1'; // Use piece ID to identify the current orientation
         this.cameraAxis = Object.freeze({X: vec3.fromValues(1, 0, 0), Y: vec3.fromValues(0, 1, 0), Z: vec3.fromValues(0, 0, 1)});
 
         this.board = new Board(scene);
         this.logic = new Logic();
+        this.info = new Info(scene, this.time);
+
+        this.currTime = 0;
         this.allMoves = [];
     }
     
@@ -64,9 +68,11 @@ class Game extends CGFobject {
             this.nextPlayer['playerID'] = this.difficultyConverter[this.difficulty];
         }      
         
-        // this.selectedTime = this.time;
         this.selectedMode = this.gameMode;
         this.selectedDifficulty = this.difficulty;
+        this.info.time = this.time;
+        this.info.resetTimer();
+
         this.allMoves = [{
             differences: [], 
             currPlayer: {...this.currPlayer}, 
@@ -80,7 +86,6 @@ class Game extends CGFobject {
             this.oldCam = this.scene.interface.Views;
             this.scene.interface.Views = this.whiteCamID;
 
-            this.scene.updateCameras();
             // Dummy camera to disallow user input for the camera
             this.scene.interface.setActiveCamera(new CGFcamera(1, 1, 1, vec3.create(), vec3.fromValues(1, 1, 1)));
         }
@@ -226,12 +231,23 @@ class Game extends CGFobject {
         this.currPlayer['captures'] = Number(playerInfo.split("-")[0]);
         this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
 
-        var tmpPlayer = this.currPlayer; this.currPlayer = this.nextPlayer; this.nextPlayer = tmpPlayer;
+        // In case a capture occurs
+        if(diff.length > 1)
+            this.nextPlayer['currSequence'] -= 2;
+        
+        // Switches between players
+        this.switchPlayers();
+
+        // Updates player info on Info class
+        if(this.currPlayer['piece'] == '1') 
+            this.info.updatePlayersInfo(this.currPlayer, this.nextPlayer);
+        else
+            this.info.updatePlayersInfo(this.nextPlayer, this.currPlayer);
 
         // Check possible winning or draw condition
         var endGameMessage = {0: this.nextPlayer['playerID'] + " was won the game !", 1: "Draw !"}
         var gameState = response.match(/\].*/)[0].split(",")[2];
-    
+        
         if (gameState == '0' || gameState == '1') {
             console.log("Request successful.");
             console.log(endGameMessage[gameState]);
@@ -247,18 +263,28 @@ class Game extends CGFobject {
         console.log("Request successful.");
     }
 
-
+    /**
+     * Alternates between players
+     */
+    switchPlayers() {
+        var tmpPlayer = this.currPlayer; 
+        this.currPlayer = this.nextPlayer; 
+        this.nextPlayer = tmpPlayer;
+    }
 
     updateGame(deltaTime) {
         switch (this.state) {
             case this.gameStates.PICKING:
+                // Updates move remaining time
+                this.updateInfoTimer(deltaTime);
+
                 this.pickId = this.scene.getPicks()[0];
                 if (this.pickId--) {
                     this.state = this.gameStates.TURN;
                     this.board.picking = false;
                 }
                 break;
-            case this.gameStates.TURN:
+            case this.gameStates.TURN: 
                 this.gameStep(this.pickId);
                 this.state = this.gameStates.ANIM_START;
                 break;
@@ -275,6 +301,11 @@ class Game extends CGFobject {
                 }
                 break;
             case this.gameStates.CAMERA_START:
+                if (this.scene.interface.Views != this.whiteCamID) {
+                    this.oldCam = this.scene.interface.Views;
+                    this.scene.interface.Views = this.whiteCamID;
+                }
+
                 this.elapsedSpan = 0;
                 this.state = this.gameStates.CAMERA_APPLY;
                 break;
@@ -294,10 +325,6 @@ class Game extends CGFobject {
         }
     }
 
-    /**
-     * 
-     * @param {*} deltaTime 
-     */
     updateReplay(deltaTime) {
         switch (this.state) {
             case this.gameStates.TURN:
@@ -336,11 +363,13 @@ class Game extends CGFobject {
      * 
      */
     updateTurn() {
+        this.info.resetTimer();
+
         if (this.endGame) {
             this.event = this.eventTypes.IDLE;
             this.state = this.gameStates.IDLE;
             return;
-        } 
+        }
 
         if (this.humanPlayers.includes(this.currPlayer['playerID'])) {
             this.state = this.gameStates.PICKING;
@@ -352,13 +381,28 @@ class Game extends CGFobject {
     }
     
     /**
+     * Updates the timer.
      * 
-     * @param {*} deltaTime 
+     * @param {Number} deltaTime 
      */
+    updateInfoTimer(deltaTime) {
+        // Updates current time
+        this.currTime += deltaTime; 
+        
+        // Determines how much time is passed (1s)
+        if(this.currTime > 1000) {
+            if(this.info.updateTimer()) {
+                this.switchPlayers();
+            }
+            this.currTime = 0;
+        }        
+    }
+    
     update(deltaTime) {
+        
         switch(this.event) {
             case this.eventTypes.GAME:
-                // Updates game state
+                // Updates game state    
                 this.updateGame(deltaTime);
                 break;
             case this.eventTypes.REPLAY:
@@ -370,10 +414,10 @@ class Game extends CGFobject {
     }
 
     /**
-     * 
+     * Displays game.
      */
     display() {
-        // Draw game (board)
         this.board.display();
+        this.info.display();
     }
 }

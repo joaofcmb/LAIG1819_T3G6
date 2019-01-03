@@ -217,8 +217,8 @@ class Board extends CGFobject {
             this.typeDisplay('black');
         this.scene.popMatrix();
 
-        // Ghost objects for selecting board intersections
         if (this.picking) {
+            // Ghost objects for selecting board intersections
             this.scene.setActiveShader(this.ghostShader);
             for (var i = 0; i < 13; i++) {
                 for (var j = 0; j < 13; j++) {
@@ -236,6 +236,9 @@ class Board extends CGFobject {
             }
             this.scene.clearPickRegistration();
             this.scene.setActiveShader(this.scene.defaultShader);
+
+            // Visual elements to aid user interaction
+            // TODO think of stuff to highlight pickables / non pickables
         }
     }
 }

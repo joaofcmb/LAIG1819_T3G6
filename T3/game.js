@@ -390,16 +390,16 @@ class Game extends CGFobject {
         this.currTime += deltaTime; 
         
         // Determines how much time is passed (1s)
-        if(this.currTime > 1000) {
+        if (this.currTime > 1000) {
             if(this.info.updateTimer()) {
                 this.switchPlayers();
+                this.state = this.gameStates.CAMERA_START;
             }
             this.currTime = 0;
         }        
     }
     
     update(deltaTime) {
-        
         switch(this.event) {
             case this.eventTypes.GAME:
                 // Updates game state    

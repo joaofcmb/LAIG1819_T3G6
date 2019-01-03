@@ -11,7 +11,7 @@ class Game extends CGFobject {
     constructor(scene, whiteCamID) {
         super(scene);
         this.whiteCamID = whiteCamID;
-        this.cameraSpan = 1000;
+        this.cameraSpan = 700;
 
         // Game and Replay States
         this.eventTypes = {IDLE: 1, GAME: 2, REPLAY: 3};
@@ -33,6 +33,18 @@ class Game extends CGFobject {
 
         this.currTime = 0;
         this.allMoves = [];
+    }
+
+    initCamera() {
+        if (this.scene.interface.Views != this.whiteCamID) {
+            this.oldCam = this.scene.interface.Views;
+            this.scene.interface.Views = this.whiteCamID;
+
+            this.scene.updateCameras();
+
+            // Dummy camera to disallow user input for the camera
+            this.scene.interface.setActiveCamera(new CGFcamera(1, 1, 1, vec3.create(), vec3.fromValues(1, 1, 1)));
+        }
     }
     
     /**
@@ -79,16 +91,9 @@ class Game extends CGFobject {
             nextPlayer: {...this.nextPlayer}
         }];
 
-        // Reset board and assign camera
+        // Reset board and initialize game camera
         this.board.reset();
-
-        if (this.scene.interface.Views != this.whiteCamID) {
-            this.oldCam = this.scene.interface.Views;
-            this.scene.interface.Views = this.whiteCamID;
-
-            // Dummy camera to disallow user input for the camera
-            this.scene.interface.setActiveCamera(new CGFcamera(1, 1, 1, vec3.create(), vec3.fromValues(1, 1, 1)));
-        }
+        this.initCamera();
 
         // Initialize State Machine
         this.endGame = false;
@@ -173,7 +178,9 @@ class Game extends CGFobject {
 
         this.event = this.eventTypes.REPLAY;
         this.state = this.gameStates.ANIM_START;
+
         this.replayMove = 0;
+        this.info.resetPlayerInfo();
     }
 
     /**
@@ -234,12 +241,18 @@ class Game extends CGFobject {
         // In case a capture occurs
         if(diff.length > 1)
             this.nextPlayer['currSequence'] -= 2;
+
+        this.allMoves.push({
+            differences: diff,  
+            currPlayer: {...this.currPlayer}, 
+            nextPlayer: {...this.nextPlayer}
+        });    
         
         // Switches between players
-        this.switchPlayers();
+        this.swapPlayers();
 
         // Updates player info on Info class
-        if(this.currPlayer['piece'] == '1') 
+        if (this.currPlayer['piece'] == '1') 
             this.info.updatePlayersInfo(this.currPlayer, this.nextPlayer);
         else
             this.info.updatePlayersInfo(this.nextPlayer, this.currPlayer);
@@ -254,19 +267,13 @@ class Game extends CGFobject {
             this.endGame = true;
         }        
 
-        this.allMoves.push({
-            differences: diff,  
-            currPlayer: {...this.currPlayer}, 
-            nextPlayer: {...this.nextPlayer}
-        });
-    
         console.log("Request successful.");
     }
 
     /**
      * Alternates between players
      */
-    switchPlayers() {
+    swapPlayers() {
         var tmpPlayer = this.currPlayer; 
         this.currPlayer = this.nextPlayer; 
         this.nextPlayer = tmpPlayer;
@@ -301,11 +308,7 @@ class Game extends CGFobject {
                 }
                 break;
             case this.gameStates.CAMERA_START:
-                if (this.scene.interface.Views != this.whiteCamID) {
-                    this.oldCam = this.scene.interface.Views;
-                    this.scene.interface.Views = this.whiteCamID;
-                }
-
+                this.initCamera();
                 this.elapsedSpan = 0;
                 this.state = this.gameStates.CAMERA_APPLY;
                 break;
@@ -315,7 +318,7 @@ class Game extends CGFobject {
                 this.elapsedSpan += deltaTime;
                 if (this.elapsedSpan >= this.cameraSpan) {
                     this.scene.camera.orbit(this.cameraAxis, -Math.PI * (this.elapsedSpan - this.cameraSpan) / this.cameraSpan);
-
+        
                     this.cameraOrientation = this.currPlayer.piece;
                     this.updateTurn();
                 }
@@ -347,11 +350,36 @@ class Game extends CGFobject {
                 if (!this.board.update(deltaTime)) {
                     if (++this.replayMove >= this.allMoves.length) {
                         this.event = this.eventTypes.GAME;
-                        this.updateTurn();
+                        this.swapPlayers();
                     }
                     else {
-                        this.state = this.gameStates.TURN;
+                        this.currPlayer = this.allMoves[this.replayMove].currPlayer;
+                        this.nextPlayer = this.allMoves[this.replayMove].nextPlayer;
+
+                        if (this.currPlayer['piece'] == '1') 
+                            this.info.updatePlayersInfo(this.currPlayer, this.nextPlayer);
+                        else
+                            this.info.updatePlayersInfo(this.nextPlayer, this.currPlayer);
+
+                        this.state = (this.scene["Camera Rotation"] && this.currPlayer.piece != this.cameraOrientation) ?
+                            this.gameStates.CAMERA_START : this.gameStates.TURN;
                     }
+                }
+                break;
+            case this.gameStates.CAMERA_START:
+                this.initCamera();
+                this.elapsedSpan = 0;
+                this.state = this.gameStates.CAMERA_APPLY;
+                break;
+            case this.gameStates.CAMERA_APPLY:
+                this.scene.camera.orbit(this.cameraAxis, Math.PI * deltaTime / this.cameraSpan);
+
+                this.elapsedSpan += deltaTime;
+                if (this.elapsedSpan >= this.cameraSpan) {
+                    this.scene.camera.orbit(this.cameraAxis, -Math.PI * (this.elapsedSpan - this.cameraSpan) / this.cameraSpan);
+        
+                    this.cameraOrientation = this.currPlayer.piece;
+                    this.state = this.gameStates.TURN;
                 }
                 break;
             default:
@@ -392,7 +420,7 @@ class Game extends CGFobject {
         // Determines how much time is passed (1s)
         if (this.currTime > 1000) {
             if(this.info.updateTimer()) {
-                this.switchPlayers();
+                this.swapPlayers();
                 this.state = this.gameStates.CAMERA_START;
             }
             this.currTime = 0;

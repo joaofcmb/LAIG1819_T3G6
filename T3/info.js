@@ -23,11 +23,7 @@ class Info extends CGFobject {
      * @param {Number} time 
      */
     initInfo(time) {
-        this.playerOneCaptures = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
-        this.playerOneSequence = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
-
-        this.playerTwoCaptures = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
-        this.playerTwoSequence = {number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
+        this.resetPlayerInfo();
 
         this.time = time;
         this.resetTimer();
@@ -66,6 +62,16 @@ class Info extends CGFobject {
             number.loadTexture("scenes/images/number_" + index + ".png");
             this.numbers[index] = number;
         }
+    }
+
+    /**
+     * Resets the player info to its initial state.
+     */
+    resetPlayerInfo() {
+        this.playerOneCaptures = { number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
+        this.playerOneSequence = { number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
+        this.playerTwoCaptures = { number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
+        this.playerTwoSequence = { number: 0, object: new MyRectangle(this.scene, -1, -1, 1, 1, 2, 2) };
     }
 
     /**

@@ -14,8 +14,8 @@ class Board extends CGFobject {
         this.initBoard();
         this.initMaterials();
         this.initStack();
-        this.initAnimations();
 
+        this.currAnimations = [];
         this.ghostShader = new CGFshader(this.scene.gl, "./shaders/Ghost.vert", "./shaders/Ghost.frag");
     }
 
@@ -59,10 +59,6 @@ class Board extends CGFobject {
         }
 
         this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
-    }
-
-    initAnimations() {
-        this.currAnimations = [];
     }
     
     addPiece(cellLine, cellColumn, element) {

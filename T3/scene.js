@@ -18,7 +18,6 @@ class Scene extends CGFscene {
         this.lightValues = {};
         this.interface = interf;
 
-        this.cameraRotation = {};
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(75, 75, 75), vec3.fromValues(0, 0, 0));
         this.interface.setActiveCamera(this.camera);
         

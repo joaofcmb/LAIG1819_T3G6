@@ -11,16 +11,20 @@ class Game extends CGFobject {
     constructor(scene, whiteCamID) {
         super(scene);
         this.whiteCamID = whiteCamID;
+        this.cameraSpan = 1000;
 
         // Game and Replay States
         this.eventTypes = {IDLE: 1, GAME: 2, REPLAY: 3};
         this.event = this.eventTypes.IDLE;
 
-        this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIM_START: 4, ANIM_APPLY: 5};
+        this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIM_START: 4, ANIM_APPLY: 5, CAMERA_START: 6, CAMERA_APPLY: 7};
         this.state = this.gameStates.IDLE;
 
         this.difficulty = {}; this.difficulty = 'Easy';
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
+
+        this.cameraOrientation = '1'; // Use piece ID to identify the current orientation
+        this.cameraAxis = Object.freeze({X: vec3.fromValues(1, 0, 0), Y: vec3.fromValues(0, 1, 0), Z: vec3.fromValues(0, 0, 1)});
 
         this.board = new Board(scene);
         this.logic = new Logic();
@@ -31,8 +35,13 @@ class Game extends CGFobject {
      * Initializes game.
      */
     playGame() {
+        if ([this.gameStates.CAMERA_APPLY, this.gameStates.ANIM_APPLY].includes(this.state)) {
+            console.warn('Game cannot be restarted in the middle of animations.');
+            return;
+        }
+
         // Send init command 
-        if(!this.logic.initGame()) {
+        if (!this.logic.initGame()) {
             console.warn("Game Start failed.")
             return;
         }
@@ -58,17 +67,23 @@ class Game extends CGFobject {
         // this.selectedTime = this.time;
         this.selectedMode = this.gameMode;
         this.selectedDifficulty = this.difficulty;
-        this.allMoves.push({
+        this.allMoves = [{
             differences: [], 
-            currPlayer: JSON.parse(JSON.stringify(this.currPlayer)), 
-            nextPlayer: JSON.parse(JSON.stringify(this.nextPlayer))
-        });
+            currPlayer: {...this.currPlayer}, 
+            nextPlayer: {...this.nextPlayer}
+        }];
 
         // Reset board and assign camera
         this.board.reset();
-        this.oldCam = this.scene.interface.Views;
-        this.scene.interface.Views = this.whiteCamID;
 
+        if (this.scene.interface.Views != this.whiteCamID) {
+            this.oldCam = this.scene.interface.Views;
+            this.scene.interface.Views = this.whiteCamID;
+
+            this.scene.updateCameras();
+            // Dummy camera to disallow user input for the camera
+            this.scene.interface.setActiveCamera(new CGFcamera(1, 1, 1, vec3.create(), vec3.fromValues(1, 1, 1)));
+        }
 
         // Initialize State Machine
         this.endGame = false;
@@ -89,7 +104,9 @@ class Game extends CGFobject {
         
         console.log("Game Exit successful. Server closed.");
 
+        
         this.scene.interface.Views = this.oldCam;
+        this.scene.updateCameras();
 
         this.event = this.eventTypes.IDLE;
         this.state = this.gameStates.IDLE;
@@ -99,43 +116,48 @@ class Game extends CGFobject {
      * Undos a certain amount of maden moves depending on the selected game mode.
      */
     undo() {
-        if (this.state == this.gameStates.PICKING && this.selectedMode != 'AI vs AI' && this.allMoves.length > 1 
-            && this.humanPlayers.includes(this.currPlayer['playerID'])) {
-            var currNumUndo = 0;
-            var numberOfUndos = this.selectedMode == 'Player vs Player' ? 1 : 2;
+        if (this.allMoves.length <= 1) {
+            console.log("No moves to undo.");
+            return;
+        }
+        if (this.state != this.gameStates.PICKING || !this.humanPlayers.includes(this.currPlayer['playerID'])) {
+            console.warn("Invalid use of undo (Must be used during your turn).");
+            return;
+        }
 
-            while(currNumUndo < numberOfUndos) {
-                var lastMove = this.allMoves.pop();
+        var currNumUndo = 0;
+        var numberOfUndos = this.selectedMode == 'Player vs Player' ? 1 : 2;
 
-                for (var index = 0; index < lastMove['differences'].length; index++) {
-                    var cellLine = lastMove['differences'][index]['line'];
-                    var cellColumn = lastMove['differences'][index]['column'];
-                    var cellElement = lastMove['differences'][index]['element'];
-                    var previousElement = lastMove['differences'][index]['previousElement'];
-                    
-                    if (cellElement != 0)  
-                        this.board.removePiece(cellLine, cellColumn);
-                    else 
-                        this.board.addPiece(cellLine, cellColumn, previousElement);
-                }
+        while (currNumUndo < numberOfUndos) {
+            var lastMove = this.allMoves.pop();
 
-                this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
-                this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
-
-                currNumUndo++;
+            for (var index = 0; index < lastMove['differences'].length; index++) {
+                var cellLine = lastMove['differences'][index]['line'];
+                var cellColumn = lastMove['differences'][index]['column'];
+                var cellElement = lastMove['differences'][index]['element'];
+                var previousElement = lastMove['differences'][index]['previousElement'];
+                
+                if (cellElement != 0)  
+                    this.board.removePiece(cellLine, cellColumn);
+                else 
+                    this.board.addPiece(cellLine, cellColumn, previousElement);
             }
 
-            this.board.picking = false;
-            this.state = this.gameStates.ANIM_START;
+            this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
+            this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
+
+            currNumUndo++;
         }
-        else    console.warn("Invalid use of undo (Must be used during your turn).");
+
+        this.board.picking = false;
+        this.state = this.gameStates.ANIM_START;
     }
 
     /**
      * Shows all the moves performed so far
      */
     replay() {
-        if (this.event != this.eventTypes.GAME || this.state == this.gameStates.TURN || this.state == this.gameStates.ANIM_APPLY) {
+        if (this.event != this.eventTypes.GAME || this.state != this.gameStates.PICKING) {
             console.warn("Invalid use of replay (Must be used during a game without an ongoing turn).");
             return;
         }
@@ -218,8 +240,8 @@ class Game extends CGFobject {
 
         this.allMoves.push({
             differences: diff,  
-            currPlayer: JSON.parse(JSON.stringify(this.currPlayer)), 
-            nextPlayer: JSON.parse(JSON.stringify(this.nextPlayer))
+            currPlayer: {...this.currPlayer}, 
+            nextPlayer: {...this.nextPlayer}
         });
     
         console.log("Request successful.");
@@ -245,32 +267,30 @@ class Game extends CGFobject {
                 this.state = this.gameStates.ANIM_APPLY;
                 break;
             case this.gameStates.ANIM_APPLY:
-                this.updateAnimations(deltaTime);
+                if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
+                    if (this.scene["Camera Rotation"] && this.currPlayer.piece != this.cameraOrientation)  
+                        this.state = this.gameStates.CAMERA_START;
+                    else
+                        this.updateTurn();
+                }
+                break;
+            case this.gameStates.CAMERA_START:
+                this.elapsedSpan = 0;
+                this.state = this.gameStates.CAMERA_APPLY;
+                break;
+            case this.gameStates.CAMERA_APPLY:
+                this.scene.camera.orbit(this.cameraAxis, Math.PI * deltaTime / this.cameraSpan);
+
+                this.elapsedSpan += deltaTime;
+                if (this.elapsedSpan >= this.cameraSpan) {
+                    this.scene.camera.orbit(this.cameraAxis, -Math.PI * (this.elapsedSpan - this.cameraSpan) / this.cameraSpan);
+
+                    this.cameraOrientation = this.currPlayer.piece;
+                    this.updateTurn();
+                }
                 break;
             default:
                 break;
-        }
-    }
-
-    /**
-     * 
-     * @param {*} deltaTime 
-     */
-    updateAnimations(deltaTime) {
-        if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
-            if (this.endGame) {
-                this.event = this.eventTypes.IDLE;
-                this.state = this.gameStates.IDLE;
-                return
-            } 
-
-            if (this.humanPlayers.includes(this.currPlayer['playerID'])) {
-                this.state = this.gameStates.PICKING;
-                this.board.picking = true;
-            }
-            else {
-                this.state = this.gameStates.TURN;
-            }
         }
     }
 
@@ -300,7 +320,7 @@ class Game extends CGFobject {
                 if (!this.board.update(deltaTime)) {
                     if (++this.replayMove >= this.allMoves.length) {
                         this.event = this.eventTypes.GAME;
-                        this.updateAnimations();
+                        this.updateTurn();
                     }
                     else {
                         this.state = this.gameStates.TURN;
@@ -309,6 +329,25 @@ class Game extends CGFobject {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 
+     */
+    updateTurn() {
+        if (this.endGame) {
+            this.event = this.eventTypes.IDLE;
+            this.state = this.gameStates.IDLE;
+            return;
+        } 
+
+        if (this.humanPlayers.includes(this.currPlayer['playerID'])) {
+            this.state = this.gameStates.PICKING;
+            this.board.picking = true;
+        }
+        else {
+            this.state = this.gameStates.TURN;
         }
     }
     

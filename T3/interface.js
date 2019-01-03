@@ -118,9 +118,8 @@ class Interface extends CGFinterface {
         settings.add(game, 'difficulty', this.difficulty).name('Difficulty');
         settings.add(game, 'gameMode', this.modes).name('Mode');
         
-        this.scene.cameraRotation["Camera Rotation"] = false;
-        settings.add(this.scene.cameraRotation, 'Camera Rotation');
-
+        this.scene['Camera Rotation'] = true;
+        settings.add(this.scene, 'Camera Rotation');
     }
 
     addOptions(game) {

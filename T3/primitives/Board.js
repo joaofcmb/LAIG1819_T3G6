@@ -226,14 +226,16 @@ class Board extends CGFobject {
             this.scene.setActiveShader(this.ghostShader);
             for (var i = 0; i < 13; i++) {
                 for (var j = 0; j < 13; j++) {
-                    this.scene.pushMatrix();
-                        this.scene.translate(-.84 + .14 * i, .052, .84 - .14 * j);
-                        this.scene.scale(.07, 1, .07);
+                    if (this.boardCells[j][i] == this.model['none']) {
+                        this.scene.pushMatrix();
+                            this.scene.translate(-.84 + .14 * i, .052, .84 - .14 * j);
+                            this.scene.scale(.07, 1, .07);
 
-                        var id = j * 13 + i;
-                        this.scene.registerForPick(id + 1, this.ghostPick[id]);
-                        this.ghostPick[id].display();
-                    this.scene.popMatrix();
+                            var id = j * 13 + i;
+                            this.scene.registerForPick(id + 1, this.ghostPick[id]);
+                            this.ghostPick[id].display();
+                        this.scene.popMatrix();
+                    }
                 }
             }
             this.scene.clearPickRegistration();

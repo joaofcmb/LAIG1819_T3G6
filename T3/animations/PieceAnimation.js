@@ -37,6 +37,7 @@ class PieceAnimation extends Animation {
                 this.secondAnimation = new CircularAnimation(scene, 300, bigCenter, bigR, 45, -45, rotAxis);
                 break;
             case 'remove':
+            case 'capture':
                 this.firstAnimation = new CircularAnimation(scene, 300, bigCenter, bigR, 0, 45, rotAxis);
                 this.secondAnimation = new CircularAnimation(scene, 300 * spanRatio, smallCenter, smallR, 45, 135, rotAxis);
                 break;

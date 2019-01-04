@@ -82,7 +82,7 @@ class Board extends CGFobject {
         --this.viewStacks[stackType][stackI];
     }
 
-    removePiece(cellLine, cellColumn) {
+    removePiece(cellLine, cellColumn, type = 'remove') {
         var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
         var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
         
@@ -94,12 +94,15 @@ class Board extends CGFobject {
         var cellPos = vec3.fromValues(-.84 + .14 * cellColumn, .0545, .84 - .14 * cellLine);
 
         this.currAnimations.push({
-            animation: new PieceAnimation(this.scene, stackPos, cellPos, 'remove'),
+            animation: new PieceAnimation(this.scene, stackPos, cellPos, type),
             stackType: stackType,
-            stackI: stackI
+            stackI: stackI,
+            line: cellLine,
+            column: cellColumn
         });
 
-        this.boardCells[cellLine][cellColumn] = this.model['none'];
+        if (type == 'remove')
+            this.boardCells[cellLine][cellColumn] = this.model['none'];
     }
 
     reset() {
@@ -108,6 +111,49 @@ class Board extends CGFobject {
                 if (this.boardCells[i][j] != this.model['none'])
                     this.removePiece(i, j);
     }
+
+    isCapture() {
+        return  this.currAnimations.find((fAnim) => fAnim.animation.type == 'capture');
+    }
+
+
+    update(deltaTime) {
+        this.currAnimations.forEach(this.updateAnimation.bind(this, deltaTime));
+        return this.currAnimations.length;
+    }
+
+    updateAdd(deltaTime) {
+        var animations = this.currAnimations.filter((fAnim) => fAnim.animation.type == 'add');
+        animations.forEach(this.updateAnimation.bind(this, deltaTime));
+        return animations.length;
+    }
+
+    updateCapture(deltaTime) {
+        var animations = this.currAnimations.filter((fAnim) => fAnim.animation.type == 'capture');
+        animations.forEach(function(fAnim, i) {
+            this.boardCells[fAnim.line][fAnim.column] = this.model['none'];
+            this.updateAnimation(deltaTime, fAnim);
+        }, this);
+        console.log(animations)
+        return animations.length;
+    }
+
+    updateAnimation(deltaTime, fAnim) {
+        if (fAnim.animation.update(deltaTime) == deltaTime) {
+            this.currAnimations.splice(this.currAnimations.indexOf(fAnim), 1);
+
+            switch(fAnim.animation.type) {
+                case 'add':
+                    this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
+                    break;
+                case 'remove':
+                case 'capture':
+                    this.viewStacks[fAnim.stackType][fAnim.stackI]++;
+                    break;
+            }
+        }
+    }
+
 
     stackDisplay(type) {
         for (var i = 0; i < 5; i++) {
@@ -158,26 +204,6 @@ class Board extends CGFobject {
                 this.scene.popMatrix();
             }
         }
-    }
-
-    update(deltaTime) {
-        for (var i = 0; i < this.currAnimations.length; i++) {
-            // Animation finished, since all animations have the same span it is safe to assume the first animation is to be removed
-            if (this.currAnimations[i].animation.update(deltaTime) == deltaTime) {
-                var fAnim = this.currAnimations.shift();
-
-                switch(fAnim.animation.type) {
-                    case 'add':
-                        this.boardCells[fAnim.line][fAnim.column] = this.model[fAnim.stackType];
-                        break;
-                    case 'remove':
-                        this.viewStacks[fAnim.stackType][fAnim.stackI]++;
-                        break;
-                }
-            }
-        }
-
-        return this.currAnimations.length;
     }
 
     display() {
@@ -236,9 +262,6 @@ class Board extends CGFobject {
             }
             this.scene.clearPickRegistration();
             this.scene.setActiveShader(this.scene.defaultShader);
-
-            // Visual elements to aid user interaction
-            // TODO think of stuff to highlight pickables / non pickables
         }
     }
 }

@@ -20,6 +20,9 @@ class Game extends CGFobject {
         this.gameStates = {IDLE: 1, PICKING: 2, TURN: 3, ANIM_START: 4, ANIM_APPLY: 5, CAMERA_START: 6, CAMERA_APPLY: 7};
         this.state = this.gameStates.IDLE;
 
+        this.captureStates = {IDLE: 1, ANIM_ADD: 2, ANIM_SHADER: 3, ANIM_REMOVE: 4};
+        this.captureState = this.captureStates.IDLE;
+
         this.difficulty = {}; this.difficulty = 'Easy';
         this.gameMode   = {}; this.gameMode   = 'Player vs Player';
         this.time       = {}; this.time       = 45;
@@ -82,9 +85,7 @@ class Game extends CGFobject {
         
         this.selectedMode = this.gameMode;
         this.selectedDifficulty = this.difficulty;
-        this.info.time = this.time;
-        this.info.resetTimer();
-
+        this.info.initInfo(this.time);
         this.allMoves = [{
             differences: [], 
             currPlayer: {...this.currPlayer}, 
@@ -153,8 +154,14 @@ class Game extends CGFobject {
                     this.board.addPiece(cellLine, cellColumn, previousElement);
             }
 
-            this.currPlayer = this.allMoves[this.allMoves.length - 1]['currPlayer'];
-            this.nextPlayer = this.allMoves[this.allMoves.length - 1]['nextPlayer'];
+            this.currPlayer = lastMove['currPlayer'];
+            this.nextPlayer = lastMove['nextPlayer'];
+
+            // Updates player info on Info class
+            if (this.currPlayer['piece'] == '1') 
+                this.info.updatePlayersInfo(this.currPlayer, this.nextPlayer);
+            else
+                this.info.updatePlayersInfo(this.nextPlayer, this.currPlayer);
 
             currNumUndo++;
         }
@@ -167,6 +174,11 @@ class Game extends CGFobject {
      * Shows all the moves performed so far
      */
     replay() {
+        if (this.allMoves.length <= 1) {
+            console.log("No moves to replay.");
+            return;
+        }
+
         if (this.event != this.eventTypes.GAME || this.state != this.gameStates.PICKING) {
             console.warn("Invalid use of replay (Must be used during a game without an ongoing turn).");
             return;
@@ -228,12 +240,18 @@ class Game extends CGFobject {
             if (cellElement != 0)  
                 this.board.addPiece(cellLine, cellColumn, cellElement);
             else 
-                this.board.removePiece(cellLine, cellColumn);                
+                this.board.removePiece(cellLine, cellColumn, 'capture');                
         } 
         
         // Players information
         var playerInfo = response.match(/\].*/)[0].split(",")[1];
         
+        this.allMoves.push({
+            differences: diff,  
+            currPlayer: {...this.currPlayer}, 
+            nextPlayer: {...this.nextPlayer}
+        });
+
         // Updates player information
         this.currPlayer['captures'] = Number(playerInfo.split("-")[0]);
         this.currPlayer['currSequence'] = Number(playerInfo.split("-")[1]);
@@ -241,12 +259,6 @@ class Game extends CGFobject {
         // In case a capture occurs
         if(diff.length > 1)
             this.nextPlayer['currSequence'] -= 2;
-
-        this.allMoves.push({
-            differences: diff,  
-            currPlayer: {...this.currPlayer}, 
-            nextPlayer: {...this.nextPlayer}
-        });    
         
         // Switches between players
         this.swapPlayers();
@@ -274,9 +286,25 @@ class Game extends CGFobject {
      * Alternates between players
      */
     swapPlayers() {
-        var tmpPlayer = this.currPlayer; 
-        this.currPlayer = this.nextPlayer; 
-        this.nextPlayer = tmpPlayer;
+        [this.currPlayer, this.nextPlayer] = [this.nextPlayer, this.currPlayer];
+    }
+
+    /**********************************/
+    /***** STATE MACHINE (UPDATE) *****/
+    /**********************************/
+
+    update(deltaTime) {
+        switch(this.event) {
+            case this.eventTypes.GAME:
+                // Updates game state    
+                this.updateGame(deltaTime);
+                break;
+            case this.eventTypes.REPLAY:
+                this.updateReplay(deltaTime);
+                break;
+            default:
+                break;
+        }
     }
 
     updateGame(deltaTime) {
@@ -298,8 +326,15 @@ class Game extends CGFobject {
             case this.gameStates.ANIM_START:
                 // Resets the time for the animations
                 this.state = this.gameStates.ANIM_APPLY;
+                this.captureState = this.captureStates.IDLE;
                 break;
             case this.gameStates.ANIM_APPLY:
+                // Handle captures differently if that's the case
+                if (this.board.isCapture()) {
+                    this.updateCapture(deltaTime);
+                    break;
+                }
+
                 if (!this.board.update(deltaTime)) { // When there's no more animations, proceed to next state
                     if (this.scene["Camera Rotation"] && this.currPlayer.piece != this.cameraOrientation)  
                         this.state = this.gameStates.CAMERA_START;
@@ -337,7 +372,7 @@ class Game extends CGFobject {
                     var cellelement = this.allMoves[this.replayMove]['differences'][j]['element'];
                     
                     if (cellelement != 0)   this.board.addPiece(cellLine, cellColumn, cellelement);
-                    else                    this.board.removePiece(cellLine, cellColumn);
+                    else                    this.board.removePiece(cellLine, cellColumn, 'capture');
                 }
 
                 this.state = this.gameStates.ANIM_START;
@@ -345,8 +380,15 @@ class Game extends CGFobject {
             case this.gameStates.ANIM_START:
                 // Resets the time for the animations
                 this.state = this.gameStates.ANIM_APPLY;
+                this.captureState = this.captureStates.IDLE;
                 break;
             case this.gameStates.ANIM_APPLY:
+                // Handle captures differently if that's the case
+                if (this.board.isCapture()) {
+                    this.updateCapture(deltaTime);
+                    break;
+                }
+
                 if (!this.board.update(deltaTime)) {
                     if (++this.replayMove >= this.allMoves.length) {
                         this.event = this.eventTypes.GAME;
@@ -383,6 +425,34 @@ class Game extends CGFobject {
                 }
                 break;
             default:
+                break;
+        }
+    }
+
+    /**
+     * 
+     * @param {Number} deltaTime Time elapsed since last update in miliseconds
+     */
+    updateCapture(deltaTime) {
+        switch(this.captureState) {
+            case this.captureStates.IDLE:
+                this.captureState = this.captureStates.ANIM_ADD;
+                break;
+            case this.captureStates.ANIM_ADD:
+                if (!this.board.updateAdd(deltaTime)) {
+                    this.elapsedSpan = 0;
+                    this.captureState = this.captureStates.ANIM_SHADER;
+                }
+                break;
+            case this.captureStates.ANIM_SHADER:
+                this.elapsedSpan += deltaTime;
+
+                if (this.elapsedSpan > 1000)
+                    this.captureState = this.captureStates.ANIM_REMOVE;
+                break;
+            case this.captureStates.ANIM_REMOVE:
+                if (!this.board.updateCapture(deltaTime))
+                    this.captureState = this.captureStates.IDLE;
                 break;
         }
     }
@@ -426,20 +496,7 @@ class Game extends CGFobject {
             this.currTime = 0;
         }        
     }
-    
-    update(deltaTime) {
-        switch(this.event) {
-            case this.eventTypes.GAME:
-                // Updates game state    
-                this.updateGame(deltaTime);
-                break;
-            case this.eventTypes.REPLAY:
-                this.updateReplay(deltaTime);
-                break;
-            default:
-                break;
-        }
-    }
+
 
     /**
      * Displays game.

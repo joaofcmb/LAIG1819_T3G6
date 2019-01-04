@@ -441,14 +441,18 @@ class Game extends CGFobject {
             case this.captureStates.ANIM_ADD:
                 if (!this.board.updateAdd(deltaTime)) {
                     this.elapsedSpan = 0;
+                    this.board.shaking = true;
                     this.captureState = this.captureStates.ANIM_SHADER;
                 }
                 break;
             case this.captureStates.ANIM_SHADER:
                 this.elapsedSpan += deltaTime;
+                this.board.shakeUpdate(this.elapsedSpan);
 
-                if (this.elapsedSpan > 1000)
+                if (this.elapsedSpan > 500) {
+                    this.board.shaking = false;
                     this.captureState = this.captureStates.ANIM_REMOVE;
+                }
                 break;
             case this.captureStates.ANIM_REMOVE:
                 if (!this.board.updateCapture(deltaTime))

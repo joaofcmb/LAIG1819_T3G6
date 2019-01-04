@@ -14,9 +14,9 @@ class Board extends CGFobject {
         this.initBoard();
         this.initMaterials();
         this.initStack();
+        this.initShaders();
 
         this.currAnimations = [];
-        this.ghostShader = new CGFshader(this.scene.gl, "./shaders/Ghost.vert", "./shaders/Ghost.frag");
     }
 
     initComponents() {        
@@ -59,6 +59,10 @@ class Board extends CGFobject {
         }
 
         this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
+    }
+
+    initShaders() {
+        this.ghostShader = new CGFshader(this.scene.gl, './shaders/Ghost.vert', './shaders/Ghost.frag');
     }
     
     addPiece(cellLine, cellColumn, element) {
@@ -117,6 +121,12 @@ class Board extends CGFobject {
     }
 
 
+    shakeUpdate(elapsedTime) {
+        this.shakeFactor = Math.sin(elapsedTime *.05) * .01;
+
+        this.currAnimations.forEach((fAnim, i) => (this.boardCells[fAnim.line][fAnim.column] = this.model['none']), this);
+    }
+
     update(deltaTime) {
         this.currAnimations.forEach(this.updateAnimation.bind(this, deltaTime));
         return this.currAnimations.length;
@@ -134,7 +144,6 @@ class Board extends CGFobject {
             this.boardCells[fAnim.line][fAnim.column] = this.model['none'];
             this.updateAnimation(deltaTime, fAnim);
         }, this);
-        console.log(animations)
         return animations.length;
     }
 
@@ -180,6 +189,15 @@ class Board extends CGFobject {
         }
     }
 
+    shakeDisplay() {
+        this.currAnimations.forEach(function(fAnim) {
+            this.scene.pushMatrix();
+                this.scene.translate(this.shakeFactor -.84 + .14 * fAnim.column, .0545, .84 - .14 * fAnim.line);
+                this.pieceDisplay();
+            this.scene.popMatrix();
+        }, this);
+    }
+
     pieceDisplay() {
         this.scene.pushMatrix();
             this.scene.scale(1, .2, 1);
@@ -195,6 +213,9 @@ class Board extends CGFobject {
         this.scene.popMatrix();
         // - Board Pieces
         this.cellsDisplay(modelType);
+        // - Shaking Pieces
+        if (this.shaking && this.currAnimations[0].stackType == modelType)
+            this.shakeDisplay();
         // - Animation Pieces
         for (var i in this.currAnimations) {
             if (this.currAnimations[i].stackType == modelType) {

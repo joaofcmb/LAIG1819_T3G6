@@ -159,12 +159,14 @@ class Scene extends CGFscene {
         this.game = this.data.game;
         
         this.interface.addLightsGroup(this.data);
-        this.interface.addViewsGroup(this.data, this.game.whiteCamID);
 
         if (this.game) {
+            this.interface.addViewsGroup(this.data, this.game.whiteCamID);
             this.interface.addGameSettings(this.game);
             this.interface.addOptions(this.game);
         }
+        else 
+            this.interface.addViewsGroup(this.data);
 
         this.sceneInited = true;
     }

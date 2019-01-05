@@ -131,7 +131,8 @@ class Game extends CGFobject {
             console.log("No moves to undo.");
             return;
         }
-        if (this.state != this.gameStates.PICKING || !this.humanPlayers.includes(this.currPlayer['playerID'])) {
+        if (this.event != this.eventTypes.GAME || ![this.gameStates.IDLE, this.gameStates.PICKING].includes(this.state) 
+            || !this.humanPlayers.includes(this.currPlayer['playerID'])) {
             console.warn("Invalid use of undo (Must be used during your turn).");
             return;
         }
@@ -166,6 +167,7 @@ class Game extends CGFobject {
             currNumUndo++;
         }
 
+        this.endGame = false;
         this.board.picking = false;
         this.state = this.gameStates.ANIM_START;
     }
@@ -179,7 +181,7 @@ class Game extends CGFobject {
             return;
         }
 
-        if (this.event != this.eventTypes.GAME || this.state != this.gameStates.PICKING) {
+        if (this.event != this.eventTypes.GAME || ![this.gameStates.IDLE, this.gameStates.PICKING].includes(this.state)) {
             console.warn("Invalid use of replay (Must be used during a game without an ongoing turn).");
             return;
         }
@@ -468,7 +470,6 @@ class Game extends CGFobject {
         this.info.resetTimer();
 
         if (this.endGame) {
-            this.event = this.eventTypes.IDLE;
             this.state = this.gameStates.IDLE;
             return;
         }

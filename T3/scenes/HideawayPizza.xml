@@ -1,10 +1,20 @@
 <yas>
     <scene root="root" axis_length="2"/>
 
-    <views default="DefaultCam">
-        <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
-            <from x="10" y="25" z="15" />
-            <to x="10.05" y="0" z="15" />
+    <views default="Bartender">
+        <perspective id="Bartender" near="0.1" far="500.0" angle="60">
+            <from x="3" y="3" z="15" />
+            <to x="20" y="2.5" z="15" />
+        </perspective>
+
+        <perspective id="TableToBar" near="0.1" far="500.0" angle="60">
+            <from x="20" y="2.5" z="15" />
+            <to x="0" y="3.5" z="15" />
+        </perspective>
+
+        <perspective id="BackSeat" near="0.1" far="500.0" angle="60">
+            <from x="19.5" y="2.5" z="29.5" />
+            <to x="3" y="3.5" z="0" />
         </perspective>
 
         <perspective id="GameCam" near="0.1" far="500.0" angle="60">

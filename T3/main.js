@@ -9,17 +9,17 @@ function getUrlVars() {
       vars[decodeURIComponent(key)] = decodeURIComponent(value);
     });
     return vars;
-}	 
+}	
 
 //Include additional files here
-serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js", 
-                './primitives/MyRectangle.js', './primitives/MyTriangle.js', 
-                './primitives/MyCylinder.js', './primitives/MySphere.js', 
+serialInclude([ '../lib/CGF.js', 'parser.js', 'scene.js', 'data.js', "interface.js",  'logic.js', 'game.js', 'info.js',
+                './primitives/MyRectangle.js', './primitives/MyTriangle.js',
+                './primitives/MyCylinder.js', './primitives/MySphere.js',
                 './primitives/MyCircle.js', './primitives/MyTorus.js',
                 './primitives/Plane.js', './primitives/Patch.js',
                 './primitives/Cylinder2.js', './primitives/Water.js',
                 './primitives/Board.js', './primitives/Cube.js',
-                './animations/Animation.js', './animations/LinearAnimation.js', './animations/CircularAnimation.js',
+                './animations/Animation.js', './animations/LinearAnimation.js', './animations/CircularAnimation.js', './animations/PieceAnimation.js',
                 
 main=function()
 {

@@ -8,6 +8,9 @@ class Interface extends CGFinterface {
     constructor() {
         super();
 
+        this.difficulty = ['Easy', 'Medium', 'Hard'];
+        this.modes = ['Player vs Player', 'Player vs AI', 'AI vs AI'];
+        
         this.views = [];
         this.Views;
     }
@@ -67,6 +70,9 @@ class Interface extends CGFinterface {
      * @param {array} data 
      */
     addViewsGroup(data) {
+        var views = this.gui.addFolder("Views");
+        views.open();
+
         for (var key in data.perspectiveCams) {
             if (data.perspectiveCams.hasOwnProperty(key)) {
                 this.views.push(key);
@@ -79,10 +85,7 @@ class Interface extends CGFinterface {
             }
         }
 
-        this.gui.add(this, 'Views', this.views);
-        
-        this.scene.lock["Lock Views"] = false;
-        this.gui.add(this.scene.lock, 'Lock Views');
+        views.add(this, 'Views', this.views);
     }
 
     /**
@@ -106,5 +109,35 @@ class Interface extends CGFinterface {
                 lights.add(this.scene.lightValues, key);
             }
         }
+    }
+
+    /**
+     * Adds a folder containing all game settings.
+     * @param {Object} game 
+     */
+    addGameSettings(game) {
+        var settings = this.gui.addFolder('Game Settings');
+        settings.open();
+
+        settings.add(game, 'difficulty', this.difficulty).name('Difficulty');
+        settings.add(game, 'gameMode', this.modes).name('Mode');
+        settings.add(game, 'time', 15, 90).name("Timer"); 
+        
+        this.scene['Camera Rotation'] = true;
+        settings.add(this.scene, 'Camera Rotation');
+    }
+
+    /**
+     * Adds a folder that corresponds to the game main menu.
+     * @param {Object} game 
+     */
+    addOptions(game) {
+        var options = this.gui.addFolder('Main Menu');
+        options.open();
+
+        options.add(game, 'playGame').name('Play Game');
+        options.add(game, 'undo').name('Undo');
+        options.add(game, 'replay').name('Replay');
+        options.add(game, 'exitGame').name('Exit Game');
     }
 }

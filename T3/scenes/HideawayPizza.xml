@@ -1,13 +1,16 @@
 <yas>
-    <scene root="root" axis_length="1"/>
+    <scene root="root" axis_length="2"/>
 
     <views default="DefaultCam">
-
         <perspective id="DefaultCam" near="0.1" far="500.0" angle="60">
             <from x="10" y="25" z="15" />
             <to x="10.05" y="0" z="15" />
         </perspective>
 
+        <perspective id="GameCam" near="0.1" far="500.0" angle="60">
+            <from x="16.3" y="3" z="13.5" />
+            <to x="16.3" y="1.5" z="15" />
+        </perspective>
     </views>
 
     <ambient>
@@ -40,10 +43,15 @@
             <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
         </omni>
+        <omni id="BackLeftLight" enabled="1">
+            <location x="0.0" y="5.0" z="0.0" w="1" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
+            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
+        </omni>
     </lights>
 
     <textures>
-        <texture id="camo" file="./scenes/images/camo.jpg" />
         <texture id="bar_background" file="./scenes/images/bar_background.jpg" />
         <texture id="windows" file="./scenes/images/windows.jpg" />
         <texture id="mural" file="./scenes/images/mural.jpg" />
@@ -92,6 +100,9 @@
         </primitive>
         <primitive id="cube">
             <cube npartsU="20" npartsV="20" />
+        </primitive >
+        <primitive id="board">
+            <board whiteCam="GameCam"/>
         </primitive >
     </primitives >
 
@@ -284,7 +295,7 @@
                         <material id="inherit" />
                     </materials>
 
-                    <texture id="camo" length_s="1.0" length_t="1.0" />
+                    <texture id="none" />
 
                     <children>
                         <componentref id="lamp" />
@@ -301,7 +312,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="camo" length_s="1.0" length_t="1.0" />
+                        <texture id="none" />
 
                         <children>
                             <componentref id="lamp" />
@@ -318,7 +329,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="camo" length_s="1.0" length_t="1.0" />
+                        <texture id="none" />
 
                         <children>
                             <componentref id="lamp" />
@@ -335,7 +346,7 @@
                             <material id="inherit" />
                         </materials>
 
-                        <texture id="camo" length_s="1.0" length_t="1.0" />
+                        <texture id="none" />
 
                         <children>
                             <componentref id="lamp" />                            
@@ -402,7 +413,7 @@
                         <material id="inherit" />
                     </materials>
 
-                    <texture id="camo" length_s="1.0" length_t="1.0" />
+                    <texture id="none" />
 
                     <children>
                         <componentref id="front_door" />
@@ -1149,6 +1160,7 @@
                             <texture id="none"/>
 
                             <children>
+                                <componentref id="game_area" />
                                 <componentref id="dining_area" />
                                 <componentref id="dining_area_3" />               
                             </children>
@@ -1184,6 +1196,22 @@
                                 <componentref id="dining_area" />                                            
                             </children>
                         </component>
+                            <component id="game_area">
+                                    <transformation>
+                                        <translate x="-1.2" y="1.58" z="0"/>
+                                        <scale x=".75" y=".5" z=".75" />
+                                    </transformation>
+
+                                    <materials>
+                                        <material id="inherit" />
+                                    </materials>
+
+                                    <texture id="table" length_s="1.0" length_t="1.0" />
+
+                                    <children>
+                                        <primitiveref id="board" />
+                                    </children>
+                            </component>
                             <component id="dining_area">
                                     <transformation>
                                     </transformation>

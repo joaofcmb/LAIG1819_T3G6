@@ -65,6 +65,7 @@
         <texture id="counter" file="./scenes/images/counter.jpg" />
         <texture id="ceiling" file="./scenes/images/ceiling.jpg" />
         <texture id="lamp" file="./scenes/images/lamp.jpg" />
+        <texture id="board" file="./scenes/images/board.png" />
     </textures>
 
     <materials>
@@ -1200,13 +1201,14 @@
                                     <transformation>
                                         <translate x="-1.2" y="1.58" z="0"/>
                                         <scale x=".75" y=".5" z=".75" />
+                                        <rotate axis="y" angle="180" />
                                     </transformation>
 
                                     <materials>
                                         <material id="inherit" />
                                     </materials>
 
-                                    <texture id="table" length_s="1.0" length_t="1.0" />
+                                    <texture id="board" length_s="1.0" length_t="1.0" />
 
                                     <children>
                                         <primitiveref id="board" />

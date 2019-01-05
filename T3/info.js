@@ -42,10 +42,12 @@ class Info extends CGFobject {
      */
     initTextures() {
         this.whiteAppearance = new CGFappearance(this.scene);
-        this.whiteAppearance.setDiffuse(1, 1, 1, 1);
+        this.whiteAppearance.setDiffuse(.5, .5, .5, 1);
+        this.whiteAppearance.setAmbient(.2, .2, .2, 1);
 
         this.blackAppearance = new CGFappearance(this.scene);
-        this.blackAppearance.setDiffuse(0, 0, 0, 1);
+        this.blackAppearance.setDiffuse(.15, .15, .15, 1);
+        this.blackAppearance.setAmbient(.1, .1, .1, 1);
 
         this.letter_C = new CGFappearance(this.scene);
         this.letter_C.loadTexture('scenes/images/letter_C.png');
@@ -124,6 +126,7 @@ class Info extends CGFobject {
      * Displays the timer.
      */
     displayTimer() {
+        this.whiteAppearance.apply();
         this.scene.pushMatrix();
             this.scene.translate(-1.5, .1, -0.1);
             this.scene.scale(.15, .15, .35);

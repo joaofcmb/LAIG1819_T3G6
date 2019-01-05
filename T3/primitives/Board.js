@@ -37,10 +37,14 @@ class Board extends CGFobject {
         this.boardAppearance.loadTexture('scenes/images/pente.png');
 
         this.whiteAppearance = new CGFappearance(this.scene);
-        this.whiteAppearance.setDiffuse(.8, .8, .8, 1);
+        this.whiteAppearance.setDiffuse(.5, .5, .5, 1);
+        this.whiteAppearance.setAmbient(.2, .2, .2, 1);
+        this.whiteAppearance.setSpecular(.7, .7, .7, 1);
 
         this.blackAppearance = new CGFappearance(this.scene);
-        this.blackAppearance.setDiffuse(.1, .1, .1, 1);
+        this.blackAppearance.setDiffuse(.15, .15, .15, 1);
+        this.blackAppearance.setAmbient(.1, .1, .1, 1);
+        this.blackAppearance.setSpecular(.7, .7, .7, 1);
     }
 
     initStack() {
@@ -229,18 +233,6 @@ class Board extends CGFobject {
 
     display() {
         this.scene.pushMatrix();
-            // Bases for the pieces on the side
-            this.scene.pushMatrix();
-                this.scene.translate(1.5, 0, -.5);
-                this.scene.scale(.15, .05, .15);
-                this.cube.display();
-            this.scene.popMatrix();
-            this.scene.pushMatrix();
-                this.scene.translate(-1.5, 0, .5);
-                this.scene.scale(.15, .05, .15);
-                this.cube.display();
-            this.scene.popMatrix();
-
             // Board Frame
             this.scene.pushMatrix();
                 this.scene.scale(1, .05, 1);
@@ -257,10 +249,24 @@ class Board extends CGFobject {
 
             // White Pieces
             this.whiteAppearance.apply();
+            // - Base for the stacks
+            this.scene.pushMatrix();
+                this.scene.translate(-1.5, 0, .5);
+                this.scene.scale(.15, .05, .15);
+                this.cube.display();
+            this.scene.popMatrix();
+
             this.typeDisplay('white');
 
             // Black Pieces
             this.blackAppearance.apply();
+            // - Base for the stacks
+            this.scene.pushMatrix();
+                this.scene.translate(1.5, 0, -.5);
+                this.scene.scale(.15, .05, .15);
+                this.cube.display();
+            this.scene.popMatrix();
+
             this.typeDisplay('black');
         this.scene.popMatrix();
 

@@ -69,18 +69,18 @@ class Interface extends CGFinterface {
      * Add combo-box to allow user to change between the available views passed in data parameter.
      * @param {array} data 
      */
-    addViewsGroup(data) {
+    addViewsGroup(data, whiteCamID = "") {
         var views = this.gui.addFolder("Views");
         views.open();
 
         for (var key in data.perspectiveCams) {
-            if (data.perspectiveCams.hasOwnProperty(key)) {
+            if (data.perspectiveCams.hasOwnProperty(key) && key != whiteCamID) {
                 this.views.push(key);
             }
         }
 
         for (var key in data.orthoCams) {
-            if (data.orthoCams.hasOwnProperty(key)) {
+            if (data.orthoCams.hasOwnProperty(key) && key != whiteCamID) {
                 this.views.push(key);
             }
         }

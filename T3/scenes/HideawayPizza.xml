@@ -37,17 +37,11 @@
             <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
         </omni>
-        <omni id="BackLight" enabled="1">
+        <omni id="BackLeftLight" enabled="1">
             <location x="10" y="5" z="24" w="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
-        </omni>
-        <omni id="BackLeftLight" enabled="1">
-            <location x="0.0" y="5.0" z="0.0" w="1" />
-            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
-            <diffuse r="0.7" g="0.7" b="0.7" a="1.0" />
-            <specular r="0.6" g="0.6" b="0.6" a="1.0" />
         </omni>
     </lights>
 
@@ -73,7 +67,19 @@
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
             <ambient r=".2" g=".2" b=".2" a="1.0" />
             <diffuse r=".6" g=".6" b=".6" a="1.0" />
+            <specular r=".3" g=".3" b=".3" a="1.0" />
+        </material>
+        <material id="chair" shininess="10.0">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r=".4" g=".4" b=".4" a="1.0" />
+            <diffuse r=".9" g=".9" b=".9" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
+        </material>
+        <material id="lamp" shininess="10.0">
+            <emission r=".6" g=".6" b=".6" a="0.0" />
+            <ambient r=".2" g=".2" b=".2" a="1.0" />
+            <diffuse r=".2" g=".2" b=".2" a="1.0" />
+            <specular r=".4" g=".4" b=".4" a="1.0" />
         </material>
     </materials>
 
@@ -396,7 +402,7 @@
                             </transformation>
 
                             <materials>
-                                <material id="inherit" />
+                                <material id="lamp" />
                             </materials>
 
                             <texture id="lamp" length_s="1.0" length_t="1.0" />
@@ -1010,7 +1016,7 @@
                                 </transformation>
 
                                 <materials>
-                                    <material id="inherit" />
+                                    <material id="chair" />
                                 </materials>
 
                                 <texture id="chair" length_s="1.0" length_t="1.0" />
@@ -1403,7 +1409,7 @@
                                         </transformation>
 
                                         <materials>
-                                            <material id="inherit"/>
+                                            <material id="chair"/>
                                         </materials>
 
                                         <texture id="chair" length_s="1.0" length_t="1.0" />

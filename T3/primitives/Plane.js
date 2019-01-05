@@ -32,7 +32,7 @@ class Plane extends CGFobject {
     /**
 	 * Plane display function
 	 */
-    display() {    
+    display() {
 		this.nurbsObject.display();
     }
 }

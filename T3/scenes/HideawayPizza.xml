@@ -17,13 +17,25 @@
 
     <lights>
         <omni id="FrontLight" enabled="1">
-            <location x="10" y="6" z="10" w="1" />
+            <location x="10" y="5" z="6" w="1" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
+            <specular r="0.2" g="0.2" b="0.2" a="1.0" />
+        </omni>
+        <omni id="MidFrontLight" enabled="1">
+            <location x="10" y="5" z="12" w="1" />
+            <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+            <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
+            <specular r="0.2" g="0.2" b="0.2" a="1.0" />
+        </omni>
+        <omni id="MidBackLight" enabled="1">
+            <location x="10" y="5" z="18" w="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
         </omni>
         <omni id="BackLight" enabled="1">
-            <location x="10" y="6" z="20" w="1" />
+            <location x="10" y="5" z="24" w="1" />
             <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
             <diffuse r="0.6" g="0.6" b="0.6" a="1.0" />
             <specular r="0.2" g="0.2" b="0.2" a="1.0" />
@@ -265,7 +277,7 @@
 
                  <component id="lamps">
                     <transformation>
-                        <translate x="0.0" y="0.0" z="-10.0" />
+                        <translate x="0.0" y="0.0" z="-9.0" />
                     </transformation>
 
                     <materials>
@@ -282,7 +294,7 @@
 
                     <component id="lamp_1">
                         <transformation>
-                            <translate x="0.0" y="0.0" z="7.0" />
+                            <translate x="0.0" y="0.0" z="6.0" />
                         </transformation>
 
                         <materials>
@@ -299,7 +311,7 @@
 
                     <component id="lamp_2">
                         <transformation>
-                            <translate x="0.0" y="0.0" z="7.0" />
+                            <translate x="0.0" y="0.0" z="6.0" />
                         </transformation>
 
                         <materials>
@@ -316,7 +328,7 @@
 
                     <component id="lamp_3">
                         <transformation>
-                            <translate x="0.0" y="0.0" z="7.0" />
+                            <translate x="0.0" y="0.0" z="6.0" />
                         </transformation>
 
                         <materials>

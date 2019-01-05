@@ -22,7 +22,7 @@ class Animation {
      * 
      * This particular functionality must be implemented by each animation.
      * 
-     * @param {number} deltaTime Time since last update in microseconds.
+     * @param {number} deltaTime Time elapsed since last update in microseconds.
      * 
      * @returns {number} Returns 0 unless the end of the animation is reach. In that case, it returns the reminder of the available deltaTime.
      */

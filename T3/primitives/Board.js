@@ -6,6 +6,10 @@
  * Cell unit -> .91 / 13 = .07 units
  */
 class Board extends CGFobject {
+    /**
+     * 
+     * @param {Object} scene The active scene
+     */
     constructor(scene) {
         super(scene);
         this.picking = false;
@@ -14,17 +18,23 @@ class Board extends CGFobject {
         this.initBoard();
         this.initMaterials();
         this.initStack();
-        this.initShaders();
 
         this.currAnimations = [];
+        this.ghostShader = new CGFshader(this.scene.gl, './shaders/Ghost.vert', './shaders/Ghost.frag');
     }
 
+    /**
+     * Initializes components to display
+     */
     initComponents() {        
         this.cube = new Cube(this.scene, 30, 30);
         this.board = new Plane(this.scene, 60, 60);
         this.piece = new MySphere(this.scene, .035, 8, 10);
     }
 
+    /**
+     * Initializes the board's internal state
+     */
     initBoard() {
         this.model = {'none': 0, 'white': 1, 'black': 2};
 
@@ -32,6 +42,9 @@ class Board extends CGFobject {
         this.ghostPick = new Array(13*13).fill(new Plane(this.scene, 1, 1));
     }
 
+    /**
+     * Initializes materials for the board and its pieces
+     */
     initMaterials() {
         this.boardAppearance = new CGFappearance(this.scene);
         this.boardAppearance.loadTexture('scenes/images/pente.png');
@@ -47,6 +60,9 @@ class Board extends CGFobject {
         this.blackAppearance.setSpecular(.7, .7, .7, 1);
     }
 
+    /**
+     * Initializes the stacks containing the pieces not placed on the board.
+     */
     initStack() {
         this.viewStacks = {
             'white': new Array(5).fill(40),
@@ -64,11 +80,18 @@ class Board extends CGFobject {
 
         this.stackTranslate = [[-.08, -.08], [-.08, .08], [.08, .08], [.08, -.08], [0, 0]];
     }
-
-    initShaders() {
-        this.ghostShader = new CGFshader(this.scene.gl, './shaders/Ghost.vert', './shaders/Ghost.frag');
-    }
     
+    /***********************/
+    /** ANIMATION METHODS **/
+    /***********************/
+
+    /**
+     * Adds an animation inserting a piece into the board
+     * 
+     * @param {Number} cellLine Line number of the selected cell
+     * @param {Number} cellColumn Column number of the selected cell 
+     * @param {Number} element Model notation of the type of piece being inserted
+     */
     addPiece(cellLine, cellColumn, element) {
         var stackType = Object.keys(this.model).find(key => this.model[key] == element);
         var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val > stacks[acc] ? i : acc, 0);
@@ -90,6 +113,13 @@ class Board extends CGFobject {
         --this.viewStacks[stackType][stackI];
     }
 
+    /**
+     * Adds an animation removing a piece from the board
+     * 
+     * @param {Number} cellLine Line number of the cell where the piece is
+     * @param {Number} cellColumn Column number of the cell where the piece is
+     * @param {String} type Specifies whether the piece is just being removed 'remove' or is part of a capture move 'capture'
+     */
     removePiece(cellLine, cellColumn, type = 'remove') {
         var stackType = Object.keys(this.model).find(key => this.model[key] == this.boardCells[cellLine][cellColumn]);
         var stackI = this.modelStacks[stackType].reduce((acc, val, i, stacks) => val < stacks[acc] ? i : acc, 0);
@@ -113,6 +143,9 @@ class Board extends CGFobject {
             this.boardCells[cellLine][cellColumn] = this.model['none'];
     }
 
+    /**
+     * Resets the board in an animated manner.
+     */
     reset() {
         for (var i = 0; i < 13; i++)
             for (var j = 0; j < 13; j++)
@@ -120,28 +153,64 @@ class Board extends CGFobject {
                     this.removePiece(i, j);
     }
 
+    /**
+     * Verifies if there's a capture animation occuring.
+     * 
+     * @returns {Boolean} Whether a capture animation is occuring or not
+     */
     isCapture() {
         return  this.currAnimations.find((fAnim) => fAnim.animation.type == 'capture');
     }
 
-
+    /**
+     * Updates the shake factor being applied to pieces being shaked, as part of the capture animation
+     * 
+     * @param {*} elapsedTime Time elapsed since the start of the shake state 
+     */
     shakeUpdate(elapsedTime) {
         this.shakeFactor = Math.sin(elapsedTime *.05) * .01;
 
         this.currAnimations.forEach((fAnim, i) => (this.boardCells[fAnim.line][fAnim.column] = this.model['none']), this);
     }
 
+    /**
+     * Updates all the board's animations.
+     * 
+     * Used for all board animations, excluding captures
+     * 
+     * @param {Number} deltaTime Time elapsed since the last update
+     * 
+     * @returns {Number} Amount of ongoing animations
+     */
     update(deltaTime) {
         this.currAnimations.forEach(this.updateAnimation.bind(this, deltaTime));
         return this.currAnimations.length;
     }
 
+    /**
+     * Updates the board's animations adding pieces to the board.
+     * 
+     * Used for capture animations
+     * 
+     * @param {Number} deltaTime Time elapsed since the last update
+     * 
+     * @returns {Number} Amount of ongoing animations
+     */
     updateAdd(deltaTime) {
         var animations = this.currAnimations.filter((fAnim) => fAnim.animation.type == 'add');
         animations.forEach(this.updateAnimation.bind(this, deltaTime));
         return animations.length;
     }
 
+    /**
+     * Updates the board's animations removing capture pieces from the board.
+     * 
+     * Used for capture animations
+     * 
+     * @param {Number} deltaTime Time elapsed since the last update
+     * 
+     * @returns {Number} Amount of ongoing animations
+     */
     updateCapture(deltaTime) {
         var animations = this.currAnimations.filter((fAnim) => fAnim.animation.type == 'capture');
         animations.forEach(function(fAnim, i) {
@@ -151,6 +220,15 @@ class Board extends CGFobject {
         return animations.length;
     }
 
+    /**
+     * Updates an individual board animation
+     * 
+     * @private Called internally by the methods handling animation updates
+     * 
+     * @param {Number} deltaTime    Time elapsed since the last update
+     * @param {Object} fAnim        Animation to be updated
+     * 
+     */
     updateAnimation(deltaTime, fAnim) {
         if (fAnim.animation.update(deltaTime) == deltaTime) {
             this.currAnimations.splice(this.currAnimations.indexOf(fAnim), 1);
@@ -167,7 +245,16 @@ class Board extends CGFobject {
         }
     }
 
+    /*********************/
+    /** DISPLAY METHODS **/
+    /*********************/
 
+
+    /**
+     * Displays the stacks of a player containing its pieces.
+     * 
+     * @param {String} type Type of stack being displayed ({'white', 'black})
+     */
     stackDisplay(type) {
         for (var i = 0; i < 5; i++) {
             this.scene.pushMatrix();
@@ -180,6 +267,11 @@ class Board extends CGFobject {
         }
     }
 
+    /**
+     * Displays the pieces of a player on the board.
+     * 
+     * @param {String} type Type of piece being displayed ({'white', 'black})
+     */
     cellsDisplay(type) {
         for (var i = 0; i < 13; i++) {
             for (var j = 0; j < 13; j++) {
@@ -193,6 +285,10 @@ class Board extends CGFobject {
         }
     }
 
+    
+    /**
+     * Displays the pieces being shaken as part of a capture animation.
+     */
     shakeDisplay() {
         this.currAnimations.forEach(function(fAnim) {
             this.scene.pushMatrix();
@@ -202,6 +298,9 @@ class Board extends CGFobject {
         }, this);
     }
 
+    /**
+     * Display a single piece.
+     */
     pieceDisplay() {
         this.scene.pushMatrix();
             this.scene.scale(1, .2, 1);
@@ -209,6 +308,12 @@ class Board extends CGFobject {
         this.scene.popMatrix();
     }
 
+    
+    /**
+     * Displays all the objects regarding a player
+     * 
+     * @param {String} type Type of objects being displayed ({'white', 'black})
+     */
     typeDisplay(modelType) {
         //  - Stack Pieces
         this.scene.pushMatrix();
@@ -231,6 +336,9 @@ class Board extends CGFobject {
         }
     }
 
+    /**
+     * Displays the board
+     */
     display() {
         this.scene.pushMatrix();
             // Board Frame

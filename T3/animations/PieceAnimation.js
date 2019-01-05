@@ -1,7 +1,17 @@
 /**
  * Piece Animation class
+ * 
+ * Used by the game board for the animations between pieces
  */
 class PieceAnimation extends Animation {
+    /**
+     * Piece animation constructors
+     * 
+     * @param {Object} scene The active scene
+     * @param {vec3} stackPos Start/Endpoint for the animated piece. Corresponds to its position in the stack 
+     * @param {vec3} cellPos Start/Endpoint for the animated piece. Corresponds to its position on the board.
+     * @param {String} type Determins whether the piece is being added to be board 'add' or removed from it by reset 'remove' or capture 'capture'
+     */
     constructor(scene, stackPos, cellPos, type) {
         super(scene);
         this.type = type;
@@ -44,6 +54,15 @@ class PieceAnimation extends Animation {
         }
     }
 
+    /**
+     * Updates the animation's transformation matrix.
+     * 
+     * @param {number} deltaTime Time elapsed since last update in miliseconds
+     * 
+     * @returns {number} Returns 0 unless the end of the animation is reach. In that case, it returns the reminder of the available deltaTime.
+     * 
+     * @override Animation.update()
+     */
     update(deltaTime) {
         var remainingDelta = this.firstAnimation.update(deltaTime);
 
@@ -55,6 +74,11 @@ class PieceAnimation extends Animation {
         return remainingDelta;
     }
 
+    /**
+     * Applies the current transformation matrix to the scene.
+     * 
+     * @override Animation.apply()
+     */
     apply() {
         if (this.currAnimation == 'first')  this.firstAnimation.apply();
         else                                this.secondAnimation.apply();

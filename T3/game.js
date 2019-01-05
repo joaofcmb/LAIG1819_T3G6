@@ -38,6 +38,10 @@ class Game extends CGFobject {
         this.allMoves = [];
     }
 
+    /**
+     * Changes current active camera to the game camera.
+     * 
+     */
     initCamera() {
         if (this.scene.interface.Views != this.whiteCamID) {
             this.oldCam = this.scene.interface.Views;
@@ -51,7 +55,7 @@ class Game extends CGFobject {
     }
     
     /**
-     * Initializes game.
+     * Initializes a new round for the game.
      */
     playGame() {
         if ([this.gameStates.CAMERA_APPLY, this.gameStates.ANIM_APPLY].includes(this.state)) {
@@ -104,7 +108,9 @@ class Game extends CGFobject {
     }
 
     /**
-     * Exit's current game by terminating Prolog connection.
+     * Exit's the current game, terminating server connection. 
+     * 
+     * The server is also shutdown from this command.
      */
     exitGame() {
         // Send init command 
@@ -124,7 +130,7 @@ class Game extends CGFobject {
     }
 
     /**
-     * Undos a certain amount of maden moves depending on the selected game mode.
+     * Undoes made moves until the last player turn.
      */
     undo() {
         if (this.allMoves.length <= 1) {
@@ -173,7 +179,9 @@ class Game extends CGFobject {
     }
 
     /**
-     * Shows all the moves performed so far
+     * Shows an animated replay of all the moves made throughout the current round.
+     * 
+     * The game returns to its state prior to the call.
      */
     replay() {
         if (this.allMoves.length <= 1) {
@@ -199,6 +207,8 @@ class Game extends CGFobject {
 
     /**
      * Executes a move made by the player/AI.
+     * 
+     * @param {Number} pickId Id of the cell picked by the player.
      */
     gameStep(pickId) {
          if (this.humanPlayers.includes(this.currPlayer['playerID'])) { 
@@ -221,9 +231,9 @@ class Game extends CGFobject {
     }
 
     /**
-     * Updates game state, both board internal representation and player information.
+     * Updates the game state, both board internal representation and player information.
      * 
-     * @param {String} response 
+     * @param {String} response Updated gamestate returned by the server.
      */
     updatedGameState(response) {
         // Board information
@@ -295,6 +305,11 @@ class Game extends CGFobject {
     /***** STATE MACHINE (UPDATE) *****/
     /**********************************/
 
+    /**
+     * Updates the state of the game
+     * 
+     * @param {Number} deltaTime Time elapsed since last update in miliseconds
+     */
     update(deltaTime) {
         switch(this.event) {
             case this.eventTypes.GAME:
@@ -309,6 +324,11 @@ class Game extends CGFobject {
         }
     }
 
+    /**
+     * Updates the state of the current game round
+     * 
+     * @param {Number} deltaTime Time elapsed since last update in miliseconds
+     */
     updateGame(deltaTime) {
         switch (this.state) {
             case this.gameStates.PICKING:
@@ -365,6 +385,11 @@ class Game extends CGFobject {
         }
     }
 
+    /**
+     * Updates the current replay state
+     * 
+     * @param {Number} deltaTime Time elapsed since last update in miliseconds
+     */
     updateReplay(deltaTime) {
         switch (this.state) {
             case this.gameStates.TURN:
@@ -432,6 +457,7 @@ class Game extends CGFobject {
     }
 
     /**
+     * Updates the current capture animation state
      * 
      * @param {Number} deltaTime Time elapsed since last update in miliseconds
      */
@@ -464,6 +490,7 @@ class Game extends CGFobject {
     }
 
     /**
+     * Switches to next turn state, depending on the gamemode.
      * 
      */
     updateTurn() {
@@ -486,7 +513,7 @@ class Game extends CGFobject {
     /**
      * Updates the timer.
      * 
-     * @param {Number} deltaTime 
+     * @param {Number} deltaTime Time elapsed since last update in miliseconds 
      */
     updateInfoTimer(deltaTime) {
         // Updates current time
@@ -504,7 +531,7 @@ class Game extends CGFobject {
 
 
     /**
-     * Displays game.
+     * Displays the game.
      */
     display() {
         this.board.display();

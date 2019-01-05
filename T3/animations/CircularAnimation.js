@@ -34,7 +34,9 @@ class CircularAnimation extends Animation {
     /**
      * Updates the animation's transformation matrix.
      * 
-     * @param {number} deltaTime
+     * @param {number} deltaTime Time elapsed since last update in miliseconds
+     * 
+     * @returns {number} Returns 0 unless the end of the animation is reach. In that case, it returns the reminder of the available deltaTime.
      */
     update(deltaTime) {
         if (Math.abs(this.currAng - this.startAng) >= Math.abs(this.rotAng))     return deltaTime;

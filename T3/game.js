@@ -337,8 +337,19 @@ class Game extends CGFobject {
 
                 this.pickId = this.scene.getPicks()[0];
                 if (this.pickId--) {
-                    this.state = this.gameStates.TURN;
-                    this.board.picking = false;
+                    if(this.allMoves.length == 1) {
+                        if(this.pickId == 84) {
+                            this.state = this.gameStates.TURN;
+                            this.board.picking = false;
+                        }
+                        else {
+                            console.log("First move must be made at the center of the board.")
+                        }
+                    } 
+                    else {
+                        this.state = this.gameStates.TURN;
+                        this.board.picking = false;
+                    }
                 }
                 break;
             case this.gameStates.TURN: 

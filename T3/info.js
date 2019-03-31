@@ -91,8 +91,10 @@ class Info extends CGFobject {
      * @param {Object} playerTwo 
      */
     updatePlayersInfo(playerOne, playerTwo) {
-        this.playerOneCaptures['number'] = playerOne['captures']; this.playerOneSequence['number'] = playerOne['currSequence'];
-        this.playerTwoCaptures['number'] = playerTwo['captures']; this.playerTwoSequence['number'] = playerTwo['currSequence'];
+        this.playerOneCaptures['number'] = this.playerOneCaptures['number'] < 0 ? 0 : playerOne['captures']; 
+        this.playerOneSequence['number'] = this.playerOneSequence['number'] < 0 ? 0 : playerOne['currSequence'];
+        this.playerTwoCaptures['number'] = this.playerTwoCaptures['number'] < 0 ? 0 : playerTwo['captures']; 
+        this.playerTwoSequence['number'] = this.playerTwoSequence['number'] < 0 ? 0 : playerTwo['currSequence'];  
     }
 
     /**
